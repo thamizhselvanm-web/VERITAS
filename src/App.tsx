@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Sidebar, PageId } from './components/common/Sidebar';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SlimNavigationRail } from './components/shell/SlimNavigationRail';
+import { TopCommandBar } from './components/shell/TopCommandBar';
+import { CommandPalette } from './components/shell/CommandPalette';
+import { SpatialBackground } from './components/3d/SpatialBackground';
+import { VeritasLoader } from './components/common/VeritasLoader';
+
 import { LoginPage } from './components/pages/LoginPage';
-import { OverviewPage } from './components/pages/OverviewPage';
+import { HeroOverviewScreen } from './components/screens/HeroOverviewScreen';
 import { ReviewQueuePage } from './components/pages/ReviewQueuePage';
 import { UploadPipelinePage } from './components/pages/UploadPipelinePage';
-import { FlagshipCaseDetail } from './components/case/FlagshipCaseDetail';
-import { TrustGraphPage } from './components/pages/TrustGraphPage';
-import { MonitoringPage } from './components/pages/MonitoringPage';
-import { AuditProofPage } from './components/pages/AuditProofPage';
+import { CinematicCaseWorkspace } from './components/screens/CinematicCaseWorkspace';
+import { TrustGraph3D } from './components/3d/TrustGraph3D';
+import { ContinuousMonitoringStream } from './components/screens/ContinuousMonitoringStream';
+import { CryptographicProofScreen } from './components/screens/CryptographicProofScreen';
 import { PublicProofVerifyPage } from './components/pages/PublicProofVerifyPage';
 
 import { ProofInspectorModal } from './components/modals/ProofInspectorModal';
@@ -17,15 +23,18 @@ import { mockCases, mockGraphNodes, mockGraphEdges, mockAuditEvents, mockTenants
 import { authService, UserSession } from './services/authService';
 import { InvoiceCase, TenantId, CaseStatus, AuditEvent, MonitoringEventType } from './types';
 import { TrustEngine } from './services/trustEngine';
+import { PageId } from './components/common/Sidebar';
 
 export const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [session, setSession] = useState<UserSession>(authService.getSession());
   const [cases, setCases] = useState<InvoiceCase[]>(mockCases);
   const [selectedCaseId, setSelectedCaseId] = useState<string>('case-vrt-28491');
-  const [activePage, setActivePage] = useState<PageId>('case-detail');
+  const [activePage, setActivePage] = useState<PageId>('overview');
   
   // Modals & Drawers
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedProofEvent, setSelectedProofEvent] = useState<AuditEvent | null>(null);
 
   const activeCase = cases.find(c => c.id === selectedCaseId) || cases[0];
@@ -55,7 +64,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handle Decision Execution per UI Brief Sec 14
+  // Handle Decision Execution per Brief Sec 17
   const handleExecuteDecision = (newStatus: CaseStatus, reason?: string) => {
     setCases(prev => prev.map(c => {
       if (c.id !== selectedCaseId) return c;
@@ -87,7 +96,7 @@ export const App: React.FC = () => {
     mockAuditEvents[selectedCaseId] = [newAuditEvent, ...(mockAuditEvents[selectedCaseId] || [])];
   };
 
-  // Handle Continuous Risk Monitoring Events per TRD Sec 15
+  // Handle Continuous Risk Monitoring Events per Brief Sec 15
   const handleTriggerMonitoringEvent = (eventType: MonitoringEventType, targetCaseId: string) => {
     setCases(prev => prev.map(c => {
       if (c.id !== targetCaseId) return c;
@@ -176,11 +185,16 @@ export const App: React.FC = () => {
     setSelectedCaseId(fullCase.id);
   };
 
+  // Custom VERITAS Loading Sequence per Brief Sec 21
+  if (isLoading) {
+    return <VeritasLoader onComplete={() => setIsLoading(false)} />;
+  }
+
   if (!isAuthenticated) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // Standalone Public QR Proof Route
+  // Standalone Public QR Proof Route per Brief Sec 16 & 40
   if (activePage === 'public-verify') {
     return (
       <PublicProofVerifyPage
@@ -191,102 +205,131 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#070A11] text-[#C9D1D9] font-sans">
+    <div className="min-h-screen flex bg-[#05070B] text-[#F0F6FC] font-sans selection:bg-[#00F0FF]/30 select-none">
       
-      {/* Enterprise Dark Sidebar */}
-      <Sidebar
-        session={session}
+      {/* 3D Ambient WebGL Background Particle Field */}
+      <SpatialBackground />
+
+      {/* Slim Hover-Expandable Left Navigation Rail */}
+      <SlimNavigationRail
         activePage={activePage}
         onNavigate={setActivePage}
-        tenants={mockTenants}
-        onSwitchTenant={handleSwitchTenant}
         onLogout={handleLogout}
-        selectedCaseNumber={activeCase.caseNumber}
       />
 
-      {/* Main Content Workspace */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <main className="flex-1 max-w-[1600px] w-full mx-auto px-8 py-6 space-y-6">
+      {/* Main Command Center Layout */}
+      <div className="flex-1 min-w-0 flex flex-col pl-[72px]">
+        
+        {/* Floating Top Command Bar */}
+        <TopCommandBar
+          session={session}
+          tenants={mockTenants}
+          onSwitchTenant={handleSwitchTenant}
+          onOpenSearch={() => setIsSearchOpen(true)}
+        />
+
+        {/* Main Content Workspace Container */}
+        <main className="flex-1 max-w-[1760px] w-full mx-auto px-8 py-6 space-y-6 relative z-10">
           
-          {/* Tenant Context Guard */}
+          {/* Tenant Security Guard */}
           <TenantSecurityGuard
             activeTenantId={session.activeTenantId}
             targetCaseTenantId={activeCase.tenantId}
           />
 
-          {/* PAGE ROUTER */}
-          {activePage === 'overview' && (
-            <OverviewPage
-              cases={cases}
-              activeTenantId={session.activeTenantId}
-              onNavigateToQueue={() => setActivePage('review-queue')}
-              onNavigateToUpload={() => setActivePage('upload-pipeline')}
-              onSelectCase={(id) => {
-                setSelectedCaseId(id);
-                setActivePage('case-detail');
-              }}
-            />
-          )}
+          {/* PAGE ROUTER WITH SMOOTH FRAMER MOTION TRANSITIONS per Brief Sec 19 */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePage}
+              initial={{ opacity: 0, y: 10, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.99 }}
+              transition={{ duration: 0.25 }}
+            >
+              {activePage === 'overview' && (
+                <HeroOverviewScreen
+                  cases={cases}
+                  activeTenantId={session.activeTenantId}
+                  onNavigateToQueue={() => setActivePage('review-queue')}
+                  onNavigateToUpload={() => setActivePage('upload-pipeline')}
+                  onSelectCase={(id) => {
+                    setSelectedCaseId(id);
+                    setActivePage('case-detail');
+                  }}
+                />
+              )}
 
-          {activePage === 'review-queue' && (
-            <ReviewQueuePage
-              cases={cases}
-              activeTenantId={session.activeTenantId}
-              onSelectCase={(id) => {
-                setSelectedCaseId(id);
-                setActivePage('case-detail');
-              }}
-              onNavigateToUpload={() => setActivePage('upload-pipeline')}
-            />
-          )}
+              {activePage === 'review-queue' && (
+                <ReviewQueuePage
+                  cases={cases}
+                  activeTenantId={session.activeTenantId}
+                  onSelectCase={(id) => {
+                    setSelectedCaseId(id);
+                    setActivePage('case-detail');
+                  }}
+                  onNavigateToUpload={() => setActivePage('upload-pipeline')}
+                />
+              )}
 
-          {activePage === 'upload-pipeline' && (
-            <UploadPipelinePage
-              onUploadSuccess={handleUploadSuccess}
-              onNavigateToCase={(id) => {
-                setSelectedCaseId(id);
-                setActivePage('case-detail');
-              }}
-            />
-          )}
+              {activePage === 'upload-pipeline' && (
+                <UploadPipelinePage
+                  onUploadSuccess={handleUploadSuccess}
+                  onNavigateToCase={(id) => {
+                    setSelectedCaseId(id);
+                    setActivePage('case-detail');
+                  }}
+                />
+              )}
 
-          {activePage === 'case-detail' && (
-            <FlagshipCaseDetail
-              invoiceCase={activeCase}
-              graphNodes={activeGraphNodes}
-              graphEdges={activeGraphEdges}
-              auditEvents={activeAuditEvents}
-              onBackToDashboard={() => setActivePage('review-queue')}
-              onExecuteDecision={handleExecuteDecision}
-              onOpenProof={(evt: AuditEvent) => setSelectedProofEvent(evt)}
-            />
-          )}
+              {activePage === 'case-detail' && (
+                <CinematicCaseWorkspace
+                  invoiceCase={activeCase}
+                  graphNodes={activeGraphNodes}
+                  graphEdges={activeGraphEdges}
+                  auditEvents={activeAuditEvents}
+                  onBackToDashboard={() => setActivePage('review-queue')}
+                  onExecuteDecision={handleExecuteDecision}
+                  onOpenProof={(evt: AuditEvent) => setSelectedProofEvent(evt)}
+                />
+              )}
 
-          {activePage === 'trust-graph' && (
-            <TrustGraphPage
-              nodes={activeGraphNodes}
-              edges={activeGraphEdges}
-              caseNumber={activeCase.caseNumber}
-            />
-          )}
+              {activePage === 'trust-graph' && (
+                <TrustGraph3D
+                  nodes={activeGraphNodes}
+                  edges={activeGraphEdges}
+                  caseNumber={activeCase.caseNumber}
+                />
+              )}
 
-          {activePage === 'monitoring' && (
-            <MonitoringPage
-              cases={cases}
-              activeCaseId={selectedCaseId}
-              onTriggerEvent={handleTriggerMonitoringEvent}
-            />
-          )}
+              {activePage === 'monitoring' && (
+                <ContinuousMonitoringStream
+                  cases={cases}
+                  onTriggerEvent={handleTriggerMonitoringEvent}
+                />
+              )}
 
-          {activePage === 'audit-proof' && (
-            <AuditProofPage
-              auditEvents={activeAuditEvents}
-              onOpenProof={(evt: AuditEvent) => setSelectedProofEvent(evt)}
-            />
-          )}
+              {activePage === 'audit-proof' && (
+                <CryptographicProofScreen
+                  auditEvents={activeAuditEvents}
+                  onOpenProof={(evt: AuditEvent) => setSelectedProofEvent(evt)}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
 
         </main>
       </div>
+
+      {/* Global Command Palette Modal (Ctrl+K) */}
+      <CommandPalette
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        cases={cases}
+        onSelectCase={(id) => {
+          setSelectedCaseId(id);
+          setActivePage('case-detail');
+        }}
+      />
 
       {/* Proof Inspector Modal */}
       <ProofInspectorModal

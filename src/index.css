@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --bg-dark: #0D1117;
-  --bg-surface: #161B22;
-  --bg-surface-elevated: #21262D;
-  --bg-dark-deep: #010409;
+  --bg-spatial: #05070B;
+  --bg-surface: #0B1018;
+  --bg-secondary: #111827;
+  --bg-elevated: #1A2332;
 
-  --border-subtle: #30363D;
-  --border-strong: #484F58;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 240, 255, 0.4);
 
-  --text-main: #C9D1D9;
-  --text-bright: #F0F6FC;
-  --text-muted: #8B949E;
+  --text-main: #F0F6FC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
 
-  --color-emerald: #238636;
-  --color-emerald-light: #2EA043;
+  --color-cyan: #00F0FF;
+  --color-blue: #388BFD;
+  --color-violet: #A371F7;
+  --color-emerald: #3FB950;
   --color-amber: #D29922;
-  --color-red: #DA3633;
-  --color-blue: #1F6FEB;
-  --color-indigo: #388BFD;
+  --color-red: #F85149;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -31,7 +31,7 @@
 }
 
 body {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-spatial);
   color: var(--text-main);
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -43,7 +43,7 @@ body {
 /* Tabular Numerals for Financial Data (UI Brief Sec 3) */
 .font-numeric {
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .font-mono {
@@ -52,148 +52,191 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark-deep);
+  background: #05070B;
 }
 ::-webkit-scrollbar-thumb {
-  background: #30363D;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #484F58;
+  background: rgba(0, 240, 255, 0.4);
 }
 
-/* Institutional Card Surfaces (No Rainbow Gradients, No Glowing Cards) */
-.inst-card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+/* Spatial Command Center Floating Panels (No Heavy Cards) */
+.spatial-panel {
+  background: rgba(11, 16, 24, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
-.inst-card-elevated {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
+.spatial-panel-elevated {
+  background: rgba(17, 24, 39, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
 }
 
-/* Buttons with High Contrast & Restrained Colors */
-.btn-inst-primary {
+.spatial-glass-drawer {
+  background: rgba(11, 16, 24, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Restrained Intelligence Glow Effects */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.15);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(248, 81, 73, 0.15);
+}
+
+/* Buttons with Spatial Micro-Interactions */
+.btn-spatial-primary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #238636;
+  background: linear-gradient(135deg, #1F6FEB 0%, #388BFD 100%);
   color: #FFFFFF;
   font-weight: 600;
   font-size: 0.8125rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.3);
 }
-.btn-inst-primary:hover {
-  background-color: #2EA043;
+.btn-spatial-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
 }
 
-.btn-inst-secondary {
+.btn-spatial-secondary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #21262D;
-  color: #C9D1D9;
+  background: rgba(255, 255, 255, 0.05);
+  color: #F0F6FC;
   font-weight: 500;
   font-size: 0.8125rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #30363D;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.btn-inst-secondary:hover {
-  background-color: #30363D;
-  border-color: #8B949E;
-  color: #F0F6FC;
+.btn-spatial-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
-.btn-inst-danger {
+.btn-spatial-danger {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: rgba(218, 54, 51, 0.15);
+  background: rgba(248, 81, 73, 0.15);
   color: #F85149;
   font-weight: 600;
   font-size: 0.8125rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid rgba(218, 54, 51, 0.4);
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 81, 73, 0.3);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.2s ease;
 }
-.btn-inst-danger:hover {
-  background-color: rgba(218, 54, 51, 0.25);
+.btn-spatial-danger:hover {
+  background: rgba(248, 81, 73, 0.25);
+  border-color: rgba(248, 81, 73, 0.5);
 }
 
-/* Institutional Status Badges */
-.inst-badge {
+/* Spatial Badges */
+.spatial-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
   font-family: var(--font-mono);
+  letter-spacing: 0.02em;
 }
 
-.inst-badge-verified {
-  background-color: rgba(35, 134, 54, 0.15);
+.spatial-badge-verified {
+  background: rgba(63, 185, 80, 0.12);
   color: #3FB950;
-  border: 1px solid rgba(35, 134, 54, 0.4);
+  border: 1px solid rgba(63, 185, 80, 0.3);
 }
 
-.inst-badge-review {
-  background-color: rgba(210, 153, 34, 0.15);
+.spatial-badge-review {
+  background: rgba(210, 153, 34, 0.12);
   color: #D29922;
-  border: 1px solid rgba(210, 153, 34, 0.4);
+  border: 1px solid rgba(210, 153, 34, 0.3);
 }
 
-.inst-badge-risk {
-  background-color: rgba(218, 54, 51, 0.15);
+.spatial-badge-risk {
+  background: rgba(248, 81, 73, 0.12);
   color: #F85149;
-  border: 1px solid rgba(218, 54, 51, 0.4);
+  border: 1px solid rgba(248, 81, 73, 0.3);
 }
 
-.inst-badge-info {
-  background-color: rgba(56, 139, 253, 0.15);
-  color: #58A6FF;
-  border: 1px solid rgba(56, 139, 253, 0.4);
+.spatial-badge-cyan {
+  background: rgba(0, 240, 255, 0.12);
+  color: #00F0FF;
+  border: 1px solid rgba(0, 240, 255, 0.3);
 }
 
 /* Spatial PDF Bounding Box Highlight */
 .bbox-highlight {
   position: absolute;
-  border: 1.5px dashed #388BFD;
-  background: rgba(56, 139, 253, 0.15);
-  border-radius: 3px;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.08);
+  border-radius: 4px;
   pointer-events: auto;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bbox-highlight:hover, .bbox-highlight.active {
-  border-color: #3FB950;
-  background: rgba(63, 185, 80, 0.2);
+  border-color: #00F0FF;
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
   z-index: 10;
+}
+
+/* Pulse animation */
+@keyframes spatialPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+.animate-spatial-pulse {
+  animation: spatialPulse 3s infinite ease-in-out;
 }
 
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(1, 4, 9, 0.85);
+  background: rgba(5, 7, 11, 0.85);
+  backdrop-filter: blur(12px);
   z-index: 100;
   display: flex;
   align-items: center;
