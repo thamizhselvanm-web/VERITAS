@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+:root {
+  --bg-dark: #0D1117;
+  --bg-surface: #161B22;
+  --bg-surface-elevated: #21262D;
+  --bg-dark-deep: #010409;
+
+  --border-subtle: #30363D;
+  --border-strong: #484F58;
+
+  --text-main: #C9D1D9;
+  --text-bright: #F0F6FC;
+  --text-muted: #8B949E;
+
+  --color-emerald: #238636;
+  --color-emerald-light: #2EA043;
+  --color-amber: #D29922;
+  --color-red: #DA3633;
+  --color-blue: #1F6FEB;
+  --color-indigo: #388BFD;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular Numerals for Financial Data (UI Brief Sec 3) */
+.font-numeric {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: #30363D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #484F58;
+}
+
+/* Institutional Card Surfaces (No Rainbow Gradients, No Glowing Cards) */
+.inst-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.inst-card-elevated {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+
+/* Buttons with High Contrast & Restrained Colors */
+.btn-inst-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #238636;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btn-inst-primary:hover {
+  background-color: #2EA043;
+}
+
+.btn-inst-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #21262D;
+  color: #C9D1D9;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #30363D;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn-inst-secondary:hover {
+  background-color: #30363D;
+  border-color: #8B949E;
+  color: #F0F6FC;
+}
+
+.btn-inst-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(218, 54, 51, 0.15);
+  color: #F85149;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(218, 54, 51, 0.4);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btn-inst-danger:hover {
+  background-color: rgba(218, 54, 51, 0.25);
+}
+
+/* Institutional Status Badges */
+.inst-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.inst-badge-verified {
+  background-color: rgba(35, 134, 54, 0.15);
+  color: #3FB950;
+  border: 1px solid rgba(35, 134, 54, 0.4);
+}
+
+.inst-badge-review {
+  background-color: rgba(210, 153, 34, 0.15);
+  color: #D29922;
+  border: 1px solid rgba(210, 153, 34, 0.4);
+}
+
+.inst-badge-risk {
+  background-color: rgba(218, 54, 51, 0.15);
+  color: #F85149;
+  border: 1px solid rgba(218, 54, 51, 0.4);
+}
+
+.inst-badge-info {
+  background-color: rgba(56, 139, 253, 0.15);
+  color: #58A6FF;
+  border: 1px solid rgba(56, 139, 253, 0.4);
+}
+
+/* Spatial PDF Bounding Box Highlight */
+.bbox-highlight {
+  position: absolute;
+  border: 1.5px dashed #388BFD;
+  background: rgba(56, 139, 253, 0.15);
+  border-radius: 3px;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bbox-highlight:hover, .bbox-highlight.active {
+  border-color: #3FB950;
+  background: rgba(63, 185, 80, 0.2);
+  z-index: 10;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 4, 9, 0.85);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
