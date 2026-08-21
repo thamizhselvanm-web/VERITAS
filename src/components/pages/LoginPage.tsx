@@ -22,7 +22,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="veritas-login min-h-screen relative overflow-hidden flex items-center justify-center px-5 py-12 sm:px-8">
-      <div className="veritas-login__texture pointer-events-none" />
+      <div className="veritas-login__texture pointer-events-none" aria-hidden="true" />
       <div className="veritas-card-ghost pointer-events-none" aria-hidden="true">
         <div className="veritas-card-ghost__brand">VERITAS</div>
         <div className="veritas-card-ghost__chip" />
