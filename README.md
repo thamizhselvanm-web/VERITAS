@@ -3,6 +3,11 @@
 This pack contains the implementation baseline for the VERITAS Trust
 Intelligence Platform.
 
+The secure gateway uses a brushed-metal luxury treatment: warm copper
+accents, charcoal surfaces, precision borders and a low-contrast debit
+card motif. The login flow remains a demo tenant selector with MFA input
+and does not represent production authentication.
+
 ## Documents
 
 1.  `01_PRD_VERITAS.md` --- product requirements.
