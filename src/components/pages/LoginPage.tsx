@@ -111,6 +111,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             className="veritas-submit"
           >
             {loading ? (
