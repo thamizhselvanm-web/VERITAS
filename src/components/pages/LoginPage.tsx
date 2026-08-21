@@ -82,6 +82,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               id="identity"
               type="text"
               readOnly
+              autoComplete="username"
               value="alex.morgan@apexcapital.com"
               className="veritas-input"
             />
@@ -97,6 +98,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 <input
                   id="mfa-code"
                   type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  autoComplete="one-time-code"
                   value={mfaCode}
                   onChange={(e) => setMfaCode(e.target.value)}
                   className="veritas-input veritas-input--code"
