@@ -47,7 +47,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleSubmit} className="veritas-login__form">
             <div className="veritas-field-group">
               <label>Tenant entity</label>
-              <div className="veritas-tenant-grid">
+              <div className="veritas-tenant-grid" role="group" aria-label="Tenant entity">
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-a')}
