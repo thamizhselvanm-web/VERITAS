@@ -115,7 +115,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             className="veritas-submit"
           >
             {loading ? (
-              <span>Verifying credentials...</span>
+              <span aria-live="polite">Verifying credentials...</span>
             ) : (
               <>
                 <span>Access VERITAS workspace</span>
