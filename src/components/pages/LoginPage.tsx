@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Lock, ArrowRight, CheckCircle2, KeyRound } from 'lucide-react';
+import { CreditCard, Lock, ArrowRight, CheckCircle2, KeyRound, ShieldCheck } from 'lucide-react';
 import { TenantId } from '../../types';
 
 interface LoginPageProps {
@@ -21,123 +21,106 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070A11] flex items-center justify-center p-6 relative overflow-hidden">
-      
-      {/* Background Soft Glow Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="veritas-login min-h-screen relative overflow-hidden flex items-center justify-center px-5 py-12 sm:px-8">
+      <div className="veritas-login__texture pointer-events-none" />
+      <div className="veritas-card-ghost pointer-events-none" aria-hidden="true">
+        <div className="veritas-card-ghost__brand">VERITAS</div>
+        <div className="veritas-card-ghost__chip" />
+        <div className="veritas-card-ghost__number">5284&nbsp;&nbsp; 1048&nbsp;&nbsp; 7731&nbsp;&nbsp; 9026</div>
+        <div className="veritas-card-ghost__footer"><span>TRUST INTELLIGENCE</span><span>VALID THRU 08/29</span></div>
+      </div>
 
-      <div className="max-w-md w-full glass-panel-elevated p-10 space-y-8 relative z-10 border border-white/10 shadow-2xl">
-        
-        {/* Brand Header */}
-        <div className="text-center space-y-3">
-          <div className="w-14 h-14 rounded-3xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 p-[2px] shadow-2xl shadow-blue-500/30 mx-auto">
-            <div className="w-full h-full bg-[#090E1A] rounded-[22px] flex items-center justify-center">
-              <Shield className="w-8 h-8 text-blue-400" />
-            </div>
-          </div>
+      <main className="veritas-login__layout relative z-10 w-full max-w-[1120px]">
+        <section className="veritas-login__intro">
+          <p className="veritas-kicker">PRIVATE ACCESS / 08.2026</p>
+          <h1>Trust, made<br /><em>verifiable.</em></h1>
+          <p className="veritas-login__lead">A secure intelligence layer for financing decisions, built around evidence you can inspect.</p>
+          <div className="veritas-login__rule" />
+          <div className="veritas-login__signal"><span /><span /><span /><span /><span /><span /><span /></div>
+          <p className="veritas-login__caption">Continuous verification<br />for every transaction.</p>
+        </section>
 
-          <div>
-            <h1 className="text-2xl font-black text-white tracking-wider font-mono">VERITAS</h1>
-            <p className="text-xs text-slate-400 font-medium mt-1">Enterprise Continuous Trust Platform</p>
-          </div>
-        </div>
+        <section className="veritas-login__panel" aria-labelledby="login-title">
+          <div className="veritas-login__brand"><span className="veritas-login__mark"><ShieldCheck /></span><span>VERITAS</span><small>SECURE GATEWAY</small></div>
+          <div className="veritas-login__heading"><p className="veritas-kicker">AUTHORIZED PERSONNEL</p><h2 id="login-title">Enter workspace</h2><p>Confirm your tenant and identity to continue.</p></div>
 
-        {/* Security Banner */}
-        <div className="p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center gap-3 text-xs text-blue-300">
-          <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
-          <span>OIDC SSO Protocol v2.4 + Hardware MFA Enforcement</span>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          
-          {/* Tenant Selector */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
-              Select Tenant Entity:
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              
+          <form onSubmit={handleSubmit} className="veritas-login__form">
+            <div className="veritas-field-group">
+              <label>Tenant entity</label>
+              <div className="veritas-tenant-grid">
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-a')}
-                className={`p-3.5 rounded-xl border text-left transition-all ${
+                className={`veritas-tenant ${
                   selectedTenant === 'tenant-a'
-                    ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg shadow-blue-500/15'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    ? 'is-selected'
+                    : ''
                 }`}
               >
-                <span className="font-bold text-xs block">Apex Capital</span>
-                <span className="text-[10px] text-slate-400 font-mono">Tenant A</span>
+                <span>Apex Capital</span><small>TENANT A</small>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-b')}
-                className={`p-3.5 rounded-xl border text-left transition-all ${
+                className={`veritas-tenant ${
                   selectedTenant === 'tenant-b'
-                    ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg shadow-blue-500/15'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    ? 'is-selected'
+                    : ''
                 }`}
               >
-                <span className="font-bold text-xs block">Nexus Trade</span>
-                <span className="text-[10px] text-slate-400 font-mono">Tenant B</span>
+                <span>Nexus Trade</span><small>TENANT B</small>
               </button>
-
+              </div>
             </div>
-          </div>
 
-          {/* User Input */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider">
-              Underwriter Identity:
-            </label>
+            <div className="veritas-field-group">
+              <label htmlFor="identity">Underwriter identity</label>
             <input
+              id="identity"
               type="text"
               readOnly
               value="alex.morgan@apexcapital.com"
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-white"
+              className="veritas-input"
             />
-          </div>
-
-          {/* MFA Security Code */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider flex items-center justify-between">
-              <span>Hardware MFA Code:</span>
-              <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" /> Auto-Filled Demo
-              </span>
-            </label>
-            <div className="relative">
-              <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-              <input
-                type="text"
-                value={mfaCode}
-                onChange={(e) => setMfaCode(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-xs font-mono font-bold tracking-widest text-white focus:border-blue-500 focus:outline-none"
-              />
             </div>
-          </div>
+
+            <div className="veritas-field-group">
+              <label htmlFor="mfa-code">
+                <span>Hardware MFA code</span>
+                <span className="veritas-status"><CheckCircle2 /> AUTO-FILLED DEMO</span>
+              </label>
+              <div className="relative">
+                <KeyRound className="veritas-input-icon" />
+                <input
+                  id="mfa-code"
+                  type="text"
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value)}
+                  className="veritas-input veritas-input--code"
+                />
+              </div>
+            </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full justify-center py-3.5 text-xs font-bold shadow-xl shadow-blue-600/30"
+            className="veritas-submit"
           >
             {loading ? (
-              <span>Verifying OIDC Credentials...</span>
+              <span>Verifying credentials...</span>
             ) : (
               <>
-                <span>Sign In to VERITAS Workspace</span>
+                <span>Access VERITAS workspace</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
-
-        </form>
-
-      </div>
-
+          </form>
+          <div className="veritas-login__secure"><Lock /><span>OIDC SSO + hardware MFA enforced</span><span className="veritas-login__secure-line" /></div>
+        </section>
+      </main>
+      <footer className="veritas-login__footer"><span>VERITAS / TRUST INTELLIGENCE PLATFORM</span><span>© 2026 VERITAS GLOBAL</span></footer>
     </div>
   );
 };
