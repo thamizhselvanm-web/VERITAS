@@ -51,6 +51,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-a')}
+                aria-pressed={selectedTenant === 'tenant-a'}
                 className={`veritas-tenant ${
                   selectedTenant === 'tenant-a'
                     ? 'is-selected'
@@ -63,6 +64,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-b')}
+                aria-pressed={selectedTenant === 'tenant-b'}
                 className={`veritas-tenant ${
                   selectedTenant === 'tenant-b'
                     ? 'is-selected'
