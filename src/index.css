@@ -48,6 +48,7 @@ body {
   color: #e5e2e1;
   font-family: 'Geist', 'Avenir Next', 'Segoe UI', sans-serif;
 }
+.veritas-login ::selection { color: #412d00; background: #f7bd48; }
 .veritas-login__texture { position: absolute; inset: 0; opacity: .2; background: repeating-linear-gradient(118deg, transparent 0 3px, rgba(255,255,255,.025) 4px, transparent 5px 11px), linear-gradient(120deg, rgba(247,189,72,.08), transparent 38%, rgba(255,255,255,.025) 70%, transparent); }
 .veritas-card-ghost { position: absolute; width: min(65vw, 760px); aspect-ratio: 1.586; right: -12%; top: 14%; transform: rotate(-18deg); opacity: .13; border: 1px solid #f7bd48; background: linear-gradient(135deg, #9b6f19, #30230c 48%, #c58e23); box-shadow: 0 0 0 10px rgba(247,189,72,.025), 0 0 0 11px rgba(247,189,72,.07); padding: clamp(24px, 5vw, 58px); }
 .veritas-card-ghost__brand { font-size: clamp(14px, 2vw, 24px); letter-spacing: .25em; font-weight: 700; }
