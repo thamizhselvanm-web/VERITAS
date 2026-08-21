@@ -27,7 +27,7 @@ import { PageId } from './components/common/Sidebar';
 
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [session, setSession] = useState<UserSession>(authService.getSession());
   const [cases, setCases] = useState<InvoiceCase[]>(mockCases);
   const [selectedCaseId, setSelectedCaseId] = useState<string>('case-vrt-28491');
