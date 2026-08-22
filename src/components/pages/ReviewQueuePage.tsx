@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ListFilter, Search, ArrowRight, UploadCloud } from 'lucide-react';
-import { InvoiceCase, TenantId, DecisionState } from '../../types';
+import { ListFilter, Search, UploadCloud } from 'lucide-react';
+import { InvoiceCase, TenantId } from '../../types';
 
 interface ReviewQueuePageProps {
   cases: InvoiceCase[];
@@ -33,45 +33,45 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
   });
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-6 font-sans select-none">
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#30363D] pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E07A5F]/20 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <ListFilter className="w-6 h-6 text-blue-400" />
+          <h1 className="text-2xl font-bold text-[#F7F4F1] tracking-tight flex items-center gap-2.5">
+            <ListFilter className="w-6 h-6 text-[#E07A5F]" />
             Underwriter Review Queue & Trust Directory
           </h1>
-          <p className="text-xs text-[#8B949E] font-mono mt-1">
+          <p className="text-xs text-[#9E8C7C] font-mono mt-1">
             Prioritized case directory sorted by trust score, risk signals, and evidence completeness.
           </p>
         </div>
 
-        <button onClick={onNavigateToUpload} className="btn-inst-primary text-xs">
+        <button onClick={onNavigateToUpload} className="btn-spatial-primary text-xs">
           <UploadCloud className="w-4 h-4" /> Secure Upload Intent
         </button>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="inst-card p-4 border border-[#30363D] flex flex-wrap items-center justify-between gap-4 text-xs">
+      <div className="spatial-panel p-4 border border-[#E07A5F]/20 flex flex-wrap items-center justify-between gap-4 text-xs">
         
         <div className="relative max-w-md w-full">
-          <Search className="w-4 h-4 text-[#8B949E] absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-[#9E8C7C] absolute left-3 top-2.5" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by Case Ref, Seller, Buyer, or Invoice Number..."
-            className="w-full bg-[#0D1117] border border-[#30363D] rounded pl-9 pr-3 py-2 text-xs text-white placeholder-[#484F58] focus:outline-none focus:border-blue-500 font-sans"
+            className="w-full bg-[#141211] border border-[#E07A5F]/20 rounded-lg pl-9 pr-3 py-2 text-xs text-[#F7F4F1] placeholder-[#9E8C7C] focus:outline-none focus:border-[#E07A5F] font-sans"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[#8B949E] font-medium">Filter Recommendation:</span>
+          <span className="text-[#D8C7B8] font-medium">Filter Recommendation:</span>
           <select
             value={filterRecommendation}
             onChange={(e) => setFilterRecommendation(e.target.value)}
-            className="bg-[#0D1117] border border-[#30363D] text-white rounded text-xs px-2.5 py-1.5 focus:outline-none cursor-pointer"
+            className="bg-[#141211] border border-[#E07A5F]/20 text-[#F7F4F1] rounded-lg text-xs px-3 py-2 focus:outline-none cursor-pointer font-sans"
           >
             <option value="ALL">All Recommendations</option>
             <option value="APPROVE_RECOMMENDATION">APPROVE_RECOMMENDATION</option>
@@ -84,11 +84,11 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
       </div>
 
       {/* Cases Data Table */}
-      <div className="inst-card border border-[#30363D] overflow-hidden">
+      <div className="spatial-panel border border-[#E07A5F]/20 overflow-hidden">
         <div className="overflow-x-auto text-xs">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#0D1117] text-[#8B949E] font-mono border-b border-[#30363D]">
+              <tr className="bg-[#141211] text-[#9E8C7C] font-mono border-b border-[#E07A5F]/20">
                 <th className="p-3">Case Ref</th>
                 <th className="p-3">Seller Entity</th>
                 <th className="p-3">Buyer Entity</th>
@@ -100,28 +100,28 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
                 <th className="p-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#30363D]">
+            <tbody className="divide-y divide-[#E07A5F]/10">
               {filteredCases.map((c) => (
-                <tr key={c.id} className="hover:bg-[#161B22] transition-colors cursor-pointer" onClick={() => onSelectCase(c.id)}>
-                  <td className="p-3 font-mono font-bold text-white">{c.caseNumber}</td>
-                  <td className="p-3 text-[#C9D1D9] font-medium">{c.sellerName}</td>
-                  <td className="p-3 text-[#C9D1D9] font-medium">{c.buyerName}</td>
-                  <td className="p-3 text-right font-mono font-numeric font-bold text-white">
+                <tr key={c.id} className="hover:bg-[#E07A5F]/10 transition-colors cursor-pointer" onClick={() => onSelectCase(c.id)}>
+                  <td className="p-3 font-mono font-bold text-[#F7F4F1]">{c.caseNumber}</td>
+                  <td className="p-3 text-[#D8C7B8] font-medium">{c.sellerName}</td>
+                  <td className="p-3 text-[#D8C7B8] font-medium">{c.buyerName}</td>
+                  <td className="p-3 text-right font-mono font-numeric font-bold text-[#F7F4F1]">
                     {c.currency} {(c.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="p-3 text-center font-mono font-numeric font-bold text-white">{c.telemetry.trustScore}</td>
-                  <td className="p-3 text-center font-mono font-numeric text-[#58A6FF]">{c.telemetry.confidenceScore}%</td>
-                  <td className="p-3 text-center font-mono font-numeric text-[#A371F7]">{c.telemetry.evidenceCompleteness}%</td>
+                  <td className="p-3 text-center font-mono font-numeric font-bold text-[#F7F4F1]">{c.telemetry.trustScore}</td>
+                  <td className="p-3 text-center font-mono font-numeric text-[#E07A5F]">{c.telemetry.confidenceScore}%</td>
+                  <td className="p-3 text-center font-mono font-numeric text-[#F4A261]">{c.telemetry.evidenceCompleteness}%</td>
                   <td className="p-3">
-                    <span className={`inst-badge ${
-                      c.telemetry.recommendation === 'APPROVE_RECOMMENDATION' ? 'inst-badge-verified' :
-                      c.telemetry.recommendation === 'MANUAL_REVIEW' ? 'inst-badge-review' : 'inst-badge-risk'
+                    <span className={`spatial-badge ${
+                      c.telemetry.recommendation === 'APPROVE_RECOMMENDATION' ? 'spatial-badge-verified' :
+                      c.telemetry.recommendation === 'MANUAL_REVIEW' ? 'spatial-badge-review' : 'spatial-badge-risk'
                     }`}>
                       {c.telemetry.recommendation}
                     </span>
                   </td>
                   <td className="p-3 text-right">
-                    <button className="btn-inst-secondary py-1 px-2.5 text-[11px]">Inspect Case</button>
+                    <button className="btn-spatial-secondary py-1 px-2.5 text-[11px]">Inspect Case</button>
                   </td>
                 </tr>
               ))}

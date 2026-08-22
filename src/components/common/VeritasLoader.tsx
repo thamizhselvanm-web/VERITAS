@@ -1,82 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const loaderFrameUrls = Object.entries(
+  import.meta.glob('../../veritas-card/*.jpg', { eager: true, query: '?url', import: 'default' })
+).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, url]) => url as string);
 
 interface VeritasLoaderProps {
-  onComplete?: () => void;
+  onComplete: () => void;
 }
 
 export const VeritasLoader: React.FC<VeritasLoaderProps> = ({ onComplete }) => {
-  const [stepIndex, setStepIndex] = useState(0);
-
-  const steps = [
-    'VERIFYING IDENTITY & PROVENANCE',
-    'ANALYZING DOCUMENT INTELLIGENCE',
-    'CORRELATING ENTITY RELATIONSHIP TOPOLOGY',
-    'CALCULATING 3-PILLAR TRUST SCORE',
-    'VERITAS READY'
-  ];
+  const [progress, setProgress] = useState(0);
+  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
 
   useEffect(() => {
+    const totalFrames = loaderFrameUrls.length || 300;
     const interval = setInterval(() => {
-      setStepIndex((prev) => {
-        if (prev < steps.length - 1) return prev + 1;
-        clearInterval(interval);
-        if (onComplete) setTimeout(onComplete, 400);
-        return prev;
+      setProgress((prev) => {
+        const next = prev + 2.5;
+        if (next >= 100) {
+          clearInterval(interval);
+          setTimeout(onComplete, 400);
+          return 100;
+        }
+        const frameIdx = Math.min(totalFrames - 1, Math.floor((next / 100) * totalFrames));
+        setCurrentFrameIndex(frameIdx);
+        return next;
       });
-    }, 450);
+    }, 35);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [onComplete]);
+
+  const currentFrameUrl = loaderFrameUrls[currentFrameIndex] || loaderFrameUrls[0];
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#05070B] flex flex-col items-center justify-center font-sans select-none">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#141211] text-[#F7F4F1] font-sans overflow-hidden select-none">
       
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+      {/* Ambient Copper Coral Background Glow */}
+      <div className="absolute w-[600px] h-[600px] rounded-full bg-[#E07A5F]/10 blur-[120px] pointer-events-none" />
+
+      {/* 3D Card Animation Frame Preview */}
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="flex flex-col items-center space-y-6"
+        transition={{ duration: 0.6 }}
+        className="relative w-80 h-48 sm:w-96 sm:h-56 rounded-2xl border border-[#E07A5F]/30 bg-[#1C1816]/90 p-2 shadow-2xl shadow-[#E07A5F]/20 overflow-hidden flex items-center justify-center backdrop-blur-md"
       >
-        {/* Logo */}
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-[#00F0FF] p-[1.5px] shadow-2xl shadow-cyan-500/30">
-          <div className="w-full h-full bg-[#05070B] rounded-[14px] flex items-center justify-center">
-            <Shield className="w-8 h-8 text-[#00F0FF] animate-pulse" />
-          </div>
-        </div>
+        {currentFrameUrl && (
+          <img 
+            src={currentFrameUrl} 
+            alt="Veritas 3D Card" 
+            className="w-full h-full object-contain filter contrast-110 saturate-110 opacity-90 transition-opacity duration-75"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141211]/80 via-transparent to-transparent pointer-events-none" />
+      </motion.div>
 
-        {/* Brand Name */}
-        <div className="text-center space-y-1">
-          <h2 className="text-2xl font-black text-white tracking-widest font-mono">VERITAS</h2>
-          <p className="text-xs text-[#94A3B8] tracking-wider uppercase font-mono">Continuous Trust Intelligence</p>
-        </div>
+      {/* Brand & Loading Info */}
+      <div className="mt-8 text-center space-y-3 relative z-10 max-w-sm px-4">
+        <h1 className="text-4xl text-[#F7F4F1] font-symphony tracking-wide">
+          VERITAS <span className="text-[#E07A5F] font-mono text-xs tracking-widest uppercase ml-1">INTEL</span>
+        </h1>
+        
+        <p className="text-xs text-[#D8C7B8] font-mono tracking-wide">
+          INITIALIZING CONTINUOUS TRUST ENGINE...
+        </p>
 
-        {/* Dynamic Loading Text Sequence per Brief Sec 21 */}
-        <div className="h-8 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={stepIndex}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              className="text-xs font-mono font-bold text-[#00F0FF] tracking-wider"
-            >
-              {steps[stepIndex]}
-            </motion.span>
-          </AnimatePresence>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-48 bg-white/10 rounded-full h-1 overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 to-[#00F0FF]"
-            initial={{ width: '0%' }}
-            animate={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
-            transition={{ duration: 0.3 }}
+        {/* Copper Coral Progress Bar */}
+        <div className="w-full bg-[#231E1B] h-1.5 rounded-full overflow-hidden border border-[#E07A5F]/20 relative">
+          <motion.div 
+            className="h-full bg-gradient-to-r from-[#B85235] via-[#E07A5F] to-[#F07151] rounded-full shadow-[0_0_12px_#E07A5F]"
+            style={{ width: `${progress}%` }}
           />
         </div>
 
-      </motion.div>
+        <div className="flex justify-between text-[11px] text-[#9E8C7C] font-mono font-numeric pt-1">
+          <span>FRAME {currentFrameIndex + 1} / {loaderFrameUrls.length || 300}</span>
+          <span className="text-[#E07A5F] font-bold">{Math.round(progress)}%</span>
+        </div>
+      </div>
 
     </div>
   );

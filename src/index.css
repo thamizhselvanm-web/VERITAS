@@ -1,27 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --bg-spatial: #05070B;
-  --bg-surface: #0B1018;
-  --bg-secondary: #111827;
-  --bg-elevated: #1A2332;
+  --bg-spatial: #141211;
+  --bg-surface: #1C1816;
+  --bg-secondary: #231E1B;
+  --bg-elevated: #2C2623;
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(0, 240, 255, 0.4);
+  --border-subtle: rgba(224, 122, 95, 0.14);
+  --border-glow: rgba(224, 122, 95, 0.45);
 
-  --text-main: #F0F6FC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-main: #F7F4F1;
+  --text-secondary: #D8C7B8;
+  --text-muted: #9E8C7C;
 
-  --color-cyan: #00F0FF;
-  --color-blue: #388BFD;
-  --color-violet: #A371F7;
-  --color-emerald: #3FB950;
-  --color-amber: #D29922;
-  --color-red: #F85149;
+  --color-copper: #E07A5F;
+  --color-copper-light: #F07151;
+  --color-copper-dark: #B85235;
+  --color-coral: #E27355;
+  --color-amber: #F4A261;
+  --color-emerald: #52B788;
+  --color-red: #F07151;
 
-  --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Trancity', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Trancity', 'Syne', 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'Trancity Mono', 'JetBrains Mono', monospace;
+  --font-logo: 'Symphony Calligraphy', 'Symphony', 'Great Vibes', 'MonteCarlo', 'Alex Brush', cursive;
+}
+
+@font-face {
+  font-family: 'Trancity';
+  src: local('Plus Jakarta Sans'), local('Syne');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Symphony Calligraphy';
+  src: local('Great Vibes'), local('MonteCarlo'), local('Alex Brush');
+  font-display: swap;
+}
+
+.font-symphony, .font-logo, .veritas-logo-font {
+  font-family: var(--font-logo) !important;
+  letter-spacing: 0.08em;
 }
 
 * {
@@ -40,153 +61,100 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Login gateway: brushed metal, hard precision lines, and a quiet card silhouette. */
-.veritas-login {
-  display: grid;
-  place-items: center;
-  background: #131313;
-  color: #e5e2e1;
-  color-scheme: dark;
-  font-family: 'Geist', 'Avenir Next', 'Segoe UI', sans-serif;
-}
-.veritas-login ::selection { color: #412d00; background: #f7bd48; }
-.veritas-login__texture { position: absolute; inset: 0; opacity: .2; background: repeating-linear-gradient(118deg, transparent 0 3px, rgba(255,255,255,.025) 4px, transparent 5px 11px), linear-gradient(120deg, rgba(247,189,72,.08), transparent 38%, rgba(255,255,255,.025) 70%, transparent); }
-.veritas-card-ghost { position: absolute; width: min(65vw, 760px); aspect-ratio: 1.586; right: -12%; top: 14%; transform: rotate(-18deg); opacity: .13; border: 1px solid #f7bd48; background: linear-gradient(135deg, #9b6f19, #30230c 48%, #c58e23); box-shadow: 0 0 0 10px rgba(247,189,72,.025), 0 0 0 11px rgba(247,189,72,.07); padding: clamp(24px, 5vw, 58px); }
-.veritas-card-ghost__brand { font-size: clamp(14px, 2vw, 24px); letter-spacing: .25em; font-weight: 700; }
-.veritas-card-ghost__chip { width: 54px; height: 40px; margin-top: 18%; border: 1px solid #f7bd48; background: repeating-linear-gradient(90deg, transparent 0 17px, rgba(247,189,72,.6) 18px 19px), repeating-linear-gradient(0deg, transparent 0 12px, rgba(247,189,72,.6) 13px 14px); }
-.veritas-card-ghost__number { margin-top: 16%; font-family: 'Geist Mono', Consolas, monospace; font-size: clamp(12px, 2vw, 25px); letter-spacing: .16em; }
-.veritas-card-ghost__footer { display: flex; justify-content: space-between; margin-top: 4%; font-size: clamp(8px, 1vw, 11px); letter-spacing: .14em; }
-.veritas-login__layout { display: grid; width: 100%; min-width: 0; margin: auto; grid-template-columns: minmax(0, 1fr) 420px; gap: clamp(48px, 10vw, 150px); align-items: center; }
-.veritas-login__intro { padding: 20px 0; }
-.veritas-kicker { color: #f7bd48; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
-.veritas-login__intro h1 { margin-top: 20px; color: #e5e2e1; font-size: clamp(42px, 6vw, 76px); font-weight: 700; line-height: .98; letter-spacing: -.03em; }
-.veritas-login__intro h1 em { color: #f7bd48; font-style: normal; }
-.veritas-login__lead { max-width: 380px; margin-top: 28px; color: #d3c4af; font-size: 16px; line-height: 1.7; }
-.veritas-login__rule { width: 100%; max-width: 380px; height: 1px; margin: 48px 0 20px; background: rgba(247,189,72,.35); }
-.veritas-login__signal { display: flex; align-items: end; gap: 4px; height: 24px; }
-.veritas-login__signal span { width: 3px; background: #f7bd48; opacity: .8; }
-.veritas-login__signal span:nth-child(1), .veritas-login__signal span:nth-child(5) { height: 8px; }.veritas-login__signal span:nth-child(2), .veritas-login__signal span:nth-child(6) { height: 16px; }.veritas-login__signal span:nth-child(3), .veritas-login__signal span:nth-child(7) { height: 23px; }.veritas-login__signal span:nth-child(4) { height: 12px; }
-.veritas-login__caption { margin-top: 12px; color: #9c8f7b; font-size: 11px; line-height: 1.5; letter-spacing: .12em; text-transform: uppercase; }
-.veritas-login__panel { width: 100%; min-width: 0; padding: 36px; background: rgba(28,27,27,.88); border: 1px solid rgba(247,189,72,.32); box-shadow: 10px 10px 0 rgba(0,0,0,.28); backdrop-filter: blur(12px); }
-.veritas-login__brand { display: flex; align-items: center; gap: 10px; color: #f7bd48; font-size: 13px; font-weight: 700; letter-spacing: .18em; }.veritas-login__brand small { margin-left: auto; color: #9c8f7b; font-size: 9px; letter-spacing: .12em; }
-.veritas-login__mark { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #f7bd48; }.veritas-login__mark svg { width: 16px; }
-.veritas-login__heading { margin: 52px 0 28px; }.veritas-login__heading h2 { margin-top: 10px; color: #e5e2e1; font-size: 29px; line-height: 1.15; }.veritas-login__heading p:last-child { margin-top: 9px; color: #9c8f7b; font-size: 13px; }
-.veritas-login__form, .veritas-field-group { display: grid; gap: 9px; }.veritas-login__form { gap: 20px; }.veritas-field-group label { display: flex; justify-content: space-between; color: #d3c4af; font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.veritas-tenant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }.veritas-tenant { padding: 13px 12px; color: #9c8f7b; text-align: left; background: #20201f; border: 1px solid #4f4535; cursor: pointer; }.veritas-tenant:hover, .veritas-tenant.is-selected { color: #f7bd48; border-color: #f7bd48; background: #2a2a2a; }.veritas-tenant span, .veritas-tenant small { display: block; }.veritas-tenant span { font-size: 12px; font-weight: 600; }.veritas-tenant small { margin-top: 5px; font-size: 9px; letter-spacing: .12em; }
-.veritas-input { width: 100%; padding: 13px 14px; color: #e5e2e1; background: #131313; border: 1px solid rgba(229,226,225,.2); border-radius: 0; outline: 0; font: 12px 'Geist Mono', Consolas, monospace; }.veritas-input:focus { border-color: #f7bd48; }.veritas-input--code { padding-left: 40px; font-weight: 700; letter-spacing: .22em; }.veritas-input-icon { position: absolute; top: 13px; left: 14px; width: 15px; color: #9c8f7b; }
-.veritas-input:-webkit-autofill { -webkit-text-fill-color: #e5e2e1; box-shadow: 0 0 0 1000px #131313 inset; }
-.veritas-status { display: inline-flex; align-items: center; gap: 4px; color: #f0bf60; font-size: 9px; letter-spacing: .08em; }.veritas-status svg { width: 12px; }
-.veritas-submit { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 15px 16px; color: #412d00; background: linear-gradient(115deg, #ba880f, #f7bd48 55%, #ba880f); border: 1px solid #f7bd48; border-radius: 0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }.veritas-submit:hover { filter: brightness(1.1); }.veritas-submit:disabled { cursor: wait; opacity: .7; }
-.veritas-tenant:focus-visible, .veritas-input:focus-visible, .veritas-submit:focus-visible { outline: 2px solid #f7bd48; outline-offset: 3px; }
-.veritas-login__secure { display: flex; align-items: center; gap: 8px; margin-top: 24px; color: #9c8f7b; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }.veritas-login__secure svg { width: 14px; color: #f7bd48; }.veritas-login__secure-line { flex: 1; height: 1px; background: rgba(255,255,255,.1); }
-.veritas-login__footer { position: absolute; right: 32px; bottom: 24px; left: 32px; display: flex; justify-content: space-between; color: #6e665a; font-size: 9px; letter-spacing: .12em; }
-@media (max-width: 760px) { .veritas-login { place-items: start center; padding-top: 38px; }.veritas-card-ghost { width: 720px; right: -280px; top: 34%; opacity: .08; }.veritas-login__layout { grid-template-columns: 1fr; gap: 30px; }.veritas-login__intro { padding: 0; }.veritas-login__intro h1 { font-size: 44px; }.veritas-login__lead, .veritas-login__rule, .veritas-login__signal, .veritas-login__caption { display: none; }.veritas-login__panel { padding: 24px; }.veritas-login__heading { margin: 34px 0 24px; }.veritas-login__footer { position: static; margin-top: 28px; padding: 0 4px; }.veritas-login__footer span:last-child { display: none; } }
-@media (prefers-reduced-motion: reduce) { .veritas-submit, .veritas-tenant { transition: none; } }
+/* Copper Coral System Overrides */
+.veritas-system { background: var(--bg-spatial); color: var(--text-main); font-family: var(--font-sans); }
+.veritas-system [class*="text-blue"], .veritas-system [class*="text-cyan"], .veritas-system [class*="text-purple"], .veritas-system [class*="text-violet"] { color: #E07A5F !important; }
+.veritas-system [class*="bg-blue"], .veritas-system [class*="bg-cyan"], .veritas-system [class*="bg-purple"], .veritas-system [class*="bg-violet"] { background-color: rgba(224, 122, 95, 0.12) !important; }
+.veritas-system [class*="border-blue"], .veritas-system [class*="border-cyan"], .veritas-system [class*="border-purple"], .veritas-system [class*="border-violet"] { border-color: rgba(224, 122, 95, 0.35) !important; }
+.veritas-system [class*="text-emerald"] { color: #52B788 !important; }
+.veritas-system [class*="bg-emerald"] { background-color: rgba(82, 183, 136, 0.12) !important; }
+.veritas-system [class*="border-emerald"] { border-color: rgba(82, 183, 136, 0.35) !important; }
+.veritas-system [class*="text-amber"] { color: #F4A261 !important; }
+.veritas-system [class*="bg-amber"] { background-color: rgba(244, 162, 97, 0.12) !important; }
+.veritas-system [class*="border-amber"] { border-color: rgba(244, 162, 97, 0.35) !important; }
+.veritas-system [class*="text-red"] { color: #F07151 !important; }
+.veritas-system [class*="border-red"] { border-color: rgba(240, 113, 81, 0.4) !important; }
+.veritas-system [class*="bg-red"] { background-color: rgba(240, 113, 81, 0.12) !important; }
 
-/* Tabular Numerals for Financial Data (UI Brief Sec 3) */
-.font-numeric {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.font-mono {
-  font-family: var(--font-mono);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #05070B;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.4);
-}
-
-/* Spatial Command Center Floating Panels (No Heavy Cards) */
+/* Spatial Copper Coral Panels */
 .spatial-panel {
-  background: rgba(11, 16, 24, 0.85);
+  background: rgba(28, 24, 22, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(224, 122, 95, 0.16);
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
 }
 
 .spatial-panel-elevated {
-  background: rgba(17, 24, 39, 0.9);
+  background: rgba(35, 30, 27, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(224, 122, 95, 0.28);
   border-radius: 12px;
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.65), 0 0 20px rgba(224, 122, 95, 0.1);
 }
 
 .spatial-glass-drawer {
-  background: rgba(11, 16, 24, 0.92);
+  background: rgba(20, 18, 17, 0.95);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+  border-left: 1px solid rgba(224, 122, 95, 0.2);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
 }
 
-/* Restrained Intelligence Glow Effects */
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+/* Copper Coral Glow Effects */
+.glow-cyan, .glow-copper {
+  box-shadow: 0 0 24px rgba(224, 122, 95, 0.25);
 }
-
 .glow-emerald {
-  box-shadow: 0 0 20px rgba(63, 185, 80, 0.15);
+  box-shadow: 0 0 24px rgba(82, 183, 136, 0.2);
 }
-
 .glow-red {
-  box-shadow: 0 0 20px rgba(248, 81, 73, 0.15);
+  box-shadow: 0 0 24px rgba(240, 113, 81, 0.25);
 }
 
-/* Buttons with Spatial Micro-Interactions */
-.btn-spatial-primary {
+/* Copper Coral Buttons */
+.btn-spatial-primary, .btn-primary, .btn-inst-primary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #1F6FEB 0%, #388BFD 100%);
+  background: linear-gradient(135deg, #B85235 0%, #E07A5F 50%, #F07151 100%);
   color: #FFFFFF;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.8125rem;
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(240, 113, 81, 0.5);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.3);
+  box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+  font-family: var(--font-sans);
 }
-.btn-spatial-primary:hover {
+.btn-spatial-primary:hover, .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(240, 113, 81, 0.5);
+  filter: brightness(1.08);
 }
 
 .btn-spatial-secondary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: #F0F6FC;
-  font-weight: 500;
+  background: rgba(224, 122, 95, 0.08);
+  color: #F7F4F1;
+  font-weight: 600;
   font-size: 0.8125rem;
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(224, 122, 95, 0.2);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans);
 }
 .btn-spatial-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(224, 122, 95, 0.16);
+  border-color: rgba(224, 122, 95, 0.4);
   transform: translateY(-1px);
 }
 
@@ -194,22 +162,23 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(248, 81, 73, 0.15);
-  color: #F85149;
+  background: rgba(240, 113, 81, 0.15);
+  color: #F07151;
   font-weight: 600;
   font-size: 0.8125rem;
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  border: 1px solid rgba(240, 113, 81, 0.35);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-sans);
 }
 .btn-spatial-danger:hover {
-  background: rgba(248, 81, 73, 0.25);
-  border-color: rgba(248, 81, 73, 0.5);
+  background: rgba(240, 113, 81, 0.25);
+  border-color: rgba(240, 113, 81, 0.6);
 }
 
-/* Spatial Badges */
+/* Copper Coral Badges */
 .spatial-badge {
   display: inline-flex;
   align-items: center;
@@ -223,66 +192,78 @@ body {
 }
 
 .spatial-badge-verified {
-  background: rgba(63, 185, 80, 0.12);
-  color: #3FB950;
-  border: 1px solid rgba(63, 185, 80, 0.3);
+  background: rgba(82, 183, 136, 0.14);
+  color: #52B788;
+  border: 1px solid rgba(82, 183, 136, 0.35);
 }
 
 .spatial-badge-review {
-  background: rgba(210, 153, 34, 0.12);
-  color: #D29922;
-  border: 1px solid rgba(210, 153, 34, 0.3);
+  background: rgba(244, 162, 97, 0.14);
+  color: #F4A261;
+  border: 1px solid rgba(244, 162, 97, 0.35);
 }
 
 .spatial-badge-risk {
-  background: rgba(248, 81, 73, 0.12);
-  color: #F85149;
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  background: rgba(240, 113, 81, 0.14);
+  color: #F07151;
+  border: 1px solid rgba(240, 113, 81, 0.35);
 }
 
-.spatial-badge-cyan {
-  background: rgba(0, 240, 255, 0.12);
-  color: #00F0FF;
-  border: 1px solid rgba(0, 240, 255, 0.3);
+.spatial-badge-cyan, .spatial-badge-copper {
+  background: rgba(224, 122, 95, 0.14);
+  color: #E07A5F;
+  border: 1px solid rgba(224, 122, 95, 0.35);
 }
 
-/* Spatial PDF Bounding Box Highlight */
+/* Login Page Copper Coral */
+.veritas-login {
+  display: block;
+  min-height: 100vh;
+  background: #141211;
+  color: #F7F4F1;
+  font-family: var(--font-sans);
+}
+.veritas-login ::selection { color: #FFFFFF; background: #E07A5F; }
+.veritas-login__texture { position: absolute; inset: 0; opacity: 0.25; background: repeating-linear-gradient(118deg, transparent 0 3px, rgba(224,122,95,0.03) 4px, transparent 5px 11px), linear-gradient(120deg, rgba(224,122,95,0.12), transparent 40%, rgba(240,113,81,0.05) 75%, transparent); }
+.veritas-kicker { color: #E07A5F; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.veritas-login__intro h1 { margin-top: 20px; color: #F7F4F1; font-size: clamp(42px, 6vw, 76px); font-weight: 800; line-height: 0.98; letter-spacing: -0.03em; font-family: var(--font-heading); }
+.veritas-login__intro h1 em { color: #E07A5F; font-style: normal; }
+.veritas-login__lead { max-width: 380px; margin-top: 28px; color: #D8C7B8; font-size: 16px; line-height: 1.7; }
+.veritas-login__rule { width: 100%; max-width: 380px; height: 1px; margin: 48px 0 20px; background: rgba(224,122,95,0.35); }
+.veritas-login__signal span { width: 3px; background: #E07A5F; opacity: 0.85; }
+.veritas-login__panel { width: 100%; min-width: 0; padding: 36px; background: rgba(28,24,22,0.92); border: 1px solid rgba(224,122,95,0.32); box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(224,122,95,0.1); backdrop-filter: blur(16px); }
+.veritas-login__brand { display: flex; align-items: center; gap: 10px; color: #E07A5F; font-size: 13px; font-weight: 700; letter-spacing: 0.18em; }
+.veritas-login__mark { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #E07A5F; color: #E07A5F; }
+.veritas-tenant { padding: 13px 12px; color: #9E8C7C; text-align: left; background: #231E1B; border: 1px solid rgba(224,122,95,0.2); cursor: pointer; border-radius: 6px; }
+.veritas-tenant:hover, .veritas-tenant.is-selected { color: #E07A5F; border-color: #E07A5F; background: rgba(224,122,95,0.12); }
+.veritas-input { width: 100%; padding: 13px 14px; color: #F7F4F1; background: #141211; border: 1px solid rgba(224,122,95,0.25); border-radius: 6px; outline: 0; font: 12px var(--font-mono); }
+.veritas-input:focus { border-color: #E07A5F; box-shadow: 0 0 12px rgba(224,122,95,0.25); }
+.veritas-submit { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 15px 16px; color: #FFFFFF; background: linear-gradient(135deg, #B85235, #E07A5F 55%, #F07151); border: 1px solid #F07151; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.veritas-submit:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(240,113,81,0.4); }
+
+/* Bounding box highlight */
 .bbox-highlight {
   position: absolute;
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(224, 122, 95, 0.5);
+  background: rgba(224, 122, 95, 0.1);
   border-radius: 4px;
   pointer-events: auto;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .bbox-highlight:hover, .bbox-highlight.active {
-  border-color: #00F0FF;
-  background: rgba(0, 240, 255, 0.2);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+  border-color: #E07A5F;
+  background: rgba(224, 122, 95, 0.25);
+  box-shadow: 0 0 18px rgba(224, 122, 95, 0.45);
   z-index: 10;
 }
 
-/* Pulse animation */
-@keyframes spatialPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.05); }
-}
+/* Numerals & Mono */
+.font-numeric { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.font-mono { font-family: var(--font-mono); }
 
-.animate-spatial-pulse {
-  animation: spatialPulse 3s infinite ease-in-out;
-}
-
-/* Modal Overlay */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 7, 11, 0.85);
-  backdrop-filter: blur(12px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #141211; }
+::-webkit-scrollbar-thumb { background: rgba(224, 122, 95, 0.25); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(224, 122, 95, 0.5); }

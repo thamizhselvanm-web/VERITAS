@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SlimNavigationRail } from './components/shell/SlimNavigationRail';
 import { TopCommandBar } from './components/shell/TopCommandBar';
 import { CommandPalette } from './components/shell/CommandPalette';
-import { SpatialBackground } from './components/3d/SpatialBackground';
 import { VeritasLoader } from './components/common/VeritasLoader';
+import { SystemCardAnimation } from './components/common/SystemCardAnimation';
 
 import { LoginPage } from './components/pages/LoginPage';
 import { HeroOverviewScreen } from './components/screens/HeroOverviewScreen';
@@ -64,7 +64,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handle Decision Execution per Brief Sec 17
+  // Handle Decision Execution
   const handleExecuteDecision = (newStatus: CaseStatus, reason?: string) => {
     setCases(prev => prev.map(c => {
       if (c.id !== selectedCaseId) return c;
@@ -96,7 +96,7 @@ export const App: React.FC = () => {
     mockAuditEvents[selectedCaseId] = [newAuditEvent, ...(mockAuditEvents[selectedCaseId] || [])];
   };
 
-  // Handle Continuous Risk Monitoring Events per Brief Sec 15
+  // Handle Continuous Risk Monitoring Events
   const handleTriggerMonitoringEvent = (eventType: MonitoringEventType, targetCaseId: string) => {
     setCases(prev => prev.map(c => {
       if (c.id !== targetCaseId) return c;
@@ -185,7 +185,7 @@ export const App: React.FC = () => {
     setSelectedCaseId(fullCase.id);
   };
 
-  // Custom VERITAS Loading Sequence per Brief Sec 21
+  // Custom VERITAS Loading Sequence
   if (isLoading) {
     return <VeritasLoader onComplete={() => setIsLoading(false)} />;
   }
@@ -194,7 +194,7 @@ export const App: React.FC = () => {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // Standalone Public QR Proof Route per Brief Sec 16 & 40
+  // Standalone Public QR Proof Route
   if (activePage === 'public-verify') {
     return (
       <PublicProofVerifyPage
@@ -205,12 +205,12 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#05070B] text-[#F0F6FC] font-sans selection:bg-[#00F0FF]/30 select-none">
+    <div className="veritas-system min-h-screen flex bg-[#141211] text-[#F7F4F1] font-sans selection:bg-[#E07A5F]/30 select-none">
       
-      {/* 3D Ambient WebGL Background Particle Field */}
-      <SpatialBackground />
+      {/* Smooth 3D Canvas Card Animation Background */}
+      <SystemCardAnimation />
 
-      {/* Slim Hover-Expandable Left Navigation Rail */}
+      {/* Navigation Rail */}
       <SlimNavigationRail
         activePage={activePage}
         onNavigate={setActivePage}
@@ -237,14 +237,14 @@ export const App: React.FC = () => {
             targetCaseTenantId={activeCase.tenantId}
           />
 
-          {/* PAGE ROUTER WITH SMOOTH FRAMER MOTION TRANSITIONS per Brief Sec 19 */}
+          {/* PAGE ROUTER WITH SMOOTH FRAMER MOTION TRANSITIONS */}
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.99 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.22 }}
             >
               {activePage === 'overview' && (
                 <HeroOverviewScreen

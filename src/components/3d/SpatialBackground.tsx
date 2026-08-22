@@ -31,15 +31,15 @@ export const SpatialBackground: React.FC = () => {
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const cyanColor = new THREE.Color(0x00f0ff);
-    const blueColor = new THREE.Color(0x388bfd);
+    const copperColor = new THREE.Color(0xf7bd48);
+    const charcoalColor = new THREE.Color(0x9c8f7b);
 
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 160;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 160;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
 
-      const mixedColor = cyanColor.clone().lerp(blueColor, Math.random());
+      const mixedColor = copperColor.clone().lerp(charcoalColor, Math.random());
       colors[i * 3] = mixedColor.r;
       colors[i * 3 + 1] = mixedColor.g;
       colors[i * 3 + 2] = mixedColor.b;
@@ -61,7 +61,7 @@ export const SpatialBackground: React.FC = () => {
 
     // Relationship connecting lines
     const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0x1f6feb,
+      color: 0x9c8f7b,
       transparent: true,
       opacity: 0.12
     });

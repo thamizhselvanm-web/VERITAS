@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Building2, Calendar, Shield, Lock, FileText, Send, Eye } from 'lucide-react';
+import { ArrowLeft, Building2, Eye, Send } from 'lucide-react';
 import { InvoiceCase, GraphNode, GraphEdge, AuditEvent, CaseStatus } from '../../types';
 import { TrustScore3D } from '../3d/TrustScore3D';
 import { EvidenceLedger } from '../case/EvidenceLedger';
@@ -22,10 +22,8 @@ interface CinematicCaseWorkspaceProps {
 
 export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
   invoiceCase,
-  auditEvents,
   onBackToDashboard,
-  onExecuteDecision,
-  onOpenProof
+  onExecuteDecision
 }) => {
   const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
@@ -35,18 +33,18 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
   return (
     <div className="space-y-6 pb-16 font-sans select-none">
       
-      {/* Top Header Bar per Brief Sec 16 */}
-      <div className="spatial-panel p-5 border border-white/10 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
+      {/* Top Header Bar */}
+      <div className="spatial-panel p-5 border border-[#E07A5F]/20 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
         
         <div className="flex items-center gap-4">
           <button onClick={onBackToDashboard} className="btn-spatial-secondary p-2.5" title="Back to Cases">
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-[#E07A5F]" />
           </button>
 
           <div>
             <div className="flex items-center gap-3 font-mono">
-              <h1 className="text-xl font-extrabold text-white tracking-wide">{invoiceCase.caseNumber}</h1>
-              <span className="spatial-badge spatial-badge-cyan text-xs">INV {invoiceCase.invoiceNumber}</span>
+              <h1 className="text-xl font-extrabold text-[#F7F4F1] tracking-wide">{invoiceCase.caseNumber}</h1>
+              <span className="spatial-badge spatial-badge-copper text-xs">INV {invoiceCase.invoiceNumber}</span>
               <span className={`spatial-badge ${
                 invoiceCase.status === 'APPROVED' ? 'spatial-badge-verified' :
                 invoiceCase.status === 'REJECTED' ? 'spatial-badge-risk' : 'spatial-badge-review'
@@ -55,14 +53,14 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#94A3B8] mt-1 font-sans">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#9E8C7C] mt-1 font-sans">
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#388BFD]" />
-                Seller: <strong className="text-white">{invoiceCase.sellerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#E07A5F]" />
+                Seller: <strong className="text-[#F7F4F1]">{invoiceCase.sellerName}</strong>
               </span>
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#3FB950]" />
-                Buyer: <strong className="text-white">{invoiceCase.buyerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#52B788]" />
+                Buyer: <strong className="text-[#F7F4F1]">{invoiceCase.buyerName}</strong>
               </span>
             </div>
           </div>
@@ -70,13 +68,13 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
 
         <div className="flex items-center gap-6">
           <div className="text-right font-mono">
-            <span className="text-[10px] text-[#64748B] uppercase tracking-wider block">Financing Amount</span>
-            <span className="text-2xl font-extrabold text-white font-numeric mt-0.5 block">{formattedAmount}</span>
+            <span className="text-[10px] text-[#9E8C7C] uppercase tracking-wider block">Financing Amount</span>
+            <span className="text-2xl font-extrabold text-[#F7F4F1] font-numeric mt-0.5 block">{formattedAmount}</span>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#E07A5F]/20 pl-4">
             <button onClick={() => setIsEvidenceDrawerOpen(true)} className="btn-spatial-secondary text-xs">
-              <Eye className="w-3.5 h-3.5 text-[#00F0FF]" /> Chain of Custody
+              <Eye className="w-3.5 h-3.5 text-[#E07A5F]" /> Chain of Custody
             </button>
             <button onClick={() => setIsEvidenceModalOpen(true)} className="btn-spatial-primary text-xs">
               <Send className="w-3.5 h-3.5" /> Request Evidence
@@ -86,15 +84,15 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
 
       </div>
 
-      {/* 3 Primary Visual Zones Layout per Brief Sec 16 */}
+      {/* Primary Workspace Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         
         {/* LEFT ZONE: Case Intelligence (3 cols) */}
         <div className="xl:col-span-3 space-y-6">
           
           {/* Trust Score 3D Spherical Visualizer */}
-          <div className="spatial-panel p-5 border border-white/10 flex flex-col items-center justify-between">
-            <span className="text-xs font-mono font-bold text-[#94A3B8] uppercase tracking-wider block self-start">
+          <div className="spatial-panel p-5 border border-[#E07A5F]/20 flex flex-col items-center justify-between">
+            <span className="text-xs font-mono font-bold text-[#9E8C7C] uppercase tracking-wider block self-start">
               Telemetry Trust Profile
             </span>
 
@@ -103,15 +101,15 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
               riskLevel={invoiceCase.telemetry.riskLevel}
             />
 
-            <div className="w-full space-y-2 pt-3 border-t border-white/10 text-xs font-mono">
-              <div className="flex justify-between text-[#94A3B8]">
+            <div className="w-full space-y-2 pt-3 border-t border-[#E07A5F]/20 text-xs font-mono">
+              <div className="flex justify-between text-[#9E8C7C]">
                 <span>AI Confidence:</span>
-                <span className="text-[#00F0FF] font-bold font-numeric">{invoiceCase.telemetry.confidenceScore}%</span>
+                <span className="text-[#E07A5F] font-bold font-numeric">{invoiceCase.telemetry.confidenceScore}%</span>
               </div>
 
-              <div className="flex justify-between text-[#94A3B8]">
+              <div className="flex justify-between text-[#9E8C7C]">
                 <span>Evidence Coverage:</span>
-                <span className="text-[#A371F7] font-bold font-numeric">{invoiceCase.telemetry.evidenceCompleteness}%</span>
+                <span className="text-[#F4A261] font-bold font-numeric">{invoiceCase.telemetry.evidenceCompleteness}%</span>
               </div>
             </div>
           </div>
