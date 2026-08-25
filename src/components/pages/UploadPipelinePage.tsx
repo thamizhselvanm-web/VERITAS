@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Upload, AlertOctagon, CheckCircle2, ArrowRight, Activity } from 'lucide-react';
+import { Upload, AlertOctagon, CheckCircle2, ArrowRight, Activity, BarChart3 } from 'lucide-react';
 import { FileScanner } from '../../services/fileScanner';
 import { SecurityScanResult, InvoiceCase } from '../../types';
+import { ReceiptAnalyticsModal } from '../modals/ReceiptAnalyticsModal';
 
 interface UploadPipelinePageProps {
   onUploadSuccess: (newCase: Partial<InvoiceCase>) => void;
@@ -16,6 +17,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [scanResult, setScanResult] = useState<SecurityScanResult | null>(null);
   const [createdCaseId, setCreatedCaseId] = useState<string>('');
+  const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState<boolean>(false);
 
   const pipelineSteps = [
     'Secure Authenticated Upload Intent',
@@ -84,6 +86,15 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
             Zero-trust signed intent URL &bull; Live step-by-step document intelligence pipeline
           </p>
         </div>
+
+        {/* Primary Action Button to Launch PDF Receipt Real-Time Analytics */}
+        <button
+          onClick={() => setIsAnalyticsModalOpen(true)}
+          className="btn primary py-2.5 px-5 text-xs font-mono font-bold flex items-center gap-2 bg-gradient-to-r from-[#B85235] to-[#E07A5F] shadow-lg shadow-[#E07A5F]/20 hover:brightness-110 transition-all"
+        >
+          <BarChart3 className="w-4 h-4" />
+          <span>Upload PDF Receipt & Get Real-Time Analytics</span>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -94,10 +105,13 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
           <div className="spatial-panel p-6 border border-[#E07A5F]/20 space-y-4">
             <h3 className="font-bold text-[#F7F4F1] text-sm">Authenticated Upload Intent</h3>
 
-            <div className="border-2 border-dashed border-[#E07A5F]/30 hover:border-[#E07A5F] rounded-xl p-8 text-center bg-[#141211] transition-colors cursor-pointer">
+            <div
+              onClick={() => setIsAnalyticsModalOpen(true)}
+              className="border-2 border-dashed border-[#E07A5F]/30 hover:border-[#E07A5F] rounded-xl p-8 text-center bg-[#141211] transition-colors cursor-pointer"
+            >
               <Upload className="w-10 h-10 text-[#E07A5F] mx-auto mb-2" />
-              <h4 className="font-bold text-[#F7F4F1] text-xs">Drop invoice PDF or image here</h4>
-              <p className="text-[11px] text-[#9E8C7C] mt-1">Accepts PDF, TIFF, PNG (Max 25MB). Sandboxed Intent URL.</p>
+              <h4 className="font-bold text-[#F7F4F1] text-xs">Drop invoice PDF or receipt file here</h4>
+              <p className="text-[11px] text-[#9E8C7C] mt-1">Accepts PDF, TIFF, PNG (Max 35MB). Realtime OCR & Analytics.</p>
             </div>
 
             <div className="border-t border-[#E07A5F]/20 pt-4 space-y-2">
@@ -106,14 +120,14 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
               </span>
 
               <button
-                onClick={() => handleSimulateUpload('INV-2026-9900_Legitimate.pdf', false)}
+                onClick={() => setIsAnalyticsModalOpen(true)}
                 className="w-full p-3 rounded-lg bg-[#141211] border border-[#E07A5F]/20 hover:border-[#52B788] text-left flex items-center justify-between text-xs transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-[#52B788]" />
                   <div>
-                    <span className="font-bold text-[#F7F4F1] block">Legitimate PDF Invoice</span>
-                    <span className="text-[10px] text-[#9E8C7C]">Passes malware scan and executes OCR pipeline</span>
+                    <span className="font-bold text-[#F7F4F1] block">Upload Real PDF Receipt & Extract Analytics</span>
+                    <span className="text-[10px] text-[#9E8C7C]">OCR, KYC, Tax & Realtime Telemetry</span>
                   </div>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-[#52B788]" />
@@ -206,6 +220,13 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
         </div>
 
       </div>
+
+      {/* PDF Receipt Real-Time Data Analytics Modal */}
+      <ReceiptAnalyticsModal
+        isOpen={isAnalyticsModalOpen}
+        onClose={() => setIsAnalyticsModalOpen(false)}
+        onCaseCreated={onUploadSuccess}
+      />
 
     </div>
   );
