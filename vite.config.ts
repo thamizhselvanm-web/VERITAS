@@ -9,6 +9,14 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/twilio-api': {
+        target: 'https://api.twilio.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/twilio-api/, '')
+      }
+    }
   }
 });
