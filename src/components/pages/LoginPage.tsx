@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Lock, ArrowRight, CheckCircle2, KeyRound, ShieldCheck } from 'lucide-react';
+import { Lock, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { TenantId } from '../../types';
+import { SystemCardAnimation } from '../common/SystemCardAnimation';
 
 interface LoginPageProps {
   onLoginSuccess: (tenantId: TenantId) => void;
@@ -17,156 +18,129 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     setTimeout(() => {
       setLoading(false);
       onLoginSuccess(selectedTenant);
-    }, 800);
+    }, 400);
   };
 
   return (
-    <div className="veritas-login min-h-screen relative flex items-center justify-center p-6 bg-[#141211] text-[#F7F4F1] font-sans select-none overflow-hidden">
-      <div className="veritas-login__texture pointer-events-none" aria-hidden="true" />
+    <main className="relative min-h-screen flex items-center justify-center p-4 bg-[#141211] text-[#F7F4F1] select-none overflow-hidden font-sans">
+      {/* Background Molten Metal Liquid Steel WebGL Animation */}
+      <SystemCardAnimation />
 
-      {/* Ambient Copper Lighting */}
-      <div className="absolute w-[500px] h-[500px] rounded-full bg-[#E07A5F]/10 blur-[130px] pointer-events-none" />
-
-      <main className="relative z-10 w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+      {/* Centered Auth Card */}
+      <div className="relative z-10 w-full max-w-[460px] bg-[#1C1816]/90 backdrop-blur-xl border border-[#E07A5F]/35 rounded-2xl p-7 space-y-6 shadow-2xl shadow-[#E07A5F]/20">
         
-        {/* Left Column: Brand Intro (6 cols) */}
-        <section className="md:col-span-6 space-y-6">
-          <p className="veritas-kicker">PRIVATE ACCESS / 08.2026</p>
-          
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-[#F7F4F1] tracking-tight leading-tight font-heading">
-            Trust, made <br />
-            <em className="text-[#E07A5F] not-italic">verifiable.</em>
-          </h1>
-          
-          <p className="text-sm text-[#D8C7B8] leading-relaxed max-w-md">
-            A secure financial intelligence layer for financing decisions, built around evidence you can inspect in real-time.
+        {/* Brand & Gateway Header */}
+        <header className="flex items-center justify-between border-b border-[#E07A5F]/20 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#B85235] to-[#E07A5F] flex items-center justify-center shadow-lg shadow-[#E07A5F]/30">
+              <ShieldCheck className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <span className="font-sans font-bold text-lg text-[#F7F4F1] tracking-tight block leading-none">VERITAS</span>
+              <span className="text-[9px] font-mono text-[#E07A5F] uppercase tracking-widest block mt-0.5">TRUST OPERATIONS</span>
+            </div>
+          </div>
+          <span className="text-[10px] font-mono text-[#9E8C7C] uppercase tracking-widest bg-[#231E1B] px-2.5 py-1 rounded border border-[#E07A5F]/20">
+            GATEWAY ACCESS
+          </span>
+        </header>
+
+        {/* Card Intro */}
+        <div>
+          <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight">Access workspace</h1>
+          <p className="text-xs text-[#D8C7B8] mt-1.5 leading-relaxed">
+            Select authorized workspace tenant and confirm hardware credentials.
           </p>
+        </div>
 
-          <div className="w-full max-w-xs h-[1px] bg-[#E07A5F]/30" />
-
-          <div className="flex items-center gap-1.5 h-6">
-            <span className="w-1 h-3 bg-[#E07A5F] rounded-full" />
-            <span className="w-1 h-5 bg-[#E07A5F] rounded-full" />
-            <span className="w-1 h-6 bg-[#E07A5F] rounded-full" />
-            <span className="w-1 h-4 bg-[#E07A5F] rounded-full" />
-            <span className="w-1 h-2 bg-[#E07A5F] rounded-full" />
-          </div>
-
-          <p className="text-xs text-[#9E8C7C] uppercase tracking-wider font-mono">
-            Continuous verification for every transaction.
-          </p>
-        </section>
-
-        {/* Right Column: Secure Access Panel (6 cols) */}
-        <section className="md:col-span-6 spatial-panel p-8 border border-[#E07A5F]/30 shadow-2xl space-y-6 bg-[#1C1816]/95 backdrop-blur-xl">
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           
-          <div className="flex items-center justify-between border-b border-[#E07A5F]/20 pb-4">
-            <div className="flex items-center gap-2.5 text-[#E07A5F]">
-              <ShieldCheck className="w-5 h-5 text-[#E07A5F]" />
-              <span className="font-symphony text-2xl tracking-wide text-[#F7F4F1]">VERITAS</span>
+          {/* Tenant Selector */}
+          <fieldset className="space-y-2 border-0 p-0 m-0">
+            <legend className="text-[11px] font-mono font-bold text-[#E07A5F] uppercase tracking-wider block mb-1.5">
+              TENANT WORKSPACE
+            </legend>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedTenant('tenant-a')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  selectedTenant === 'tenant-a'
+                    ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#F7F4F1] shadow-lg shadow-[#E07A5F]/20'
+                    : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/50 hover:text-[#D8C7B8]'
+                }`}
+              >
+                <strong className="block text-xs font-bold leading-tight">Apex Capital</strong>
+                <span className="block text-[10px] font-mono text-[#E07A5F] tracking-wider mt-1">TENANT A</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedTenant('tenant-b')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  selectedTenant === 'tenant-b'
+                    ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#F7F4F1] shadow-lg shadow-[#E07A5F]/20'
+                    : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/50 hover:text-[#D8C7B8]'
+                }`}
+              >
+                <strong className="block text-xs font-bold leading-tight">Nexus Trade</strong>
+                <span className="block text-[10px] font-mono text-[#E07A5F] tracking-wider mt-1">TENANT B</span>
+              </button>
             </div>
-            <span className="text-[10px] text-[#9E8C7C] font-mono tracking-wider">SECURE GATEWAY</span>
+          </fieldset>
+
+          {/* Underwriter Identity Field */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-mono font-bold text-[#D8C7B8] uppercase tracking-wider block">
+              UNDERWRITER IDENTITY
+            </label>
+            <input
+              type="text"
+              readOnly
+              value="alex.morgan@apexcapital.com"
+              className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/25 text-xs font-mono text-[#D8C7B8] outline-none"
+            />
           </div>
 
-          <div>
-            <p className="veritas-kicker">AUTHORIZED PERSONNEL</p>
-            <h2 className="text-xl font-bold text-[#F7F4F1] mt-1">Enter workspace</h2>
-            <p className="text-xs text-[#9E8C7C] mt-1">Confirm your tenant workspace and identity to continue.</p>
+          {/* Hardware MFA Code Field */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center text-[11px] font-mono font-bold text-[#D8C7B8] uppercase tracking-wider">
+              <span>HARDWARE MFA CODE</span>
+              <span className="text-[#52B788] flex items-center gap-1 text-[10px]">
+                <CheckCircle2 className="w-3 h-3 text-[#52B788]" /> HARDWARE AUTHENTICATED
+              </span>
+            </div>
+            <input
+              type="text"
+              maxLength={6}
+              value={mfaCode}
+              onChange={(e) => setMfaCode(e.target.value)}
+              className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/35 text-sm font-mono font-numeric font-bold text-[#F7F4F1] tracking-widest focus:border-[#E07A5F] outline-none"
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-[#D8C7B8] uppercase tracking-wider block font-mono">
-                Tenant Entity
-              </label>
+          {/* Primary Action Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn.primary w-full py-3.5 text-xs font-bold tracking-wider uppercase flex items-center justify-between px-5 rounded-xl shadow-lg shadow-[#E07A5F]/30 hover:brightness-110 transition-all mt-2"
+          >
+            <span>{loading ? 'Verifying access…' : 'Access workspace'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
 
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedTenant('tenant-a')}
-                  className={`p-3 rounded-lg border text-left text-xs transition-all ${
-                    selectedTenant === 'tenant-a'
-                      ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#E07A5F] font-bold'
-                      : 'bg-[#141211] border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/40'
-                  }`}
-                >
-                  <span className="block font-bold">Apex Capital</span>
-                  <small className="text-[9px] text-[#9E8C7C] font-mono tracking-wider block mt-1">TENANT A</small>
-                </button>
+        </form>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedTenant('tenant-b')}
-                  className={`p-3 rounded-lg border text-left text-xs transition-all ${
-                    selectedTenant === 'tenant-b'
-                      ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#E07A5F] font-bold'
-                      : 'bg-[#141211] border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/40'
-                  }`}
-                >
-                  <span className="block font-bold">Nexus Trade</span>
-                  <small className="text-[9px] text-[#9E8C7C] font-mono tracking-wider block mt-1">TENANT B</small>
-                </button>
-              </div>
-            </div>
+        {/* Footer Auth Disclosure */}
+        <footer className="flex items-center gap-2 pt-3 border-t border-[#E07A5F]/20 text-[11px] text-[#9E8C7C] font-mono uppercase tracking-wider">
+          <Lock className="w-3.5 h-3.5 text-[#E07A5F]" />
+          <span>OIDC SSO + Hardware MFA Enforced</span>
+        </footer>
 
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-[#D8C7B8] uppercase tracking-wider block font-mono">
-                Underwriter Identity
-              </label>
-              <input
-                type="text"
-                readOnly
-                value="alex.morgan@apexcapital.com"
-                className="veritas-input"
-              />
-            </div>
+      </div>
 
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center text-[10px] font-bold text-[#D8C7B8] font-mono uppercase tracking-wider">
-                <span>Hardware MFA Code</span>
-                <span className="text-[#52B788] flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> AUTO-FILLED DEMO</span>
-              </div>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 text-[#9E8C7C] absolute left-3.5 top-3.5" />
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={mfaCode}
-                  onChange={(e) => setMfaCode(e.target.value)}
-                  className="veritas-input pl-10 font-bold tracking-widest"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-spatial-primary w-full justify-between py-3 text-xs uppercase tracking-wider mt-2"
-            >
-              {loading ? (
-                <span>Verifying credentials...</span>
-              ) : (
-                <>
-                  <span>Access VERITAS Workspace</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-
-          </form>
-
-          <div className="flex items-center gap-2 pt-2 border-t border-[#E07A5F]/20 text-[10px] text-[#9E8C7C] font-mono uppercase">
-            <Lock className="w-3.5 h-3.5 text-[#E07A5F]" />
-            <span>OIDC SSO + Hardware MFA Enforced</span>
-          </div>
-
-        </section>
-      </main>
-
-      <footer className="absolute bottom-4 left-0 right-0 text-center text-[10px] text-[#9E8C7C] font-mono tracking-widest">
-        VERITAS CONTINUOUS TRUST PLATFORM &bull; © 2026 VERITAS GLOBAL
-      </footer>
-    </div>
+    </main>
   );
 };
