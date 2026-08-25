@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Building2, Eye, Send } from 'lucide-react';
+import { ArrowLeft, Building2, Eye, Send, CheckCircle2, AlertTriangle, AlertCircle, ChevronDown } from 'lucide-react';
 import { InvoiceCase, GraphNode, GraphEdge, AuditEvent, CaseStatus } from '../../types';
-import { TrustScore3D } from '../3d/TrustScore3D';
-import { EvidenceLedger } from '../case/EvidenceLedger';
-import { RiskTimeline } from './RiskTimeline';
-import { AIReasoningPanel } from './AIReasoningPanel';
 import { SpatialInvoiceWorkspace } from './SpatialInvoiceWorkspace';
 import { DecisionPanel } from './DecisionPanel';
 import { EvidenceChainDrawer } from './EvidenceChainDrawer';
@@ -31,36 +27,36 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
   const formattedAmount = `${invoiceCase.currency} ${(invoiceCase.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
   return (
-    <div className="space-y-6 pb-16 font-sans select-none">
+    <article className="space-y-6 pb-16 font-sans select-none">
       
-      {/* Top Header Bar */}
-      <div className="spatial-panel p-5 border border-[#E07A5F]/20 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
+      {/* Case Header Bar */}
+      <header className="inst-card p-5 flex flex-wrap items-center justify-between gap-4">
         
         <div className="flex items-center gap-4">
-          <button onClick={onBackToDashboard} className="btn-spatial-secondary p-2.5" title="Back to Cases">
-            <ArrowLeft className="w-4 h-4 text-[#E07A5F]" />
+          <button onClick={onBackToDashboard} className="btn-secondary p-2" title="Back to Cases">
+            <ArrowLeft className="w-4 h-4 text-[#5B8DEF]" />
           </button>
 
           <div>
             <div className="flex items-center gap-3 font-mono">
-              <h1 className="text-xl font-extrabold text-[#F7F4F1] tracking-wide">{invoiceCase.caseNumber}</h1>
-              <span className="spatial-badge spatial-badge-copper text-xs">INV {invoiceCase.invoiceNumber}</span>
-              <span className={`spatial-badge ${
-                invoiceCase.status === 'APPROVED' ? 'spatial-badge-verified' :
-                invoiceCase.status === 'REJECTED' ? 'spatial-badge-risk' : 'spatial-badge-review'
+              <h1 className="text-xl font-bold text-[#F2F3F5] tracking-tight">{invoiceCase.caseNumber}</h1>
+              <span className="inst-badge inst-badge-accent text-xs">INV {invoiceCase.invoiceNumber}</span>
+              <span className={`inst-badge ${
+                invoiceCase.status === 'APPROVED' ? 'inst-badge-verified' :
+                invoiceCase.status === 'REJECTED' ? 'inst-badge-risk' : 'inst-badge-review'
               }`}>
                 {invoiceCase.status}
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#9E8C7C] mt-1 font-sans">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#9AA1AC] mt-1 font-sans">
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#E07A5F]" />
-                Seller: <strong className="text-[#F7F4F1]">{invoiceCase.sellerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#5B8DEF]" />
+                Seller: <strong className="text-[#F2F3F5]">{invoiceCase.sellerName}</strong>
               </span>
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#52B788]" />
-                Buyer: <strong className="text-[#F7F4F1]">{invoiceCase.buyerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#34B37E]" />
+                Buyer: <strong className="text-[#F2F3F5]">{invoiceCase.buyerName}</strong>
               </span>
             </div>
           </div>
@@ -68,90 +64,152 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
 
         <div className="flex items-center gap-6">
           <div className="text-right font-mono">
-            <span className="text-[10px] text-[#9E8C7C] uppercase tracking-wider block">Financing Amount</span>
-            <span className="text-2xl font-extrabold text-[#F7F4F1] font-numeric mt-0.5 block">{formattedAmount}</span>
+            <span className="text-[11px] text-[#5C6470] uppercase tracking-wider block">Financing Amount</span>
+            <span className="text-xl font-bold text-[#F2F3F5] font-numeric mt-0.5 block">{formattedAmount}</span>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-[#E07A5F]/20 pl-4">
-            <button onClick={() => setIsEvidenceDrawerOpen(true)} className="btn-spatial-secondary text-xs">
-              <Eye className="w-3.5 h-3.5 text-[#E07A5F]" /> Chain of Custody
+          <div className="flex items-center gap-2 border-l border-[#242830] pl-4">
+            <button onClick={() => setIsEvidenceDrawerOpen(true)} className="btn-secondary text-xs">
+              <Eye className="w-3.5 h-3.5 text-[#5B8DEF]" /> Custody Chain
             </button>
-            <button onClick={() => setIsEvidenceModalOpen(true)} className="btn-spatial-primary text-xs">
+            <button onClick={() => setIsEvidenceModalOpen(true)} className="btn-primary text-xs">
               <Send className="w-3.5 h-3.5" /> Request Evidence
             </button>
           </div>
         </div>
 
-      </div>
+      </header>
 
-      {/* Primary Workspace Layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+      {/* 3-up Score Summary Row (§16 requirement) */}
+      <dl className="grid grid-cols-1 md:grid-cols-3 gap-4 m-0">
         
-        {/* LEFT ZONE: Case Intelligence (3 cols) */}
-        <div className="xl:col-span-3 space-y-6">
-          
-          {/* Trust Score 3D Spherical Visualizer */}
-          <div className="spatial-panel p-5 border border-[#E07A5F]/20 flex flex-col items-center justify-between">
-            <span className="text-xs font-mono font-bold text-[#9E8C7C] uppercase tracking-wider block self-start">
-              Telemetry Trust Profile
-            </span>
-
-            <TrustScore3D
-              score={invoiceCase.telemetry.trustScore}
-              riskLevel={invoiceCase.telemetry.riskLevel}
-            />
-
-            <div className="w-full space-y-2 pt-3 border-t border-[#E07A5F]/20 text-xs font-mono">
-              <div className="flex justify-between text-[#9E8C7C]">
-                <span>AI Confidence:</span>
-                <span className="text-[#E07A5F] font-bold font-numeric">{invoiceCase.telemetry.confidenceScore}%</span>
-              </div>
-
-              <div className="flex justify-between text-[#9E8C7C]">
-                <span>Evidence Coverage:</span>
-                <span className="text-[#F4A261] font-bold font-numeric">{invoiceCase.telemetry.evidenceCompleteness}%</span>
-              </div>
-            </div>
+        <div className="inst-card p-4 flex items-center justify-between">
+          <div>
+            <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">Trust Score</dt>
+            <dd className="text-2xl font-bold font-numeric text-[#F2F3F5] mt-1 m-0">
+              {invoiceCase.telemetry.trustScore} <span className="text-xs text-[#5C6470] font-normal">/ 100</span>
+            </dd>
           </div>
-
-          {/* Evidence Ledger Categorized Summary */}
-          <EvidenceLedger invoiceCase={invoiceCase} />
-
+          <span className="inst-badge inst-badge-verified text-xs">
+            <CheckCircle2 className="w-3.5 h-3.5" /> {invoiceCase.telemetry.riskLevel}
+          </span>
         </div>
 
-        {/* CENTER ZONE: Interactive Spatial Document Workspace (5 cols) */}
-        <div className="xl:col-span-5 space-y-6">
+        <div className="inst-card p-4 flex items-center justify-between">
+          <div>
+            <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">AI Confidence</dt>
+            <dd className="text-2xl font-bold font-numeric text-[#5B8DEF] mt-1 m-0">
+              {invoiceCase.telemetry.confidenceScore}%
+            </dd>
+          </div>
+          <span className="inst-badge inst-badge-accent text-xs">HIGH CERTAINTY</span>
+        </div>
+
+        <div className="inst-card p-4 flex items-center justify-between">
+          <div>
+            <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">Evidence Coverage</dt>
+            <dd className="text-2xl font-bold font-numeric text-[#E0A63C] mt-1 m-0">
+              {invoiceCase.telemetry.evidenceCompleteness}%
+            </dd>
+          </div>
+          <span className="inst-badge inst-badge-review text-xs">GAP DETECTED</span>
+        </div>
+
+      </dl>
+
+      {/* 2-Column Grid: Invoice Summary & Top Risk Signals */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left Column: Spatial Invoice Extraction Workspace (7 cols) */}
+        <section className="lg:col-span-7 space-y-6">
+          
           <SpatialInvoiceWorkspace
             documentName={invoiceCase.documentName}
             fields={invoiceCase.fields}
             lineItems={invoiceCase.lineItems}
           />
-        </div>
 
-        {/* RIGHT ZONE: Decision Intelligence & Audit Trail (4 cols) */}
-        <div className="xl:col-span-4 space-y-6">
+          {/* Native <details>/<summary> Accordion for Evidence Ledger */}
+          <section className="inst-card p-4 space-y-3">
+            <h2 className="text-xs font-mono font-bold text-[#5C6470] uppercase tracking-wider">
+              Evidence Ledger
+            </h2>
+
+            <div className="space-y-2">
+              {invoiceCase.evidenceItems.map((evt) => (
+                <details
+                  key={evt.id}
+                  className="group inst-card-elevated border border-[#242830] rounded-md overflow-hidden text-xs"
+                >
+                  <summary className="p-3 font-semibold text-[#F2F3F5] cursor-pointer flex items-center justify-between hover:bg-[#1A1E24] transition-colors select-none">
+                    <span className="flex items-center gap-2 font-mono">
+                      {evt.verified ? (
+                        <CheckCircle2 className="w-4 h-4 text-[#34B37E]" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-[#E0A63C]" />
+                      )}
+                      <span>{evt.name}</span>
+                    </span>
+
+                    <div className="flex items-center gap-3 font-mono">
+                      <span className="text-[11px] text-[#9AA1AC]">{evt.type}</span>
+                      <ChevronDown className="w-4 h-4 text-[#5C6470] transition-transform duration-200 group-open:rotate-180" />
+                    </div>
+                  </summary>
+
+                  <div className="p-3 border-t border-[#242830] bg-[#12151A] space-y-2 font-mono text-xs text-[#9AA1AC]">
+                    <p>Reliability Score: <code className="text-[#F2F3F5]">{evt.reliabilityScore}%</code></p>
+                    <p>Uploaded At: <span className="text-[#F2F3F5]">{evt.uploadedAt || 'Pending Upload'}</span></p>
+                    <p>Required: <span className="text-[#F2F3F5]">{evt.required ? 'YES' : 'NO'}</span></p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+
+        </section>
+
+        {/* Right Column: Top Risk Signals & Decision Panel (5 cols) */}
+        <section className="lg:col-span-5 space-y-6">
           
-          {/* Why VERITAS Flagged This Timeline */}
-          <RiskTimeline
-            signals={invoiceCase.riskSignals}
-            onOpenEvidencePanel={() => setIsEvidenceDrawerOpen(true)}
-          />
+          {/* Top Risk Signals */}
+          <div className="inst-card p-4 space-y-3">
+            <h2 className="text-xs font-mono font-bold text-[#5C6470] uppercase tracking-wider">
+              Top Risk Signals
+            </h2>
 
-          {/* AI Flowing Attribution Reasoning */}
-          <AIReasoningPanel telemetry={invoiceCase.telemetry} />
+            <ul className="space-y-2.5 list-none">
+              {invoiceCase.riskSignals.length === 0 ? (
+                <li className="text-xs text-[#9AA1AC] italic">No high-severity risk signals detected.</li>
+              ) : (
+                invoiceCase.riskSignals.map((signal) => (
+                  <li key={signal.id} className="p-3 rounded bg-[#1A1E24] border border-[#242830] space-y-1">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#F2F3F5]">
+                      <span className="flex items-center gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 text-[#E5484D]" />
+                        <span>{signal.title}</span>
+                      </span>
+                      <span className="font-mono text-[#E5484D] font-numeric">{signal.scoreImpact} pts</span>
+                    </div>
+                    <p className="text-xs text-[#9AA1AC] leading-relaxed">{signal.description}</p>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
 
-          {/* Accountable Underwriter Decision Panel */}
+          {/* Decision Panel */}
           <DecisionPanel
             invoiceCase={invoiceCase}
             onExecuteDecision={onExecuteDecision}
             onOpenEvidenceRequest={() => setIsEvidenceModalOpen(true)}
           />
 
-        </div>
+        </section>
 
       </div>
 
-      {/* Glassmorphism Evidence Chain Drawer */}
+      {/* Chain of Custody Drawer */}
       <EvidenceChainDrawer
         isOpen={isEvidenceDrawerOpen}
         onClose={() => setIsEvidenceDrawerOpen(false)}
@@ -163,11 +221,11 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
         invoiceCase={invoiceCase}
-        onSubmitRequest={(docs, notes) => {
+        onSubmitRequest={(_, notes) => {
           onExecuteDecision('EVIDENCE_REQUESTED', `Evidence requested by underwriter: ${notes}`);
         }}
       />
 
-    </div>
+    </article>
   );
 };

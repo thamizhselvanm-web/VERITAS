@@ -17,6 +17,7 @@ import { CryptographicProofScreen } from './components/screens/CryptographicProo
 import { PublicProofVerifyPage } from './components/pages/PublicProofVerifyPage';
 
 import { ProofInspectorModal } from './components/modals/ProofInspectorModal';
+import { TwilioWhatsAppModal } from './components/modals/TwilioWhatsAppModal';
 import { TenantSecurityGuard } from './components/common/TenantSecurityGuard';
 
 import { mockCases, mockGraphNodes, mockGraphEdges, mockAuditEvents, mockTenants } from './mock/demoData';
@@ -24,9 +25,10 @@ import { authService, UserSession } from './services/authService';
 import { InvoiceCase, TenantId, CaseStatus, AuditEvent, MonitoringEventType } from './types';
 import { TrustEngine } from './services/trustEngine';
 import { PageId } from './components/common/Sidebar';
+import { twilioWhatsAppService, WhatsAppMessagePayload } from './services/twilioWhatsAppService';
 
 export const App: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [session, setSession] = useState<UserSession>(authService.getSession());
   const [cases, setCases] = useState<InvoiceCase[]>(mockCases);
@@ -36,6 +38,8 @@ export const App: React.FC = () => {
   // Modals & Drawers
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedProofEvent, setSelectedProofEvent] = useState<AuditEvent | null>(null);
+  const [whatsappPayload, setWhatsappPayload] = useState<WhatsAppMessagePayload | null>(null);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   const activeCase = cases.find(c => c.id === selectedCaseId) || cases[0];
   const activeGraphNodes = mockGraphNodes[selectedCaseId] || mockGraphNodes['case-vrt-28491'];
@@ -65,7 +69,7 @@ export const App: React.FC = () => {
   };
 
   // Handle Decision Execution
-  const handleExecuteDecision = (newStatus: CaseStatus, reason?: string) => {
+  const handleExecuteDecision = async (newStatus: CaseStatus, reason?: string) => {
     setCases(prev => prev.map(c => {
       if (c.id !== selectedCaseId) return c;
       return {
@@ -94,6 +98,14 @@ export const App: React.FC = () => {
     };
 
     mockAuditEvents[selectedCaseId] = [newAuditEvent, ...(mockAuditEvents[selectedCaseId] || [])];
+
+    // Trigger Twilio WhatsApp Notification when funds are approved
+    if (newStatus === 'APPROVED') {
+      const targetCase = cases.find(c => c.id === selectedCaseId) || activeCase;
+      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase, newAuditEvent.proofHash);
+      setWhatsappPayload(payload);
+      setIsWhatsAppModalOpen(true);
+    }
   };
 
   // Handle Continuous Risk Monitoring Events
@@ -205,22 +217,21 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="veritas-system min-h-screen flex bg-[#141211] text-[#F7F4F1] font-sans selection:bg-[#E07A5F]/30 select-none">
-      
-      {/* Smooth 3D Canvas Card Animation Background */}
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+
+      {/* 3D Interactive VERITAS Card Animation Background */}
       <SystemCardAnimation />
 
-      {/* Navigation Rail */}
-      <SlimNavigationRail
-        activePage={activePage}
-        onNavigate={setActivePage}
-        onLogout={handleLogout}
-      />
+      <div className="shell relative z-10">
+        {/* Navigation Rail */}
+        <SlimNavigationRail
+          activePage={activePage}
+          onNavigate={setActivePage}
+          onLogout={handleLogout}
+        />
 
-      {/* Main Command Center Layout */}
-      <div className="flex-1 min-w-0 flex flex-col pl-[72px]">
-        
-        {/* Floating Top Command Bar */}
+        {/* Top Command Bar */}
         <TopCommandBar
           session={session}
           tenants={mockTenants}
@@ -228,16 +239,14 @@ export const App: React.FC = () => {
           onOpenSearch={() => setIsSearchOpen(true)}
         />
 
-        {/* Main Content Workspace Container */}
-        <main className="flex-1 max-w-[1760px] w-full mx-auto px-8 py-6 space-y-6 relative z-10">
-          
-          {/* Tenant Security Guard */}
-          <TenantSecurityGuard
-            activeTenantId={session.activeTenantId}
-            targetCaseTenantId={activeCase.tenantId}
-          />
+        {/* Tenant Security Guard Banner */}
+        <TenantSecurityGuard
+          activeTenantId={session.activeTenantId}
+          targetCaseTenantId={activeCase.tenantId}
+        />
 
-          {/* PAGE ROUTER WITH SMOOTH FRAMER MOTION TRANSITIONS */}
+        {/* Main Content Workspace Container */}
+        <main id="main">
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
@@ -316,7 +325,6 @@ export const App: React.FC = () => {
               )}
             </motion.div>
           </AnimatePresence>
-
         </main>
       </div>
 
@@ -337,6 +345,13 @@ export const App: React.FC = () => {
         onClose={() => setSelectedProofEvent(null)}
       />
 
-    </div>
+      {/* Twilio WhatsApp Dispatch Notification Modal */}
+      <TwilioWhatsAppModal
+        isOpen={isWhatsAppModalOpen}
+        onClose={() => setIsWhatsAppModalOpen(false)}
+        payload={whatsappPayload}
+        invoiceCase={activeCase}
+      />
+    </>
   );
 };
