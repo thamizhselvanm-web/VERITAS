@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SlimNavigationRail } from './components/shell/SlimNavigationRail';
 import { TopCommandBar } from './components/shell/TopCommandBar';
 import { CommandPalette } from './components/shell/CommandPalette';
-import { VeritasLoader } from './components/common/VeritasLoader';
-import { SystemCardAnimation } from './components/common/SystemCardAnimation';
 import { ToastProvider, useToast } from './components/common/ToastContainer';
 
 import { LoginPage } from './components/pages/LoginPage';
@@ -20,7 +18,7 @@ import { NotFoundPage } from './components/pages/NotFoundPage';
 
 import { ProofInspectorModal } from './components/modals/ProofInspectorModal';
 import { TwilioWhatsAppModal } from './components/modals/TwilioWhatsAppModal';
-import { TenantSecurityGuard } from './components/common/TenantSecurityGuard';
+import { EvidenceRequestModal } from './components/modals/EvidenceRequestModal';
 
 import { mockCases, mockGraphNodes, mockGraphEdges, mockAuditEvents, mockTenants } from './mock/demoData';
 import { authService, UserSession } from './services/authService';
@@ -30,22 +28,25 @@ import { PageId } from './components/common/Sidebar';
 import { twilioWhatsAppService, WhatsAppMessagePayload } from './services/twilioWhatsAppService';
 
 const AppWorkspace: React.FC = () => {
-  const { addToast } = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [session, setSession] = useState<UserSession>(authService.getSession());
-  const [cases, setCases] = useState<InvoiceCase[]>(mockCases);
-  const [selectedCaseId, setSelectedCaseId] = useState<string>('case-vrt-28491');
   const [activePage, setActivePage] = useState<PageId>('overview');
-  
-  // Modals & Drawers
+  const [selectedCaseId, setSelectedCaseId] = useState<string>('case-vrt-28491');
+  const [cases, setCases] = useState<InvoiceCase[]>(mockCases);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedProofEvent, setSelectedProofEvent] = useState<AuditEvent | null>(null);
-  const [whatsappPayload, setWhatsappPayload] = useState<WhatsAppMessagePayload | null>(null);
-  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
-  const activeCase = cases.find(c => c.id === selectedCaseId) || cases[0];
+  // Evidence Request Modal State
+  const [evidenceRequestTargetCase, setEvidenceRequestTargetCase] = useState<InvoiceCase | null>(null);
+
+  // Twilio WhatsApp Dispatch Modal State
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+  const [whatsappPayload, setWhatsappPayload] = useState<WhatsAppMessagePayload | null>(null);
+
+  const { addToast } = useToast();
+
+  const activeCase = cases.find((c) => c.id === selectedCaseId) || cases[0];
   const activeGraphNodes = mockGraphNodes[selectedCaseId] || mockGraphNodes['case-vrt-28491'];
   const activeGraphEdges = mockGraphEdges[selectedCaseId] || mockGraphEdges['case-vrt-28491'];
   const activeAuditEvents = mockAuditEvents[selectedCaseId] || mockAuditEvents['case-vrt-28491'];
@@ -123,15 +124,17 @@ const AppWorkspace: React.FC = () => {
     addToast('Tenant Switched', `Active workspace changed to ${tenantName}`, 'info');
   };
 
-  // Handle Decision Execution
-  const handleExecuteDecision = async (newStatus: CaseStatus, reason?: string) => {
+  // Handle Decision Execution for any target case
+  const handleExecuteDecisionForCase = async (targetCaseId: string, newStatus: CaseStatus, reason?: string) => {
     setCases(prev => prev.map(c => {
-      if (c.id !== selectedCaseId) return c;
+      if (c.id !== targetCaseId) return c;
       return {
         ...c,
         status: newStatus
       };
     }));
+
+    const targetCase = cases.find(c => c.id === targetCaseId) || activeCase;
 
     const newAuditEvent: AuditEvent = {
       id: `aud-${Date.now()}`,
@@ -143,140 +146,81 @@ const AppWorkspace: React.FC = () => {
       },
       action: `DECISION_${newStatus}`,
       resourceType: 'INVOICE_DECISION',
-      resourceId: selectedCaseId,
-      result: 'SUCCESS',
+      resourceId: targetCase.caseNumber,
+      result: newStatus === 'REJECTED' ? 'BLOCKED' : 'SUCCESS',
       correlationId: `corr-${Date.now()}`,
-      details: reason || `Updated case status to ${newStatus}`,
-      proofHash: Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-      blockHeight: 1849350 + Math.floor(Math.random() * 10),
-      createdAt: new Date().toISOString()
+      proofHash: '0x8f3c...b29e',
+      blockHeight: 1849210,
+      createdAt: new Date().toISOString(),
+      details: reason || `Decision ${newStatus} executed for case ${targetCase.caseNumber}`
     };
 
-    mockAuditEvents[selectedCaseId] = [newAuditEvent, ...(mockAuditEvents[selectedCaseId] || [])];
+    if (mockAuditEvents[targetCaseId]) {
+      mockAuditEvents[targetCaseId].unshift(newAuditEvent);
+    }
 
-    if (newStatus === 'APPROVED') {
-      addToast('Case Approved', `Invoice ${activeCase.caseNumber} approved for financing. Dispatching dispatch notification...`, 'success');
-      const targetCase = cases.find(c => c.id === selectedCaseId) || activeCase;
-      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase, newAuditEvent.proofHash);
+    const toastTitle = newStatus === 'APPROVED' ? 'Loan Approved' : newStatus === 'REJECTED' ? 'Financing Rejected' : 'Evidence Requested';
+    const toastType = newStatus === 'APPROVED' ? 'success' : newStatus === 'REJECTED' ? 'error' : 'warning';
+    addToast(toastTitle, `Case ${targetCase.caseNumber} updated to ${newStatus}. Notarized on Arbitrum.`, toastType);
+
+    // Auto-dispatch Twilio WhatsApp notification for Evidence Requests or Approvals
+    if (newStatus === 'EVIDENCE_REQUESTED' || newStatus === 'APPROVED') {
+      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase);
       setWhatsappPayload(payload);
       setIsWhatsAppModalOpen(true);
-    } else if (newStatus === 'REJECTED') {
-      addToast('Case Rejected', `Invoice ${activeCase.caseNumber} financing declined. Reason logged in audit trail.`, 'error');
-    } else if (newStatus === 'EVIDENCE_REQUESTED') {
-      addToast('Evidence Requested', `Evidence request dispatched to seller for ${activeCase.caseNumber}.`, 'warning');
     }
   };
 
-  // Handle Continuous Risk Monitoring Events
-  const handleTriggerMonitoringEvent = (eventType: MonitoringEventType, targetCaseId: string) => {
-    setCases(prev => prev.map(c => {
-      if (c.id !== targetCaseId) return c;
-
-      let riskSignals = [...c.riskSignals];
-      let evidenceScore = c.telemetry.evidenceCompleteness;
-
-      if (eventType === 'PAYMENT_DELAYED') {
-        riskSignals.unshift({
-          id: `r-sim-${Date.now()}`,
-          title: 'PAYMENT_DELAYED Event Ingested',
-          category: 'BEHAVIOR',
-          severity: 'HIGH',
-          scoreImpact: -35,
-          description: 'Payment delay signal (+30 days overdue) detected on buyer transaction account.',
-          ruleTriggered: 'RULE_CONTINUOUS_PAYMENT_DELAY',
-          explainability: 'Continuous monitoring event degraded behaviour sub-score by -35.',
-          mitigationHint: 'Hold disbursement until buyer bank confirmation is re-verified.',
-          confidence: 0.95
-        });
-        addToast('Payment Delay Signal', `Flagged +30 day payment delay on case ${targetCaseId}`, 'warning');
-      } else if (eventType === 'DUPLICATE_DISCOVERED') {
-        riskSignals.unshift({
-          id: `r-sim-${Date.now()}`,
-          title: 'CRITICAL: Duplicate Discovered Cross-Lender',
-          category: 'DUPLICATE',
-          severity: 'CRITICAL',
-          scoreImpact: -60,
-          description: 'Adjacent lender registry detected identical line item invoice submission.',
-          ruleTriggered: 'RULE_CROSS_LENDER_DUPLICATE',
-          explainability: 'Canonical hash similarity spike detected.',
-          mitigationHint: 'Initiate double-financing fraud review immediately.',
-          confidence: 0.99
-        });
-        addToast('Duplicate Signal Flagged', `Cross-lender duplicate detected on case ${targetCaseId}`, 'error');
-      } else if (eventType === 'BUYER_CONFIRMED') {
-        evidenceScore = Math.min(100, evidenceScore + 15);
-        addToast('Buyer Confirmed', `Evidence score increased to ${evidenceScore}%`, 'success');
-      }
-
-      const telemetry = TrustEngine.calculateTelemetry(targetCaseId, riskSignals, evidenceScore);
-
-      return {
-        ...c,
-        riskSignals,
-        telemetry
-      };
-    }));
+  const handleExecuteDecision = (newStatus: CaseStatus, reason?: string) => {
+    handleExecuteDecisionForCase(selectedCaseId, newStatus, reason);
   };
 
-  // Handle Upload Success
-  const handleUploadSuccess = (newCasePartial: Partial<InvoiceCase>) => {
+  // Handle New Upload Invoice Registration
+  const handleUploadSuccess = (newCase: Partial<InvoiceCase>) => {
     const fullCase: InvoiceCase = {
-      id: newCasePartial.id || `case-vrt-${Date.now()}`,
-      caseNumber: newCasePartial.caseNumber || 'VRT-9900',
+      id: newCase.id || `case-${Date.now()}`,
       tenantId: session.activeTenantId,
-      sellerName: newCasePartial.sellerName || 'Apex Quantum Hardware Labs',
-      sellerTaxId: newCasePartial.sellerTaxId || 'US-1102938',
-      buyerName: newCasePartial.buyerName || 'OmniTech Solutions',
-      buyerTaxId: newCasePartial.buyerTaxId || 'US-8839201',
-      invoiceNumber: newCasePartial.invoiceNumber || 'INV-2026-9900',
-      issueDate: '2026-08-11',
-      dueDate: '2026-10-11',
-      totalMinor: newCasePartial.totalMinor || 14500000,
-      currency: 'USD',
+      caseNumber: newCase.caseNumber || `VRT-${Math.floor(10000 + Math.random() * 90000)}`,
+      invoiceNumber: newCase.invoiceNumber || 'INV-2026-001',
+      sellerName: newCase.sellerName || 'Acme Supplier',
+      buyerName: newCase.buyerName || 'Meridian Corp',
+      sellerTaxId: newCase.sellerTaxId || 'TAX-998102',
+      buyerTaxId: newCase.buyerTaxId || 'TAX-110293',
+      totalMinor: newCase.totalMinor || 5000000,
+      currency: newCase.currency || 'USD',
+      issueDate: newCase.issueDate || new Date().toISOString().split('T')[0],
+      dueDate: newCase.dueDate || new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
       status: 'NEEDS_REVIEW',
-      telemetry: {
-        id: `tp-${Date.now()}`,
-        invoiceId: newCasePartial.id || `case-vrt-${Date.now()}`,
-        trustScore: 88,
-        confidenceScore: 94,
-        evidenceCompleteness: 85,
-        riskLevel: 'LOW',
-        recommendation: 'APPROVE_RECOMMENDATION',
-        modelVersion: 'risk-0.3.0',
-        featureSchemaVersion: 'feat-v1.4',
-        reasons: ['Document scanned clean and verified']
-      },
-      fields: mockCases[0].fields,
-      lineItems: mockCases[0].lineItems,
-      riskSignals: [],
-      documentName: newCasePartial.documentName || 'Invoice.pdf',
-      documentUrl: newCasePartial.documentUrl || '',
+      telemetry: newCase.telemetry || TrustEngine.calculateTelemetry(newCase.id || `case-${Date.now()}`, []),
+      fields: newCase.fields || [],
+      lineItems: newCase.lineItems || [],
+      riskSignals: newCase.riskSignals || [],
+      documentName: newCase.documentName || 'invoice.pdf',
+      documentUrl: newCase.documentUrl || '',
       ocrProcessedAt: new Date().toISOString(),
-      evidenceItems: mockCases[0].evidenceItems
+      evidenceItems: newCase.evidenceItems || []
     };
 
-    setCases([fullCase, ...cases]);
+    setCases(prev => [fullCase, ...prev]);
     setSelectedCaseId(fullCase.id);
-    addToast('Invoice Processed', `Created new case ${fullCase.caseNumber} (${fullCase.documentName})`, 'success');
+    addToast('Invoice Uploaded', `Case ${fullCase.caseNumber} generated and submitted to trust pipeline.`, 'success');
   };
 
-  // Custom VERITAS Loading Sequence
-  if (isLoading) {
-    return <VeritasLoader onComplete={() => setIsLoading(false)} />;
-  }
+  // Handle Monitoring Stream Event Trigger
+  const handleTriggerMonitoringEvent = (eventType: MonitoringEventType, caseId: string) => {
+    const targetCase = cases.find(c => c.id === caseId) || activeCase;
+    const recalculatedTelemetry = TrustEngine.calculateTelemetry(
+      targetCase.id,
+      targetCase.riskSignals,
+      eventType === 'BUYER_CONFIRMED' ? 95 : 60
+    );
+
+    setCases(prev => prev.map(c => c.id === caseId ? { ...c, telemetry: recalculatedTelemetry } : c));
+    addToast('Stream Telemetry Triggered', `Event ${eventType} processed for case ${targetCase.caseNumber}. Trust Score: ${recalculatedTelemetry.trustScore}`, 'info');
+  };
 
   if (!isAuthenticated) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
-  }
-
-  // Standalone Public QR Proof Route
-  if (activePage === 'public-verify') {
-    return (
-      <PublicProofVerifyPage
-        proofId={activeCase.caseNumber}
-        onBackToApp={() => setActivePage('case-detail')}
-      />
-    );
   }
 
   const validPages: PageId[] = [
@@ -292,47 +236,52 @@ const AppWorkspace: React.FC = () => {
 
   const isValidPage = validPages.includes(activePage);
 
+  if (activePage === 'public-verify') {
+    return (
+      <PublicProofVerifyPage 
+        proofId={activeCase.caseNumber}
+        onBackToApp={() => setActivePage('overview')}
+      />
+    );
+  }
+
   return (
     <>
-      <a className="skip-link" href="#main">Skip to content</a>
-
-      {/* 3D Interactive VERITAS Card Animation Background */}
-      <SystemCardAnimation />
-
-      <div className="shell relative z-10">
-        {/* Navigation Rail */}
+      <div className="app-shell flex min-h-screen bg-[#141211] text-[#F7F4F1] font-sans antialiased selection:bg-[#6366F1] selection:text-white">
+        
+        {/* Slim Desktop & Mobile Navigation Rail */}
         <SlimNavigationRail
           activePage={activePage}
-          onNavigate={setActivePage}
+          onNavigate={(page) => {
+            setActivePage(page);
+            setIsMobileMenuOpen(false);
+          }}
           onLogout={handleLogout}
           isMobileOpen={isMobileMenuOpen}
           onCloseMobileMenu={() => setIsMobileMenuOpen(false)}
         />
 
-        {/* Top Command Bar */}
-        <TopCommandBar
-          session={session}
-          tenants={mockTenants}
-          onSwitchTenant={handleSwitchTenant}
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
-        />
+        {/* Main Application Area */}
+        <main className="flex-1 md:ml-16 flex flex-col min-w-0 min-h-screen relative z-10">
+          
+          {/* Top Command Bar */}
+          <TopCommandBar
+            session={session}
+            tenants={mockTenants}
+            onSwitchTenant={handleSwitchTenant}
+            onOpenSearch={() => setIsSearchOpen(true)}
+            onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+          />
 
-        {/* Tenant Security Guard Banner */}
-        <TenantSecurityGuard
-          activeTenantId={session.activeTenantId}
-          targetCaseTenantId={activeCase.tenantId}
-        />
-
-        {/* Main Content Workspace Container */}
-        <main id="main">
+          {/* Active View Container */}
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
-              initial={{ opacity: 0, y: 10, scale: 0.99 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.99 }}
-              transition={{ duration: 0.22 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="p-4 sm:p-6 lg:p-8 flex-1"
             >
               {!isValidPage && (
                 <NotFoundPage onBackToOverview={() => setActivePage('overview')} />
@@ -348,6 +297,8 @@ const AppWorkspace: React.FC = () => {
                     setSelectedCaseId(id);
                     setActivePage('case-detail');
                   }}
+                  onRequestEvidence={(c) => setEvidenceRequestTargetCase(c)}
+                  onExecuteDecision={(id, status) => handleExecuteDecisionForCase(id, status)}
                 />
               )}
 
@@ -360,6 +311,8 @@ const AppWorkspace: React.FC = () => {
                     setActivePage('case-detail');
                   }}
                   onNavigateToUpload={() => setActivePage('upload-pipeline')}
+                  onRequestEvidence={(c) => setEvidenceRequestTargetCase(c)}
+                  onExecuteDecision={(id, status) => handleExecuteDecisionForCase(id, status)}
                 />
               )}
 
@@ -427,6 +380,23 @@ const AppWorkspace: React.FC = () => {
         event={selectedProofEvent}
         onClose={() => setSelectedProofEvent(null)}
       />
+
+      {/* Evidence Request Modal */}
+      {evidenceRequestTargetCase && (
+        <EvidenceRequestModal
+          isOpen={!!evidenceRequestTargetCase}
+          onClose={() => setEvidenceRequestTargetCase(null)}
+          invoiceCase={evidenceRequestTargetCase}
+          onSubmitRequest={(_, notes) => {
+            handleExecuteDecisionForCase(
+              evidenceRequestTargetCase.id,
+              'EVIDENCE_REQUESTED',
+              `Evidence requested by underwriter: ${notes}`
+            );
+            setEvidenceRequestTargetCase(null);
+          }}
+        />
+      )}
 
       {/* Twilio WhatsApp Dispatch Notification Modal */}
       <TwilioWhatsAppModal
