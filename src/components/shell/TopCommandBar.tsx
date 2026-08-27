@@ -48,18 +48,30 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
         </button>
       </div>
 
-      {/* Global Command Search Box */}
+      {/* Global Interactive Command Search Input Bar */}
       <div 
-        className="search cursor-pointer bg-[#141211] border border-[#2E2A27] hover:border-[#6366F1] text-[#9E8C7C] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1]" 
         onClick={onOpenSearch}
+        className="search cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#141211] border border-[#2E2A27] hover:border-[#6366F1] text-[#9E8C7C] transition-all duration-150 flex-1 max-w-sm sm:max-w-md mx-3 focus-within:ring-2 focus-within:ring-[#6366F1]"
         role="button"
         tabIndex={0}
-        aria-label="Search cases, invoices, entities"
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpenSearch(); }}
+        aria-label="Global search command palette"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpenSearch();
+          }
+        }}
       >
-        <Search className="w-3.5 h-3.5 flex-shrink-0 text-[#9E8C7C]" />
-        <span className="truncate text-xs">Search cases, invoices, entities…</span>
-        <kbd className="hidden sm:inline-block bg-[#262320] border border-[#2E2A27] text-[#D8C7B8]">⌘K</kbd>
+        <Search className="w-3.5 h-3.5 flex-shrink-0 text-[#6366F1]" />
+        <input
+          type="text"
+          readOnly
+          placeholder="Search cases, invoices, entities… (⌘K)"
+          className="bg-transparent border-0 outline-none w-full text-xs text-[#F7F4F1] placeholder-[#9E8C7C] cursor-pointer"
+        />
+        <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#262320] border border-[#2E2A27] text-[#D8C7B8]">
+          ⌘K
+        </kbd>
       </div>
 
       {/* Actions & User Avatar */}
