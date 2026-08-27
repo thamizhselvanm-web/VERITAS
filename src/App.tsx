@@ -281,7 +281,7 @@ const AppWorkspace: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="p-4 sm:p-6 lg:p-8 flex-1"
+              className="p-6 sm:p-8 lg:p-10 flex-1 max-w-[1600px] w-full mx-auto"
             >
               {!isValidPage && (
                 <NotFoundPage onBackToOverview={() => setActivePage('overview')} />

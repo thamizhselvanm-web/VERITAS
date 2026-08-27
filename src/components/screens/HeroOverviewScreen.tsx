@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { InvoiceCase, TenantId, CaseStatus, formatCurrency } from '../../types';
-import { Inbox, UploadCloud, Search, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { Inbox, UploadCloud, Search, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight, Activity, ShieldAlert, FileQuestion, Award } from 'lucide-react';
 
 interface HeroOverviewScreenProps {
   cases: InvoiceCase[];
@@ -30,7 +30,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
   // All cases for active tenant
   const tenantCases = cases.filter(c => c.tenantId === activeTenantId);
 
-  // Dynamic KPI Card derivation (derived from actual data array)
+  // Dynamic KPI Card derivation
   const openCasesCount = tenantCases.filter(c => c.status === 'NEEDS_REVIEW' || c.status === 'EVIDENCE_REQUESTED').length;
   const highRiskCount = tenantCases.filter(c => c.telemetry.riskLevel === 'HIGH' || c.telemetry.riskLevel === 'CRITICAL').length;
   const evidenceGapCount = tenantCases.filter(c => c.telemetry.evidenceCompleteness < 75 || c.status === 'EVIDENCE_REQUESTED').length;
@@ -75,65 +75,99 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
   const activeFiltersCount = (searchQuery ? 1 : 0) + (statusFilter !== 'ALL' ? 1 : 0) + (trustFilter !== 'ALL' ? 1 : 0);
 
   return (
-    <div className="space-y-7 font-sans">
-      {/* Flat Graphite Page Header with Generous Spacing */}
-      <div className="page-head py-2">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F7F4F1] tracking-tight">Trust Operations Dashboard</h1>
-          <p className="meta mt-1.5 text-xs text-[#9E8C7C]">
-            {formattedDate} &middot; <strong className="text-[#6366F1]">
-              {openCasesCount} {openCasesCount === 1 ? 'case requires' : 'cases require'} attention
+    <div className="space-y-10 font-sans max-w-7xl mx-auto pb-8">
+      
+      {/* Flat Graphite Hero Page Header */}
+      <header className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2E2A27]/80 pb-6">
+        <div className="space-y-1.5">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#F7F4F1] tracking-tight">
+            Trust Operations Dashboard
+          </h1>
+          <p className="text-xs sm:text-sm text-[#9E8C7C] font-mono">
+            {formattedDate} &bull; <strong className="text-[#6366F1]">
+              {openCasesCount} {openCasesCount === 1 ? 'case requires' : 'cases require'} immediate underwriter triage
             </strong>
           </p>
         </div>
-        <div className="page-actions flex items-center gap-3">
+
+        <div className="flex items-center gap-3.5">
           <button 
-            className="btn-secondary text-xs px-4 py-2.5 font-semibold border border-[#2E2A27] bg-[#262320] text-[#F7F4F1] rounded-xl hover:border-[#6366F1]" 
+            className="px-4 py-3 text-xs font-semibold border border-[#2E2A27] bg-[#262320] text-[#F7F4F1] rounded-xl hover:border-[#6366F1] transition-all" 
             onClick={onNavigateToQueue}
             aria-label="Navigate to Full Review Queue"
           >
             Review Queue Directory
           </button>
           <button 
-            className="btn-primary text-xs px-5 py-2.5 font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-xl flex items-center gap-2 transition-all duration-150 shadow-md" 
+            className="px-5 py-3 text-xs font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-xl flex items-center gap-2 transition-all shadow-md cursor-pointer" 
             onClick={onNavigateToUpload}
             aria-label="Upload New Invoice"
           >
-            <UploadCloud className="w-4 h-4 text-white" /> Upload Invoice
+            <UploadCloud className="w-4 h-4 text-white" /> Upload New Invoice
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* Dynamic KPI Cards Grid (Spacious Layout) */}
-      <dl className="kpi-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="kpi bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-5 space-y-2 transition-all duration-150 hover:border-[#3A3532] shadow-sm">
-          <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Open Cases</dt>
-          <dd className="text-3xl font-extrabold font-numeric text-[#F7F4F1]">{openCasesCount}</dd>
+      {/* Dynamic KPI Cards Grid */}
+      <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
+          <div className="flex items-center justify-between">
+            <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Open Cases</dt>
+            <div className="p-2 rounded-xl bg-[#6366F1]/10 text-[#6366F1]">
+              <Activity className="w-4 h-4" />
+            </div>
+          </div>
+          <dd className="text-4xl font-extrabold font-numeric text-[#F7F4F1] tracking-tight">{openCasesCount}</dd>
+          <p className="text-[11px] text-[#9E8C7C] font-mono">Requires decision execution</p>
         </div>
-        <div className="kpi bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-5 space-y-2 transition-all duration-150 hover:border-[#3A3532] shadow-sm">
-          <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">High Risk Cases</dt>
-          <dd className="text-3xl font-extrabold font-numeric text-[#EF4444]">{highRiskCount}</dd>
+
+        <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
+          <div className="flex items-center justify-between">
+            <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">High Risk Cases</dt>
+            <div className="p-2 rounded-xl bg-[#EF4444]/10 text-[#EF4444]">
+              <ShieldAlert className="w-4 h-4" />
+            </div>
+          </div>
+          <dd className="text-4xl font-extrabold font-numeric text-[#EF4444] tracking-tight">{highRiskCount}</dd>
+          <p className="text-[11px] text-[#9E8C7C] font-mono">Telemetry risk level &ge; High</p>
         </div>
-        <div className="kpi bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-5 space-y-2 transition-all duration-150 hover:border-[#3A3532] shadow-sm">
-          <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Evidence Gap Count</dt>
-          <dd className="text-3xl font-extrabold font-numeric text-[#F59E0B]">{evidenceGapCount}</dd>
+
+        <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
+          <div className="flex items-center justify-between">
+            <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Evidence Gaps</dt>
+            <div className="p-2 rounded-xl bg-[#F59E0B]/10 text-[#F59E0B]">
+              <FileQuestion className="w-4 h-4" />
+            </div>
+          </div>
+          <dd className="text-4xl font-extrabold font-numeric text-[#F59E0B] tracking-tight">{evidenceGapCount}</dd>
+          <p className="text-[11px] text-[#9E8C7C] font-mono">Completeness &lt; 75% or pending doc</p>
         </div>
-        <div className="kpi bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-5 space-y-2 transition-all duration-150 hover:border-[#3A3532] shadow-sm">
-          <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Verification Index</dt>
-          <dd className="text-3xl font-extrabold font-numeric text-[#10B981]">91.4%</dd>
+
+        <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
+          <div className="flex items-center justify-between">
+            <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Verification Index</dt>
+            <div className="p-2 rounded-xl bg-[#10B981]/10 text-[#10B981]">
+              <Award className="w-4 h-4" />
+            </div>
+          </div>
+          <dd className="text-4xl font-extrabold font-numeric text-[#10B981] tracking-tight">91.4%</dd>
+          <p className="text-[11px] text-[#9E8C7C] font-mono">Continuous model accuracy</p>
         </div>
+
       </dl>
 
-      {/* Main Content Grid with Spacious Layout */}
-      <div className="content-grid grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      {/* Main Content Layout Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         
         {/* Priority Review Queue Section (2 cols) */}
-        <section className="lg:col-span-2 panel bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-lg space-y-0">
+        <section className="lg:col-span-2 bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl">
           
-          <div className="panel-head flex items-center justify-between p-5 border-b border-[#2E2A27]">
-            <div>
-              <h2 className="text-base font-extrabold text-[#F7F4F1] tracking-tight">Priority Review Queue</h2>
-              <p className="text-xs text-[#9E8C7C] font-mono mt-0.5">Triage tool sorted by trust score &amp; risk signals</p>
+          {/* Section Header */}
+          <div className="flex items-center justify-between p-6 border-b border-[#2E2A27]">
+            <div className="space-y-1">
+              <h2 className="text-lg font-extrabold text-[#F7F4F1] tracking-tight">Priority Review Queue</h2>
+              <p className="text-xs text-[#9E8C7C] font-mono">Triage directory sorted by continuous trust score and risk signals</p>
             </div>
             <button
               onClick={onNavigateToQueue}
@@ -143,41 +177,41 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
             </button>
           </div>
 
-          {/* Review Queue Triage Controls Bar */}
-          <div className="p-4 bg-[#141211] border-b border-[#2E2A27] flex flex-wrap items-center justify-between gap-3 text-xs">
+          {/* Triage Controls Bar */}
+          <div className="p-5 bg-[#141211] border-b border-[#2E2A27] flex flex-wrap items-center justify-between gap-4 text-xs">
             
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="w-4 h-4 text-[#9E8C7C] absolute left-3 top-2.5" />
+            <div className="relative flex-1 min-w-[220px] max-w-sm">
+              <Search className="w-4 h-4 text-[#9E8C7C] absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search case, seller, buyer..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#6366F1] transition-all"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#6366F1] transition-all"
                 aria-label="Filter cases by search query"
               />
             </div>
 
-            {/* Filter Dropdowns */}
-            <div className="flex flex-wrap items-center gap-2.5">
+            {/* Filter Controls */}
+            <div className="flex flex-wrap items-center gap-3">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="p-2 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
+                className="py-2.5 px-3 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
                 aria-label="Filter by case status"
               >
                 <option value="ALL">Status: All</option>
-                <option value="NEEDS_REVIEW">Status: Needs Review</option>
-                <option value="EVIDENCE_REQUESTED">Status: Evidence Requested</option>
-                <option value="APPROVED">Status: Approved</option>
-                <option value="REJECTED">Status: Rejected</option>
+                <option value="NEEDS_REVIEW">Needs Review</option>
+                <option value="EVIDENCE_REQUESTED">Evidence Requested</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
               </select>
 
               <select
                 value={trustFilter}
                 onChange={(e) => setTrustFilter(e.target.value)}
-                className="p-2 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
+                className="py-2.5 px-3 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
                 aria-label="Filter by trust band"
               >
                 <option value="ALL">Trust: All Bands</option>
@@ -189,19 +223,19 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="p-2 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
+                className="py-2.5 px-3 rounded-xl bg-[#1C1917] border border-[#2E2A27] text-xs font-mono text-[#D8C7B8] outline-none cursor-pointer focus:border-[#6366F1]"
                 aria-label="Sort queue order"
               >
-                <option value="TRUST_DESC">Sort: Trust (High &rarr; Low)</option>
-                <option value="TRUST_ASC">Sort: Trust (Low &rarr; High)</option>
-                <option value="AMOUNT_DESC">Sort: Amount (High &rarr; Low)</option>
-                <option value="DATE_DESC">Sort: Newest First</option>
+                <option value="TRUST_DESC">Sort: Trust &darr;</option>
+                <option value="TRUST_ASC">Sort: Trust &uarr;</option>
+                <option value="AMOUNT_DESC">Sort: Amount &darr;</option>
+                <option value="DATE_DESC">Sort: Newest</option>
               </select>
 
               {activeFiltersCount > 0 && (
                 <button
                   onClick={clearFilters}
-                  className="px-3 py-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] text-xs font-mono flex items-center gap-1.5 transition-all"
+                  className="py-2.5 px-3.5 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] text-xs font-mono flex items-center gap-1.5 transition-all"
                   title="Reset active triage filters"
                 >
                   <RefreshCw className="w-3.5 h-3.5" /> Reset ({activeFiltersCount})
@@ -211,14 +245,14 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
 
           </div>
 
-          {/* Queue Data Table & Empty State with Generous Padding */}
+          {/* Table Container with Generous Row Padding */}
           {filteredCases.length === 0 ? (
-            <div className="p-12 text-center space-y-3 bg-[#141211]">
-              <Inbox className="w-10 h-10 text-[#9E8C7C] mx-auto opacity-80" />
-              <p className="text-xs text-[#D8C7B8]">No cases match the selected filter criteria.</p>
+            <div className="p-14 text-center space-y-4 bg-[#141211]">
+              <Inbox className="w-12 h-12 text-[#9E8C7C] mx-auto opacity-75" />
+              <p className="text-sm text-[#D8C7B8]">No cases match the selected triage criteria.</p>
               <button 
                 onClick={clearFilters} 
-                className="btn-secondary text-xs px-4 py-2 border border-[#2E2A27] rounded-xl"
+                className="px-4 py-2 border border-[#2E2A27] bg-[#262320] text-[#F7F4F1] rounded-xl text-xs"
               >
                 Reset Filters
               </button>
@@ -228,14 +262,14 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#141211] text-[#9E8C7C] font-mono text-[11px] border-b border-[#2E2A27]">
-                    <th className="p-4 font-bold uppercase">Case Reference</th>
-                    <th className="p-4 font-bold uppercase">Seller &rarr; Buyer</th>
-                    <th className="p-4 font-bold uppercase text-right">Invoice Amount</th>
-                    <th className="p-4 font-bold uppercase text-center">Trust Score</th>
-                    <th className="p-4 font-bold uppercase text-center">Confidence</th>
-                    <th className="p-4 font-bold uppercase text-center">Evidence</th>
-                    <th className="p-4 font-bold uppercase">Status</th>
-                    <th className="p-4 text-right"></th>
+                    <th className="p-5 font-bold uppercase tracking-wider">Case Reference</th>
+                    <th className="p-5 font-bold uppercase tracking-wider">Seller &rarr; Buyer</th>
+                    <th className="p-5 font-bold uppercase tracking-wider text-right">Invoice Amount</th>
+                    <th className="p-5 font-bold uppercase tracking-wider text-center">Trust Score</th>
+                    <th className="p-5 font-bold uppercase tracking-wider text-center">Confidence</th>
+                    <th className="p-5 font-bold uppercase tracking-wider text-center">Evidence</th>
+                    <th className="p-5 font-bold uppercase tracking-wider">Status</th>
+                    <th className="p-5 text-right"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#2E2A27]">
@@ -261,22 +295,22 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                           onClick={() => setExpandedCaseId(isExpanded ? null : c.id)} 
                           className="hover:bg-[#262320] transition-all duration-150 cursor-pointer group"
                         >
-                          <td className="p-4 font-mono">
+                          <td className="p-5 font-mono">
                             <span className="font-bold text-[#F7F4F1] group-hover:text-[#6366F1] transition-colors">{c.caseNumber}</span>
-                            <span className="block text-[11px] text-[#9E8C7C] mt-0.5">Inv #{c.invoiceNumber}</span>
+                            <span className="block text-[11px] text-[#9E8C7C] mt-1">Inv #{c.invoiceNumber}</span>
                           </td>
 
-                          <td className="p-4 text-xs text-[#D8C7B8]">
+                          <td className="p-5 text-xs text-[#D8C7B8]">
                             <span className="font-semibold text-[#F7F4F1]">{c.sellerName}</span>
-                            <span className="block text-[11px] text-[#9E8C7C] mt-0.5">&rarr; {c.buyerName}</span>
+                            <span className="block text-[11px] text-[#9E8C7C] mt-1">&rarr; {c.buyerName}</span>
                           </td>
 
-                          <td className="p-4 text-right font-mono font-bold text-[#F7F4F1]">
+                          <td className="p-5 text-right font-mono font-bold text-[#F7F4F1]">
                             {formatCurrency(c.totalMinor, c.currency)}
                           </td>
 
                           {/* 1. Trust Score Metric */}
-                          <td className="p-4 text-center">
+                          <td className="p-5 text-center">
                             <div className="trust-cell justify-center">
                               <span className={`font-mono font-bold ${trustTextColor}`}>{trustScore}</span>
                               <div className="bar w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden">
@@ -289,14 +323,14 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                           </td>
 
                           {/* 2. Confidence Index Metric */}
-                          <td className="p-4 text-center font-mono text-xs text-[#D8C7B8]">
+                          <td className="p-5 text-center font-mono text-xs text-[#D8C7B8]">
                             <span className="bg-[#262320] px-2.5 py-1 rounded-lg border border-[#2E2A27]">
                               {confidenceScore}%
                             </span>
                           </td>
 
                           {/* 3. Evidence Completeness Metric */}
-                          <td className="p-4 text-center font-mono text-xs text-[#D8C7B8]">
+                          <td className="p-5 text-center font-mono text-xs text-[#D8C7B8]">
                             <span className={`px-2.5 py-1 rounded-lg border ${
                               evidenceScore >= 80 ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
                               evidenceScore >= 60 ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
@@ -307,7 +341,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                           </td>
 
                           {/* Status Badge */}
-                          <td className="p-4">
+                          <td className="p-5">
                             {c.status === 'APPROVED' ? (
                               <span className="pill verified">Approved</span>
                             ) : c.status === 'REJECTED' ? (
@@ -320,13 +354,13 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                           </td>
 
                           {/* Action Button */}
-                          <td className="p-4 text-right">
+                          <td className="p-5 text-right">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onSelectCase(c.id);
                               }}
-                              className="px-3 py-1.5 rounded-lg bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
+                              className="px-3.5 py-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
                             >
                               Inspect
                             </button>
@@ -336,14 +370,14 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                         {/* Inline Row Expansion Quick Preview & Action Buttons */}
                         {isExpanded && (
                           <tr className="bg-[#181615]">
-                            <td colSpan={8} className="p-5 border-b border-[#2E2A27]">
-                              <div className="space-y-4 bg-[#141211] p-5 rounded-2xl border border-[#2E2A27]">
+                            <td colSpan={8} className="p-6 border-b border-[#2E2A27]">
+                              <div className="space-y-5 bg-[#141211] p-6 rounded-2xl border border-[#2E2A27]">
                                 
-                                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2E2A27] pb-3.5">
-                                  <div className="space-y-1">
+                                <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#2E2A27] pb-4">
+                                  <div className="space-y-1.5">
                                     <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
                                       <FileText className="w-4 h-4 text-[#6366F1]" />
-                                      <span>Case {c.caseNumber} &middot; Telemetry Breakdown</span>
+                                      <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Telemetry</span>
                                     </div>
                                     <div className="flex items-center gap-4 text-xs font-mono text-[#9E8C7C]">
                                       <span>Model: <strong className="text-[#F7F4F1]">{c.telemetry.modelVersion}</strong></span>
@@ -353,15 +387,15 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
 
                                   {/* Triple Metrics Preview Pills */}
                                   <div className="flex items-center gap-3 font-mono text-xs">
-                                    <div className="bg-[#1C1917] px-3.5 py-2 rounded-xl border border-[#2E2A27]">
+                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
                                       <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
                                       <strong className={trustTextColor}>{trustScore} / 100</strong>
                                     </div>
-                                    <div className="bg-[#1C1917] px-3.5 py-2 rounded-xl border border-[#2E2A27]">
+                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
                                       <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
                                       <strong className="text-[#6366F1]">{confidenceScore}%</strong>
                                     </div>
-                                    <div className="bg-[#1C1917] px-3.5 py-2 rounded-xl border border-[#2E2A27]">
+                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
                                       <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
                                       <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
                                     </div>
@@ -369,8 +403,8 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                 </div>
 
                                 {/* Integrated Interactive Action Buttons Grid */}
-                                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                                  <div className="flex items-center gap-2.5">
+                                <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                                  <div className="flex items-center gap-3">
                                     {/* Action 1: Request Evidence */}
                                     <button
                                       type="button"
@@ -378,7 +412,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                         if (onRequestEvidence) onRequestEvidence(c);
                                         else onSelectCase(c.id);
                                       }}
-                                      className="px-3.5 py-2 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                                      className="px-4 py-2.5 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                                     >
                                       <HelpCircle className="w-4 h-4 text-[#6366F1]" />
                                       <span>Request Evidence</span>
@@ -391,7 +425,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                         if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
                                         else onSelectCase(c.id);
                                       }}
-                                      className="px-3.5 py-2 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                                      className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                                     >
                                       <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
                                       <span>Approve Financing</span>
@@ -404,7 +438,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                         if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
                                         else onSelectCase(c.id);
                                       }}
-                                      className="px-3.5 py-2 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                                      className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                                     >
                                       <XCircle className="w-4 h-4 text-[#EF4444]" />
                                       <span>Reject Financing</span>
@@ -415,7 +449,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => onSelectCase(c.id)}
-                                    className="px-4 py-2 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
+                                    className="px-5 py-2.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
                                   >
                                     <span>Inspect Full Workspace</span>
                                     <ArrowRight className="w-4 h-4" />
@@ -437,50 +471,53 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
         </section>
 
         {/* System Trust Health Sidebar Panel */}
-        <aside className="panel bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-lg space-y-0">
-          <div className="panel-head flex items-center justify-between p-5 border-b border-[#2E2A27]">
+        <aside className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl space-y-0">
+          
+          <div className="flex items-center justify-between p-6 border-b border-[#2E2A27]">
             <h2 className="text-base font-extrabold text-[#F7F4F1]">System Trust Health</h2>
             <span className="pill verified">Operational</span>
           </div>
 
-          <div className="health-body p-5 space-y-5">
-            <div>
-              <div className="health-score flex items-baseline justify-between">
-                <span className="num mono text-3xl font-extrabold text-[#F7F4F1]">91.4%</span>
+          <div className="p-6.5 space-y-6">
+            <div className="space-y-3">
+              <div className="flex items-baseline justify-between">
+                <span className="text-4xl font-extrabold font-numeric text-[#F7F4F1]">91.4%</span>
                 <span className="text-xs text-[#9E8C7C]">Global Verification Index</span>
               </div>
-              <div className="health-track mt-2.5 h-2 bg-[#2E2A27] rounded-full overflow-hidden">
-                <span className="bg-[#10B981] h-full block" style={{ width: '91.4%' }}></span>
+              <div className="h-2.5 bg-[#2E2A27] rounded-full overflow-hidden">
+                <span className="bg-[#10B981] h-full block rounded-full" style={{ width: '91.4%' }}></span>
               </div>
             </div>
 
-            <div className="events space-y-3 pt-3 border-t border-[#2E2A27]">
+            <div className="space-y-4 pt-4 border-t border-[#2E2A27]">
               <h3 className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">
                 Recent Verification Events
               </h3>
               
-              <div className="event flex items-center justify-between text-xs py-2 border-b border-[#2E2A27]/50">
-                <div>
-                  <div className="font-mono font-bold text-[#F7F4F1]">VRT-28491</div>
-                  <div className="text-[11px] text-[#9E8C7C]">OCR &amp; Tax ID match verified</div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs py-2.5 border-b border-[#2E2A27]/50">
+                  <div className="space-y-0.5">
+                    <div className="font-mono font-bold text-[#F7F4F1]">VRT-28491</div>
+                    <div className="text-[11px] text-[#9E8C7C]">OCR &amp; Tax ID match verified</div>
+                  </div>
+                  <span className="pill verified">Verified</span>
                 </div>
-                <span className="pill verified">Verified</span>
-              </div>
 
-              <div className="event flex items-center justify-between text-xs py-2 border-b border-[#2E2A27]/50">
-                <div>
-                  <div className="font-mono font-bold text-[#F7F4F1]">VRT-28492</div>
-                  <div className="text-[11px] text-[#9E8C7C]">Payment delay flag raised</div>
+                <div className="flex items-center justify-between text-xs py-2.5 border-b border-[#2E2A27]/50">
+                  <div className="space-y-0.5">
+                    <div className="font-mono font-bold text-[#F7F4F1]">VRT-28492</div>
+                    <div className="text-[11px] text-[#9E8C7C]">Payment delay flag raised</div>
+                  </div>
+                  <span className="pill review">Flagged</span>
                 </div>
-                <span className="pill review">Flagged</span>
-              </div>
 
-              <div className="event flex items-center justify-between text-xs py-2">
-                <div>
-                  <div className="font-mono font-bold text-[#F7F4F1]">VRT-28497</div>
-                  <div className="text-[11px] text-[#9E8C7C]">Buyer confirmation pending</div>
+                <div className="flex items-center justify-between text-xs py-2.5">
+                  <div className="space-y-0.5">
+                    <div className="font-mono font-bold text-[#F7F4F1]">VRT-28497</div>
+                    <div className="text-[11px] text-[#9E8C7C]">Buyer confirmation pending</div>
+                  </div>
+                  <span className="pill review">Pending</span>
                 </div>
-                <span className="pill review">Pending</span>
               </div>
 
             </div>
