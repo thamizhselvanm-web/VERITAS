@@ -305,9 +305,9 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                       </div>
 
                       {/* Middle: Amount & Trust Telemetry */}
-                      <div className="flex items-center gap-5 sm:gap-6 font-mono text-xs">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-6 font-mono text-xs">
                         {/* Amount */}
-                        <div className="text-right min-w-[100px]">
+                        <div className="text-left sm:text-right min-w-[100px]">
                           <span className="font-bold text-[#F7F4F1] text-sm block">{formatCurrency(c.totalMinor, c.currency)}</span>
                           <span className="text-[10px] text-[#9E8C7C] block uppercase">{c.currency} Invoice</span>
                         </div>
@@ -334,7 +334,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                       </div>
 
                       {/* Right: Status Badge (Rule 5: Tinted Fill & Dark Saturated Text Pairs) */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                         {c.status === 'APPROVED' ? (
                           <span className="pill verified">Approved</span>
                         ) : c.status === 'REJECTED' ? (

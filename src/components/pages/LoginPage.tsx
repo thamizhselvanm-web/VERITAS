@@ -39,7 +39,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       <SystemCardAnimation />
 
       {/* Centered Flat Graphite Auth Card */}
-      <div className="relative z-10 w-full max-w-[480px] bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-7 space-y-6 shadow-2xl">
+      <div className="relative z-10 w-full max-w-[480px] bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-4.5 sm:p-7 space-y-6 shadow-2xl">
         
         {/* Brand & Gateway Header */}
         <header className="flex items-center justify-between border-b border-[#2E2A27] pb-4">

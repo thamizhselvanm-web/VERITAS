@@ -216,8 +216,8 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
                     </div>
 
                     {/* Amount & Telemetry */}
-                    <div className="flex items-center gap-6 font-mono text-xs">
-                      <div className="text-right min-w-[110px]">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-6 font-mono text-xs">
+                      <div className="text-left sm:text-right min-w-[110px]">
                         <span className="font-bold text-[#F7F4F1] text-sm block">{formatCurrency(c.totalMinor, c.currency)}</span>
                         <span className="text-[10px] text-[#9E8C7C] block uppercase">{c.currency} Invoice</span>
                       </div>
@@ -249,7 +249,7 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
                     </div>
 
                     {/* Status & Actions */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                       {c.status === 'APPROVED' ? (
                         <span className="pill verified">Approved</span>
                       ) : c.status === 'REJECTED' ? (

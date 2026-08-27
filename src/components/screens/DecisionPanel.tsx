@@ -81,7 +81,7 @@ export const DecisionPanel: React.FC<DecisionPanelProps> = ({
       {/* Decision Action Buttons Grid */}
       <form onSubmit={handleSubmit} className="space-y-5">
         
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           
           {/* Request Evidence */}
           <button
