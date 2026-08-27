@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InvoiceCase, TenantId, CaseStatus, formatCurrency } from '../../types';
 import { Inbox, UploadCloud, Search, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight, Activity, ShieldAlert, FileQuestion, Award, ChevronDown, ChevronUp } from 'lucide-react';
+import { VeritasLogo } from '../common/VeritasLogo';
 
 interface HeroOverviewScreenProps {
   cases: InvoiceCase[];
@@ -77,8 +78,8 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
   return (
     <div className="space-y-10 font-sans max-w-7xl mx-auto pb-8 overflow-x-hidden">
       
-      {/* Flat Graphite Hero Page Header */}
-      <header className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2E2A27]/80 pb-6">
+      {/* Rule 3: Flat --surface-page Header with Zero Glow / Gradients */}
+      <header className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2E2A27] pb-6 bg-[#141211]">
         <div className="space-y-1.5">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#F7F4F1] tracking-tight">
             Trust Operations Dashboard
@@ -98,6 +99,8 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
           >
             Review Queue Directory
           </button>
+          
+          {/* Rule 2: Primary Button uses --action-primary (#4F46E5), Zero Orange */}
           <button 
             className="px-5 py-3 text-xs font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-xl flex items-center gap-2 transition-all shadow-md cursor-pointer" 
             onClick={onNavigateToUpload}
@@ -111,6 +114,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
       {/* Dynamic KPI Cards Grid */}
       <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
+        {/* KPI 1: Open Cases (Rule 6: text-primary) */}
         <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
           <div className="flex items-center justify-between">
             <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Open Cases</dt>
@@ -122,6 +126,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
           <p className="text-[11px] text-[#9E8C7C] font-mono">Requires decision execution</p>
         </div>
 
+        {/* KPI 2: High Risk Cases (Rule 6: status-risk-text #DC2626) */}
         <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
           <div className="flex items-center justify-between">
             <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">High Risk Cases</dt>
@@ -129,10 +134,11 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <dd className="text-4xl font-extrabold font-numeric text-[#EF4444] tracking-tight">{highRiskCount}</dd>
+          <dd className="text-4xl font-extrabold font-numeric text-[#DC2626] tracking-tight">{highRiskCount}</dd>
           <p className="text-[11px] text-[#9E8C7C] font-mono">Telemetry risk level &ge; High</p>
         </div>
 
+        {/* KPI 3: Evidence Gaps (Rule 6: text-primary) */}
         <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
           <div className="flex items-center justify-between">
             <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Evidence Gaps</dt>
@@ -140,10 +146,11 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               <FileQuestion className="w-4 h-4" />
             </div>
           </div>
-          <dd className="text-4xl font-extrabold font-numeric text-[#F59E0B] tracking-tight">{evidenceGapCount}</dd>
+          <dd className="text-4xl font-extrabold font-numeric text-[#F7F4F1] tracking-tight">{evidenceGapCount}</dd>
           <p className="text-[11px] text-[#9E8C7C] font-mono">Completeness &lt; 75% or pending doc</p>
         </div>
 
+        {/* KPI 4: Verification Index (Rule 6: text-primary) */}
         <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6.5 space-y-3 shadow-md hover:border-[#3A3532] transition-all">
           <div className="flex items-center justify-between">
             <dt className="text-[11px] font-mono font-bold text-[#9E8C7C] uppercase tracking-wider">Verification Index</dt>
@@ -151,7 +158,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               <Award className="w-4 h-4" />
             </div>
           </div>
-          <dd className="text-4xl font-extrabold font-numeric text-[#10B981] tracking-tight">91.4%</dd>
+          <dd className="text-4xl font-extrabold font-numeric text-[#F7F4F1] tracking-tight">91.4%</dd>
           <p className="text-[11px] text-[#9E8C7C] font-mono">Continuous model accuracy</p>
         </div>
 
@@ -265,19 +272,21 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                 const confidenceScore = c.telemetry.confidenceScore;
                 const evidenceScore = c.telemetry.evidenceCompleteness;
 
+                {/* Rule 4: Dynamic Trust Score Band Colors (0-40 Red, 41-70 Amber, 71-100 Green) */}
                 const trustBarClass = 
-                  trustScore <= 40 ? 'trust-bar-red' : 
-                  trustScore <= 70 ? 'trust-bar-amber' : 
-                  'trust-bar-green';
+                  trustScore <= 40 ? 'bg-[#EF4444]' : 
+                  trustScore <= 70 ? 'bg-[#F59E0B]' : 
+                  'bg-[#10B981]';
 
+                {/* Rule 4: Same color applied to adjacent numeric score for redundant signaling */}
                 const trustTextColor = 
-                  trustScore <= 40 ? 'text-[#EF4444]' : 
-                  trustScore <= 70 ? 'text-[#F59E0B]' : 
-                  'text-[#10B981]';
+                  trustScore <= 40 ? 'text-[#DC2626]' : 
+                  trustScore <= 70 ? 'text-[#D97706]' : 
+                  'text-[#059669]';
 
                 return (
                   <div key={c.id} className="w-full">
-                    {/* Compact Responsively Fitted Row Block (Zero Horizontal Overflow) */}
+                    {/* Compact Responsively Fitted Row Block */}
                     <div 
                       onClick={() => setExpandedCaseId(isExpanded ? null : c.id)} 
                       className="p-5 hover:bg-[#262320] transition-all duration-150 cursor-pointer flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 group"
@@ -312,7 +321,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
 
                           <div className="w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden hidden md:block">
                             <span 
-                              className={trustBarClass} 
+                              className={`h-full block rounded-full ${trustBarClass}`} 
                               style={{ width: `${Math.max(8, trustScore)}%` }}
                             />
                           </div>
@@ -324,7 +333,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                         </div>
                       </div>
 
-                      {/* Right: Status Pill & Action Trigger */}
+                      {/* Right: Status Badge (Rule 5: Tinted Fill & Dark Saturated Text Pairs) */}
                       <div className="flex items-center gap-3">
                         {c.status === 'APPROVED' ? (
                           <span className="pill verified">Approved</span>
@@ -365,7 +374,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                               </div>
                               <div className="flex items-center gap-4 text-xs font-mono text-[#9E8C7C]">
                                 <span>Model: <strong className="text-[#F7F4F1]">{c.telemetry.modelVersion}</strong></span>
-                                <span>Risk Severity: <strong className={c.telemetry.riskLevel === 'CRITICAL' || c.telemetry.riskLevel === 'HIGH' ? 'text-[#EF4444]' : 'text-[#10B981]'}>{c.telemetry.riskLevel}</strong></span>
+                                <span>Risk Severity: <strong className={c.telemetry.riskLevel === 'CRITICAL' || c.telemetry.riskLevel === 'HIGH' ? 'text-[#DC2626]' : 'text-[#059669]'}>{c.telemetry.riskLevel}</strong></span>
                               </div>
                             </div>
 
@@ -381,7 +390,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                               </div>
                               <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
                                 <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
-                                <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
+                                <strong className={evidenceScore >= 75 ? 'text-[#059669]' : 'text-[#D97706]'}>{evidenceScore}%</strong>
                               </div>
                             </div>
                           </div>
@@ -409,7 +418,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                   if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
                                   else onSelectCase(c.id);
                                 }}
-                                className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                                className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#059669] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                               >
                                 <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
                                 <span>Approve Financing</span>
@@ -422,7 +431,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
                                   if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
                                   else onSelectCase(c.id);
                                 }}
-                                className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                                className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#DC2626] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
                               >
                                 <XCircle className="w-4 h-4 text-[#EF4444]" />
                                 <span>Reject Financing</span>

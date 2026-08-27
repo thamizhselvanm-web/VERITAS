@@ -1,23 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  /* Institutional Fintech Color Palette */
-  --bg-canvas: #141211;
-  --bg-surface: #1C1917;
-  --bg-surface-2: #262320;
-  --border: rgba(255, 255, 255, 0.12);
-  --border-soft: rgba(255, 255, 255, 0.07);
+  /* VERITAS Brand & Surface Palette */
+  --veritas-brand-navy: #0B0F19;
+  --surface-page: #141211;
+  --surface-card: #1C1917;
+  --surface-subtle: #262320;
+  --surface-border: #2E2A27;
+
+  /* Typography Palette */
   --text-primary: #F7F4F1;
   --text-secondary: #D8C7B8;
   --text-muted: #9E8C7C;
-  --accent: #6366F1;
-  --accent-soft: rgba(99, 102, 241, 0.14);
-  --verified: #10B981;
-  --verified-soft: rgba(16, 185, 129, 0.14);
-  --review: #F59E0B;
-  --review-soft: rgba(245, 158, 11, 0.14);
-  --risk: #EF4444;
-  --risk-soft: rgba(239, 68, 68, 0.14);
+
+  /* Single Primary Action Color (Blue/Indigo) */
+  --action-primary: #4F46E5;
+  --action-primary-hover: #4338CA;
+
+  /* Semantic Status Colors & Tinted Pairs (WCAG AA >= 4.5:1) */
+  --status-verified: #10B981;
+  --status-verified-bg: rgba(16, 185, 129, 0.15);
+  --status-verified-text: #059669;
+
+  --status-review: #F59E0B;
+  --status-review-bg: rgba(245, 158, 11, 0.15);
+  --status-review-text: #D97706;
+
+  --status-risk: #EF4444;
+  --status-risk-bg: rgba(239, 68, 68, 0.15);
+  --status-risk-text: #DC2626;
+
+  --status-info: #6366F1;
+  --status-info-bg: rgba(99, 102, 241, 0.15);
+  --status-info-text: #4F46E5;
+
+  /* Deprecated / Legacy aliases mapped to new tokens */
+  --bg-canvas: var(--surface-page);
+  --bg-surface: var(--surface-card);
+  --bg-surface-2: var(--surface-subtle);
+  --border: var(--surface-border);
+  --border-soft: rgba(255, 255, 255, 0.07);
+  --accent: var(--status-info);
+  --accent-soft: var(--status-info-bg);
+  --verified: var(--status-verified);
+  --verified-soft: var(--status-verified-bg);
+  --review: var(--status-review);
+  --review-soft: var(--status-review-bg);
+  --risk: var(--status-risk);
+  --risk-soft: var(--status-risk-bg);
   --radius-sm: 8px;
   --radius-md: 12px;
   --sidebar-w: 64px;
@@ -659,33 +689,33 @@ tbody tr:hover {
 }
 
 .pill.verified {
-  background: var(--verified-soft);
-  color: var(--verified);
-  border: 1px solid rgba(82, 183, 136, 0.3);
+  background: var(--status-verified-bg);
+  color: var(--status-verified-text);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .pill.verified::before {
-  background: var(--verified);
+  background: var(--status-verified);
 }
 
 .pill.review {
-  background: var(--review-soft);
-  color: var(--review);
-  border: 1px solid rgba(244, 162, 97, 0.3);
+  background: var(--status-review-bg);
+  color: var(--status-review-text);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .pill.review::before {
-  background: var(--review);
+  background: var(--status-review);
 }
 
 .pill.risk {
-  background: var(--risk-soft);
-  color: var(--risk);
-  border: 1px solid rgba(240, 113, 81, 0.3);
+  background: var(--status-risk-bg);
+  color: var(--status-risk-text);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .pill.risk::before {
-  background: var(--risk);
+  background: var(--status-risk);
 }
 
 .trust-cell {

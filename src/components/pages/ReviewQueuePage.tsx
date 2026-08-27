@@ -186,14 +186,14 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
               const evidenceScore = c.telemetry.evidenceCompleteness;
 
               const trustBarClass = 
-                trustScore <= 40 ? 'trust-bar-red' : 
-                trustScore <= 70 ? 'trust-bar-amber' : 
-                'trust-bar-green';
+                trustScore <= 40 ? 'bg-[#EF4444]' : 
+                trustScore <= 70 ? 'bg-[#F59E0B]' : 
+                'bg-[#10B981]';
 
               const trustTextColor = 
-                trustScore <= 40 ? 'text-[#EF4444]' : 
-                trustScore <= 70 ? 'text-[#F59E0B]' : 
-                'text-[#10B981]';
+                trustScore <= 40 ? 'text-[#DC2626]' : 
+                trustScore <= 70 ? 'text-[#D97706]' : 
+                'text-[#059669]';
 
               return (
                 <div key={c.id} className="w-full">
