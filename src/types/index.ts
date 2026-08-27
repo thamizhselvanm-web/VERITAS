@@ -130,7 +130,7 @@ export interface InvoiceCase {
   duplicateSimilarityScore?: number;
 }
 
-export type NodeType = 'SELLER' | 'BUYER' | 'INVOICE' | 'PAYMENT' | 'BANK' | 'FINANCING';
+export type NodeType = 'SELLER' | 'BUYER' | 'INVOICE' | 'PAYMENT' | 'BANK' | 'FINANCING' | 'PO' | 'DELIVERY' | 'TAX' | 'CHAIN';
 export type NodeTrust = 'HIGH' | 'MEDIUM' | 'LOW' | 'SUSPICIOUS';
 
 export interface GraphNode {

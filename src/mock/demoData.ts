@@ -255,17 +255,23 @@ export const mockCases: InvoiceCase[] = [
 
 export const mockGraphNodes: Record<string, GraphNode[]> = {
   'case-vrt-28491': [
-    { id: 'n-seller', label: 'Acme Components Ltd', type: 'SELLER', trustStatus: 'HIGH', subtitle: 'GSTIN: IN-9840291-GST' },
-    { id: 'n-buyer', label: 'Meridian Industries Inc', type: 'BUYER', trustStatus: 'HIGH', subtitle: 'GSTIN: IN-1029384-GST' },
-    { id: 'n-inv', label: 'INV-1024', type: 'INVOICE', trustStatus: 'MEDIUM', subtitle: '₹5,00,000.00' },
-    { id: 'n-prev', label: 'INV-984 (Fuzzy Match)', type: 'INVOICE', trustStatus: 'SUSPICIOUS', subtitle: '₹4,99,500.00 (94.2% Similarity)' },
-    { id: 'n-pay1', label: 'Settlement Bank #9920', type: 'BANK', trustStatus: 'HIGH', subtitle: 'HDFC Commercial' }
+    { id: 'n-seller', label: 'Acme Components Ltd', type: 'SELLER', trustStatus: 'HIGH', subtitle: 'GSTIN: IN-9840291-GST · Primary Vendor' },
+    { id: 'n-buyer', label: 'Meridian Industries Inc', type: 'BUYER', trustStatus: 'HIGH', subtitle: 'GSTIN: IN-1029384-GST · Corporate Buyer' },
+    { id: 'n-inv', label: 'INV-1024 (Current)', type: 'INVOICE', trustStatus: 'HIGH', subtitle: '₹5,00,000.00 · Under Audit' },
+    { id: 'n-prev', label: 'INV-984 (Fuzzy Match)', type: 'INVOICE', trustStatus: 'SUSPICIOUS', subtitle: '₹4,99,500.00 · 94.2% Similarity Flag' },
+    { id: 'n-pay1', label: 'HDFC Settlement Bank #9920', type: 'BANK', trustStatus: 'HIGH', subtitle: 'IFSC: HDFC0001092 · Verified Account' },
+    { id: 'n-po', label: 'Purchase Order PO-2026-8819', type: 'PO', trustStatus: 'HIGH', subtitle: 'PO Amount: ₹5,00,000.00 · 100% Match' },
+    { id: 'n-shipping', label: 'Bill of Lading BL-99402', type: 'DELIVERY', trustStatus: 'HIGH', subtitle: 'Logistics Dispatch Verified' },
+    { id: 'n-tax', label: 'GSTN Portal Validation Node', type: 'TAX', trustStatus: 'HIGH', subtitle: 'E-Way Bill Active & Tax Paid' },
+    { id: 'n-notary', label: 'Arbitrum Merkle Notary L2', type: 'CHAIN', trustStatus: 'HIGH', subtitle: 'Block #1849201 · Sealed' },
+    { id: 'n-tier2', label: 'Quantum Precision Tools', type: 'SELLER', trustStatus: 'MEDIUM', subtitle: 'Tier-2 Raw Material Supplier' }
   ],
   'case-vrt-92837': [
     { id: 'n-seller', label: 'AeroDynamics Tech LLC', type: 'SELLER', trustStatus: 'HIGH', subtitle: 'Tax ID: US-9840291' },
     { id: 'n-buyer', label: 'Global Logistics Corp', type: 'BUYER', trustStatus: 'HIGH', subtitle: 'Tax ID: US-1029384' },
     { id: 'n-inv', label: 'INV-2026-8819', type: 'INVOICE', trustStatus: 'HIGH', subtitle: '$185,000.00' },
-    { id: 'n-pay1', label: 'Settlement Account #9920', type: 'BANK', trustStatus: 'HIGH', subtitle: 'JPMorgan Chase' }
+    { id: 'n-pay1', label: 'JPMorgan Settlement Account', type: 'BANK', trustStatus: 'HIGH', subtitle: 'FedWire Account Verified' },
+    { id: 'n-po', label: 'PO-AERO-99201', type: 'PO', trustStatus: 'HIGH', subtitle: '$185,000.00 Match' }
   ]
 };
 
@@ -274,12 +280,18 @@ export const mockGraphEdges: Record<string, GraphEdge[]> = {
     { id: 'e1', source: 'n-seller', target: 'n-inv', label: 'ISSUED_BY', amountFormatted: '₹5,00,000' },
     { id: 'e2', source: 'n-inv', target: 'n-buyer', label: 'BILLED_TO', amountFormatted: '₹5,00,000' },
     { id: 'e3', source: 'n-inv', target: 'n-prev', label: '94.2% FUZZY SIMILARITY', isSuspicious: true },
-    { id: 'e4', source: 'n-seller', target: 'n-pay1', label: 'VERIFIED_BANK' }
+    { id: 'e4', source: 'n-seller', target: 'n-pay1', label: 'SETTLEMENT_GATEWAY' },
+    { id: 'e5', source: 'n-inv', target: 'n-po', label: 'PO_MATCHED' },
+    { id: 'e6', source: 'n-inv', target: 'n-shipping', label: 'LOGISTICS_DISPATCH' },
+    { id: 'e7', source: 'n-seller', target: 'n-tax', label: 'TAX_VERIFIED' },
+    { id: 'e8', source: 'n-inv', target: 'n-notary', label: 'CHAIN_NOTARIZED' },
+    { id: 'e9', source: 'n-seller', target: 'n-tier2', label: 'TIER_2_SUPPLIER' }
   ],
   'case-vrt-92837': [
     { id: 'e1', source: 'n-seller', target: 'n-inv', label: 'ISSUED_BY', amountFormatted: '$185,000' },
     { id: 'e2', source: 'n-inv', target: 'n-buyer', label: 'BILLED_TO', amountFormatted: '$185,000' },
-    { id: 'e3', source: 'n-seller', target: 'n-pay1', label: 'VERIFIED_BANK' }
+    { id: 'e3', source: 'n-seller', target: 'n-pay1', label: 'SETTLEMENT_GATEWAY' },
+    { id: 'e4', source: 'n-inv', target: 'n-po', label: 'PO_MATCHED' }
   ]
 };
 
