@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ListFilter, Search, UploadCloud, Inbox, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { ListFilter, Search, UploadCloud, Inbox, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { InvoiceCase, TenantId, CaseStatus, formatCurrency } from '../../types';
 
 interface ReviewQueuePageProps {
@@ -59,7 +59,7 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
   const activeFiltersCount = (searchQuery ? 1 : 0) + (statusFilter !== 'ALL' ? 1 : 0) + (trustBandFilter !== 'ALL' ? 1 : 0);
 
   return (
-    <section aria-label="Review Queue" className="space-y-10 font-sans select-none max-w-7xl mx-auto pb-8">
+    <section aria-label="Review Queue" className="space-y-10 font-sans select-none max-w-7xl mx-auto pb-8 overflow-x-hidden">
       
       {/* Header with Spacious Layout */}
       <header className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2E2A27]/80 pb-6">
@@ -159,8 +159,8 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
 
       </div>
 
-      {/* Cases Data Table / Empty State */}
-      <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl">
+      {/* Cases Data Container with ZERO Horizontal Scroll */}
+      <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl w-full">
         {filteredCases.length === 0 ? (
           <div className="p-14 text-center space-y-4 font-sans bg-[#141211]">
             <Inbox className="w-12 h-12 text-[#9E8C7C] mx-auto opacity-75" />
@@ -178,206 +178,192 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto text-xs">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#141211] text-[#9E8C7C] font-mono text-[11px] border-b border-[#2E2A27]">
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider">Case Reference</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider">Seller Entity</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider">Buyer Entity</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider text-right">Amount</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider text-center">1. Trust Score</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider text-center">2. Confidence</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider text-center">3. Evidence</th>
-                  <th scope="col" className="p-5 font-bold uppercase tracking-wider">Status</th>
-                  <th scope="col" className="p-5 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2E2A27]">
-                {filteredCases.map((c) => {
-                  const isExpanded = expandedCaseId === c.id;
-                  const trustScore = c.telemetry.trustScore;
-                  const confidenceScore = c.telemetry.confidenceScore;
-                  const evidenceScore = c.telemetry.evidenceCompleteness;
+          <div className="w-full overflow-hidden divide-y divide-[#2E2A27]">
+            {filteredCases.map((c) => {
+              const isExpanded = expandedCaseId === c.id;
+              const trustScore = c.telemetry.trustScore;
+              const confidenceScore = c.telemetry.confidenceScore;
+              const evidenceScore = c.telemetry.evidenceCompleteness;
 
-                  const trustBarClass = 
-                    trustScore <= 40 ? 'trust-bar-red' : 
-                    trustScore <= 70 ? 'trust-bar-amber' : 
-                    'trust-bar-green';
+              const trustBarClass = 
+                trustScore <= 40 ? 'trust-bar-red' : 
+                trustScore <= 70 ? 'trust-bar-amber' : 
+                'trust-bar-green';
 
-                  const trustTextColor = 
-                    trustScore <= 40 ? 'text-[#EF4444]' : 
-                    trustScore <= 70 ? 'text-[#F59E0B]' : 
-                    'text-[#10B981]';
+              const trustTextColor = 
+                trustScore <= 40 ? 'text-[#EF4444]' : 
+                trustScore <= 70 ? 'text-[#F59E0B]' : 
+                'text-[#10B981]';
 
-                  return (
-                    <React.Fragment key={c.id}>
-                      <tr 
-                        className="hover:bg-[#262320] transition-colors duration-150 cursor-pointer group" 
-                        onClick={() => setExpandedCaseId(isExpanded ? null : c.id)}
+              return (
+                <div key={c.id} className="w-full">
+                  {/* Perfectly Fitted Row Container */}
+                  <div 
+                    onClick={() => setExpandedCaseId(isExpanded ? null : c.id)} 
+                    className="p-5 hover:bg-[#262320] transition-all duration-150 cursor-pointer flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 group"
+                  >
+                    {/* Case Reference & Entity Pair */}
+                    <div className="space-y-1 min-w-[220px] flex-1">
+                      <div className="flex items-center gap-2 font-mono">
+                        <span className="font-bold text-[#F7F4F1] text-sm group-hover:text-[#6366F1] transition-colors">{c.caseNumber}</span>
+                        <span className="text-xs text-[#9E8C7C]">Inv #{c.invoiceNumber}</span>
+                      </div>
+                      <div className="text-xs text-[#D8C7B8] flex items-center gap-1.5 flex-wrap">
+                        <span className="font-semibold text-[#F7F4F1]">{c.sellerName}</span>
+                        <span className="text-[#9E8C7C] font-mono">&rarr;</span>
+                        <span>{c.buyerName}</span>
+                      </div>
+                    </div>
+
+                    {/* Amount & Telemetry */}
+                    <div className="flex items-center gap-6 font-mono text-xs">
+                      <div className="text-right min-w-[110px]">
+                        <span className="font-bold text-[#F7F4F1] text-sm block">{formatCurrency(c.totalMinor, c.currency)}</span>
+                        <span className="text-[10px] text-[#9E8C7C] block uppercase">{c.currency} Invoice</span>
+                      </div>
+
+                      {/* Telemetry Badges */}
+                      <div className="flex items-center gap-2 bg-[#141211] p-2 rounded-xl border border-[#2E2A27]">
+                        <div className="text-center px-1.5">
+                          <span className="text-[9px] text-[#9E8C7C] block font-mono uppercase">Trust</span>
+                          <span className={`font-mono font-extrabold ${trustTextColor}`}>{trustScore}</span>
+                        </div>
+
+                        <div className="w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden hidden md:block">
+                          <span 
+                            className={trustBarClass} 
+                            style={{ width: `${Math.max(8, trustScore)}%` }}
+                          />
+                        </div>
+
+                        <div className="text-center px-1.5 border-l border-[#2E2A27]">
+                          <span className="text-[9px] text-[#9E8C7C] block font-mono uppercase">Conf</span>
+                          <span className="font-mono text-[#D8C7B8]">{confidenceScore}%</span>
+                        </div>
+
+                        <div className="text-center px-1.5 border-l border-[#2E2A27]">
+                          <span className="text-[9px] text-[#9E8C7C] block font-mono uppercase">Evid</span>
+                          <span className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status & Actions */}
+                    <div className="flex items-center gap-3">
+                      {c.status === 'APPROVED' ? (
+                        <span className="pill verified">Approved</span>
+                      ) : c.status === 'REJECTED' ? (
+                        <span className="pill risk">Rejected</span>
+                      ) : c.status === 'EVIDENCE_REQUESTED' ? (
+                        <span className="pill review">Evidence Needed</span>
+                      ) : (
+                        <span className="pill review">Needs Review</span>
+                      )}
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectCase(c.id);
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
                       >
-                        <td className="p-5 font-mono font-semibold text-[#F7F4F1]">
-                          <span className="group-hover:text-[#6366F1] transition-colors font-bold">{c.caseNumber}</span>
-                          <span className="block text-[11px] text-[#9E8C7C] font-normal mt-1">Inv #{c.invoiceNumber}</span>
-                        </td>
-                        <td className="p-5 text-[#D8C7B8] font-medium">{c.sellerName}</td>
-                        <td className="p-5 text-[#D8C7B8] font-medium">{c.buyerName}</td>
-                        <td className="p-5 text-right font-mono font-bold text-[#F7F4F1]">
-                          {formatCurrency(c.totalMinor, c.currency)}
-                        </td>
+                        Inspect
+                      </button>
 
-                        {/* 1. Trust Score Metric */}
-                        <td className="p-5 text-center">
-                          <div className="trust-cell justify-center">
-                            <span className={`font-mono font-bold ${trustTextColor}`}>{trustScore}</span>
-                            <div className="bar w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden">
-                              <span 
-                                className={trustBarClass} 
-                                style={{ width: `${Math.max(8, trustScore)}%` }}
-                              />
+                      <div className="text-[#9E8C7C] group-hover:text-[#F7F4F1] p-1">
+                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Drawer Details */}
+                  {isExpanded && (
+                    <div className="bg-[#181615] p-6 border-t border-[#2E2A27]">
+                      <div className="space-y-5 bg-[#141211] p-6 rounded-2xl border border-[#2E2A27]">
+                        
+                        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#2E2A27] pb-4">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
+                              <FileText className="w-4 h-4 text-[#6366F1]" />
+                              <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Telemetry</span>
+                            </div>
+                            <div className="text-xs text-[#9E8C7C] font-mono">
+                              Model: {c.telemetry.modelVersion} &bull; Schema: {c.telemetry.featureSchemaVersion}
                             </div>
                           </div>
-                        </td>
 
-                        {/* 2. Confidence Index Metric */}
-                        <td className="p-5 text-center font-mono font-numeric text-[#D8C7B8]">
-                          <span className="bg-[#262320] px-2.5 py-1.5 rounded-lg border border-[#2E2A27]">
-                            {confidenceScore}%
-                          </span>
-                        </td>
-
-                        {/* 3. Evidence Completeness Metric */}
-                        <td className="p-5 text-center font-mono font-numeric text-[#D8C7B8]">
-                          <span className={`px-2.5 py-1.5 rounded-lg border ${
-                            evidenceScore >= 80 ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
-                            evidenceScore >= 60 ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
-                            'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
-                          }`}>
-                            {evidenceScore}%
-                          </span>
-                        </td>
-
-                        <td className="p-5">
-                          {c.status === 'APPROVED' ? (
-                            <span className="pill verified">Approved</span>
-                          ) : c.status === 'REJECTED' ? (
-                            <span className="pill risk">Rejected</span>
-                          ) : c.status === 'EVIDENCE_REQUESTED' ? (
-                            <span className="pill review">Evidence Needed</span>
-                          ) : (
-                            <span className="pill review">Needs Review</span>
-                          )}
-                        </td>
-
-                        <td className="p-5 text-right">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSelectCase(c.id);
-                            }}
-                            className="py-2 px-3.5 text-xs rounded-xl bg-[#262320] border border-[#2E2A27] text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
-                          >
-                            Inspect Case
-                          </button>
-                        </td>
-                      </tr>
-
-                      {/* Row Expansion Quick Preview & Action Buttons */}
-                      {isExpanded && (
-                        <tr className="bg-[#181615]">
-                          <td colSpan={9} className="p-6 border-b border-[#2E2A27]">
-                            <div className="space-y-5 bg-[#141211] p-6 rounded-2xl border border-[#2E2A27]">
-                              
-                              <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#2E2A27] pb-4">
-                                <div className="space-y-1.5">
-                                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
-                                    <FileText className="w-4 h-4 text-[#6366F1]" />
-                                    <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Telemetry</span>
-                                  </div>
-                                  <div className="text-xs text-[#9E8C7C] font-mono">
-                                    Model: {c.telemetry.modelVersion} &bull; Schema: {c.telemetry.featureSchemaVersion}
-                                  </div>
-                                </div>
-
-                                <div className="flex items-center gap-3 font-mono text-xs">
-                                  <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                    <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
-                                    <strong className={trustTextColor}>{trustScore} / 100</strong>
-                                  </div>
-                                  <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                    <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
-                                    <strong className="text-[#6366F1]">{confidenceScore}%</strong>
-                                  </div>
-                                  <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                    <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
-                                    <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Integrated Interactive Action Buttons Grid */}
-                              <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                                <div className="flex items-center gap-3">
-                                  {/* Action 1: Request Evidence */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (onRequestEvidence) onRequestEvidence(c);
-                                      else onSelectCase(c.id);
-                                    }}
-                                    className="px-4 py-2.5 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                  >
-                                    <HelpCircle className="w-4 h-4 text-[#6366F1]" />
-                                    <span>Request Evidence</span>
-                                  </button>
-
-                                  {/* Action 2: Approve Financing */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
-                                      else onSelectCase(c.id);
-                                    }}
-                                    className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                  >
-                                    <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                                    <span>Approve Financing</span>
-                                  </button>
-
-                                  {/* Action 3: Reject Case */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
-                                      else onSelectCase(c.id);
-                                    }}
-                                    className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                  >
-                                    <XCircle className="w-4 h-4 text-[#EF4444]" />
-                                    <span>Reject Financing</span>
-                                  </button>
-                                </div>
-
-                                {/* Action 4: Open Full Workspace */}
-                                <button
-                                  type="button"
-                                  onClick={() => onSelectCase(c.id)}
-                                  className="px-5 py-2.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
-                                >
-                                  <span>Inspect Full Workspace</span>
-                                  <ArrowRight className="w-4 h-4" />
-                                </button>
-                              </div>
-
+                          <div className="flex items-center gap-3 font-mono text-xs">
+                            <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                              <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
+                              <strong className={trustTextColor}>{trustScore} / 100</strong>
                             </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
+                            <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                              <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
+                              <strong className="text-[#6366F1]">{confidenceScore}%</strong>
+                            </div>
+                            <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                              <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
+                              <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Interactive Action Buttons */}
+                        <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onRequestEvidence) onRequestEvidence(c);
+                                else onSelectCase(c.id);
+                              }}
+                              className="px-4 py-2.5 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                            >
+                              <HelpCircle className="w-4 h-4 text-[#6366F1]" />
+                              <span>Request Evidence</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
+                                else onSelectCase(c.id);
+                              }}
+                              className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                            >
+                              <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                              <span>Approve Financing</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
+                                else onSelectCase(c.id);
+                              }}
+                              className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                            >
+                              <XCircle className="w-4 h-4 text-[#EF4444]" />
+                              <span>Reject Financing</span>
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => onSelectCase(c.id)}
+                            className="px-5 py-2.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
+                          >
+                            <span>Inspect Full Workspace</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

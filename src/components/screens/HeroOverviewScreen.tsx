@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { InvoiceCase, TenantId, CaseStatus, formatCurrency } from '../../types';
-import { Inbox, UploadCloud, Search, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight, Activity, ShieldAlert, FileQuestion, Award } from 'lucide-react';
+import { Inbox, UploadCloud, Search, RefreshCw, FileText, CheckCircle2, XCircle, HelpCircle, ArrowRight, Activity, ShieldAlert, FileQuestion, Award, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface HeroOverviewScreenProps {
   cases: InvoiceCase[];
@@ -75,7 +75,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
   const activeFiltersCount = (searchQuery ? 1 : 0) + (statusFilter !== 'ALL' ? 1 : 0) + (trustFilter !== 'ALL' ? 1 : 0);
 
   return (
-    <div className="space-y-10 font-sans max-w-7xl mx-auto pb-8">
+    <div className="space-y-10 font-sans max-w-7xl mx-auto pb-8 overflow-x-hidden">
       
       {/* Flat Graphite Hero Page Header */}
       <header className="flex flex-wrap items-center justify-between gap-6 border-b border-[#2E2A27]/80 pb-6">
@@ -158,10 +158,10 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
       </dl>
 
       {/* Main Content Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start overflow-hidden">
         
         {/* Priority Review Queue Section (2 cols) */}
-        <section className="lg:col-span-2 bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl">
+        <section className="lg:col-span-2 bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl w-full">
           
           {/* Section Header */}
           <div className="flex items-center justify-between p-6 border-b border-[#2E2A27]">
@@ -181,7 +181,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
           <div className="p-5 bg-[#141211] border-b border-[#2E2A27] flex flex-wrap items-center justify-between gap-4 text-xs">
             
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[220px] max-w-sm">
+            <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="w-4 h-4 text-[#9E8C7C] absolute left-3.5 top-3" />
               <input
                 type="text"
@@ -245,7 +245,7 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
 
           </div>
 
-          {/* Table Container with Generous Row Padding */}
+          {/* Perfect Fit Container - ZERO Horizontal Scroll */}
           {filteredCases.length === 0 ? (
             <div className="p-14 text-center space-y-4 bg-[#141211]">
               <Inbox className="w-12 h-12 text-[#9E8C7C] mx-auto opacity-75" />
@@ -258,220 +258,201 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-[#141211] text-[#9E8C7C] font-mono text-[11px] border-b border-[#2E2A27]">
-                    <th className="p-5 font-bold uppercase tracking-wider">Case Reference</th>
-                    <th className="p-5 font-bold uppercase tracking-wider">Seller &rarr; Buyer</th>
-                    <th className="p-5 font-bold uppercase tracking-wider text-right">Invoice Amount</th>
-                    <th className="p-5 font-bold uppercase tracking-wider text-center">Trust Score</th>
-                    <th className="p-5 font-bold uppercase tracking-wider text-center">Confidence</th>
-                    <th className="p-5 font-bold uppercase tracking-wider text-center">Evidence</th>
-                    <th className="p-5 font-bold uppercase tracking-wider">Status</th>
-                    <th className="p-5 text-right"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#2E2A27]">
-                  {filteredCases.map((c) => {
-                    const isExpanded = expandedCaseId === c.id;
-                    const trustScore = c.telemetry.trustScore;
-                    const confidenceScore = c.telemetry.confidenceScore;
-                    const evidenceScore = c.telemetry.evidenceCompleteness;
+            <div className="w-full overflow-hidden divide-y divide-[#2E2A27]">
+              {filteredCases.map((c) => {
+                const isExpanded = expandedCaseId === c.id;
+                const trustScore = c.telemetry.trustScore;
+                const confidenceScore = c.telemetry.confidenceScore;
+                const evidenceScore = c.telemetry.evidenceCompleteness;
 
-                    const trustBarClass = 
-                      trustScore <= 40 ? 'trust-bar-red' : 
-                      trustScore <= 70 ? 'trust-bar-amber' : 
-                      'trust-bar-green';
+                const trustBarClass = 
+                  trustScore <= 40 ? 'trust-bar-red' : 
+                  trustScore <= 70 ? 'trust-bar-amber' : 
+                  'trust-bar-green';
 
-                    const trustTextColor = 
-                      trustScore <= 40 ? 'text-[#EF4444]' : 
-                      trustScore <= 70 ? 'text-[#F59E0B]' : 
-                      'text-[#10B981]';
+                const trustTextColor = 
+                  trustScore <= 40 ? 'text-[#EF4444]' : 
+                  trustScore <= 70 ? 'text-[#F59E0B]' : 
+                  'text-[#10B981]';
 
-                    return (
-                      <React.Fragment key={c.id}>
-                        <tr 
-                          onClick={() => setExpandedCaseId(isExpanded ? null : c.id)} 
-                          className="hover:bg-[#262320] transition-all duration-150 cursor-pointer group"
+                return (
+                  <div key={c.id} className="w-full">
+                    {/* Compact Responsively Fitted Row Block (Zero Horizontal Overflow) */}
+                    <div 
+                      onClick={() => setExpandedCaseId(isExpanded ? null : c.id)} 
+                      className="p-5 hover:bg-[#262320] transition-all duration-150 cursor-pointer flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 group"
+                    >
+                      {/* Left: Case Reference & Entity Pair */}
+                      <div className="space-y-1 min-w-[200px] flex-1">
+                        <div className="flex items-center gap-2 font-mono">
+                          <span className="font-bold text-[#F7F4F1] text-sm group-hover:text-[#6366F1] transition-colors">{c.caseNumber}</span>
+                          <span className="text-xs text-[#9E8C7C]">Inv #{c.invoiceNumber}</span>
+                        </div>
+                        <div className="text-xs text-[#D8C7B8] flex items-center gap-1.5 flex-wrap">
+                          <span className="font-semibold text-[#F7F4F1]">{c.sellerName}</span>
+                          <span className="text-[#9E8C7C] font-mono">&rarr;</span>
+                          <span>{c.buyerName}</span>
+                        </div>
+                      </div>
+
+                      {/* Middle: Amount & Trust Telemetry */}
+                      <div className="flex items-center gap-5 sm:gap-6 font-mono text-xs">
+                        {/* Amount */}
+                        <div className="text-right min-w-[100px]">
+                          <span className="font-bold text-[#F7F4F1] text-sm block">{formatCurrency(c.totalMinor, c.currency)}</span>
+                          <span className="text-[10px] text-[#9E8C7C] block uppercase">{c.currency} Invoice</span>
+                        </div>
+
+                        {/* Combined Trust Telemetry Pill */}
+                        <div className="flex items-center gap-2 bg-[#141211] p-2 rounded-xl border border-[#2E2A27]">
+                          <div className="text-center px-1">
+                            <span className="text-[9px] text-[#9E8C7C] block font-mono uppercase">Trust</span>
+                            <span className={`font-mono font-extrabold ${trustTextColor}`}>{trustScore}</span>
+                          </div>
+
+                          <div className="w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden hidden md:block">
+                            <span 
+                              className={trustBarClass} 
+                              style={{ width: `${Math.max(8, trustScore)}%` }}
+                            />
+                          </div>
+
+                          <div className="text-center px-1 border-l border-[#2E2A27]">
+                            <span className="text-[9px] text-[#9E8C7C] block font-mono uppercase">Conf</span>
+                            <span className="font-mono text-[#D8C7B8]">{confidenceScore}%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Status Pill & Action Trigger */}
+                      <div className="flex items-center gap-3">
+                        {c.status === 'APPROVED' ? (
+                          <span className="pill verified">Approved</span>
+                        ) : c.status === 'REJECTED' ? (
+                          <span className="pill risk">Rejected</span>
+                        ) : c.status === 'EVIDENCE_REQUESTED' ? (
+                          <span className="pill review">Evidence Needed</span>
+                        ) : (
+                          <span className="pill review">Needs Review</span>
+                        )}
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectCase(c.id);
+                          }}
+                          className="px-3.5 py-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
                         >
-                          <td className="p-5 font-mono">
-                            <span className="font-bold text-[#F7F4F1] group-hover:text-[#6366F1] transition-colors">{c.caseNumber}</span>
-                            <span className="block text-[11px] text-[#9E8C7C] mt-1">Inv #{c.invoiceNumber}</span>
-                          </td>
+                          Inspect
+                        </button>
 
-                          <td className="p-5 text-xs text-[#D8C7B8]">
-                            <span className="font-semibold text-[#F7F4F1]">{c.sellerName}</span>
-                            <span className="block text-[11px] text-[#9E8C7C] mt-1">&rarr; {c.buyerName}</span>
-                          </td>
+                        <div className="text-[#9E8C7C] group-hover:text-[#F7F4F1] p-1">
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </div>
+                      </div>
+                    </div>
 
-                          <td className="p-5 text-right font-mono font-bold text-[#F7F4F1]">
-                            {formatCurrency(c.totalMinor, c.currency)}
-                          </td>
-
-                          {/* 1. Trust Score Metric */}
-                          <td className="p-5 text-center">
-                            <div className="trust-cell justify-center">
-                              <span className={`font-mono font-bold ${trustTextColor}`}>{trustScore}</span>
-                              <div className="bar w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden">
-                                <span 
-                                  className={trustBarClass} 
-                                  style={{ width: `${Math.max(8, trustScore)}%` }}
-                                />
+                    {/* Inline Row Expansion Quick Preview & Action Buttons */}
+                    {isExpanded && (
+                      <div className="bg-[#181615] p-6 border-t border-[#2E2A27]">
+                        <div className="space-y-5 bg-[#141211] p-6 rounded-2xl border border-[#2E2A27]">
+                          
+                          <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#2E2A27] pb-4">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
+                                <FileText className="w-4 h-4 text-[#6366F1]" />
+                                <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Telemetry</span>
+                              </div>
+                              <div className="flex items-center gap-4 text-xs font-mono text-[#9E8C7C]">
+                                <span>Model: <strong className="text-[#F7F4F1]">{c.telemetry.modelVersion}</strong></span>
+                                <span>Risk Severity: <strong className={c.telemetry.riskLevel === 'CRITICAL' || c.telemetry.riskLevel === 'HIGH' ? 'text-[#EF4444]' : 'text-[#10B981]'}>{c.telemetry.riskLevel}</strong></span>
                               </div>
                             </div>
-                          </td>
 
-                          {/* 2. Confidence Index Metric */}
-                          <td className="p-5 text-center font-mono text-xs text-[#D8C7B8]">
-                            <span className="bg-[#262320] px-2.5 py-1 rounded-lg border border-[#2E2A27]">
-                              {confidenceScore}%
-                            </span>
-                          </td>
-
-                          {/* 3. Evidence Completeness Metric */}
-                          <td className="p-5 text-center font-mono text-xs text-[#D8C7B8]">
-                            <span className={`px-2.5 py-1 rounded-lg border ${
-                              evidenceScore >= 80 ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
-                              evidenceScore >= 60 ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
-                              'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
-                            }`}>
-                              {evidenceScore}%
-                            </span>
-                          </td>
-
-                          {/* Status Badge */}
-                          <td className="p-5">
-                            {c.status === 'APPROVED' ? (
-                              <span className="pill verified">Approved</span>
-                            ) : c.status === 'REJECTED' ? (
-                              <span className="pill risk">Rejected</span>
-                            ) : c.status === 'EVIDENCE_REQUESTED' ? (
-                              <span className="pill review">Evidence Needed</span>
-                            ) : (
-                              <span className="pill review">Needs Review</span>
-                            )}
-                          </td>
-
-                          {/* Action Button */}
-                          <td className="p-5 text-right">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onSelectCase(c.id);
-                              }}
-                              className="px-3.5 py-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] hover:text-[#6366F1] transition-all"
-                            >
-                              Inspect
-                            </button>
-                          </td>
-                        </tr>
-
-                        {/* Inline Row Expansion Quick Preview & Action Buttons */}
-                        {isExpanded && (
-                          <tr className="bg-[#181615]">
-                            <td colSpan={8} className="p-6 border-b border-[#2E2A27]">
-                              <div className="space-y-5 bg-[#141211] p-6 rounded-2xl border border-[#2E2A27]">
-                                
-                                <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#2E2A27] pb-4">
-                                  <div className="space-y-1.5">
-                                    <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
-                                      <FileText className="w-4 h-4 text-[#6366F1]" />
-                                      <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Telemetry</span>
-                                    </div>
-                                    <div className="flex items-center gap-4 text-xs font-mono text-[#9E8C7C]">
-                                      <span>Model: <strong className="text-[#F7F4F1]">{c.telemetry.modelVersion}</strong></span>
-                                      <span>Risk Severity: <strong className={c.telemetry.riskLevel === 'CRITICAL' || c.telemetry.riskLevel === 'HIGH' ? 'text-[#EF4444]' : 'text-[#10B981]'}>{c.telemetry.riskLevel}</strong></span>
-                                    </div>
-                                  </div>
-
-                                  {/* Triple Metrics Preview Pills */}
-                                  <div className="flex items-center gap-3 font-mono text-xs">
-                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                      <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
-                                      <strong className={trustTextColor}>{trustScore} / 100</strong>
-                                    </div>
-                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                      <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
-                                      <strong className="text-[#6366F1]">{confidenceScore}%</strong>
-                                    </div>
-                                    <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
-                                      <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
-                                      <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Integrated Interactive Action Buttons Grid */}
-                                <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                                  <div className="flex items-center gap-3">
-                                    {/* Action 1: Request Evidence */}
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (onRequestEvidence) onRequestEvidence(c);
-                                        else onSelectCase(c.id);
-                                      }}
-                                      className="px-4 py-2.5 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                    >
-                                      <HelpCircle className="w-4 h-4 text-[#6366F1]" />
-                                      <span>Request Evidence</span>
-                                    </button>
-
-                                    {/* Action 2: Approve Financing */}
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
-                                        else onSelectCase(c.id);
-                                      }}
-                                      className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                    >
-                                      <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                                      <span>Approve Financing</span>
-                                    </button>
-
-                                    {/* Action 3: Reject Case */}
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
-                                        else onSelectCase(c.id);
-                                      }}
-                                      className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-                                    >
-                                      <XCircle className="w-4 h-4 text-[#EF4444]" />
-                                      <span>Reject Financing</span>
-                                    </button>
-                                  </div>
-
-                                  {/* Action 4: Open Full Workspace */}
-                                  <button
-                                    type="button"
-                                    onClick={() => onSelectCase(c.id)}
-                                    className="px-5 py-2.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
-                                  >
-                                    <span>Inspect Full Workspace</span>
-                                    <ArrowRight className="w-4 h-4" />
-                                  </button>
-                                </div>
-
+                            {/* Triple Metrics Preview Pills */}
+                            <div className="flex items-center gap-3 font-mono text-xs">
+                              <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                                <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
+                                <strong className={trustTextColor}>{trustScore} / 100</strong>
                               </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                              <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                                <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
+                                <strong className="text-[#6366F1]">{confidenceScore}%</strong>
+                              </div>
+                              <div className="bg-[#1C1917] px-4 py-2.5 rounded-xl border border-[#2E2A27]">
+                                <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
+                                <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Integrated Interactive Action Buttons Grid */}
+                          <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                            <div className="flex items-center gap-3 flex-wrap">
+                              {/* Action 1: Request Evidence */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onRequestEvidence) onRequestEvidence(c);
+                                  else onSelectCase(c.id);
+                                }}
+                                className="px-4 py-2.5 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/40 text-[#6366F1] hover:bg-[#6366F1]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                              >
+                                <HelpCircle className="w-4 h-4 text-[#6366F1]" />
+                                <span>Request Evidence</span>
+                              </button>
+
+                              {/* Action 2: Approve Financing */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onExecuteDecision) onExecuteDecision(c.id, 'APPROVED');
+                                  else onSelectCase(c.id);
+                                }}
+                                className="px-4 py-2.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] hover:bg-[#10B981]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                              >
+                                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                                <span>Approve Financing</span>
+                              </button>
+
+                              {/* Action 3: Reject Case */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onExecuteDecision) onExecuteDecision(c.id, 'REJECTED');
+                                  else onSelectCase(c.id);
+                                }}
+                                className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] hover:bg-[#EF4444]/25 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+                              >
+                                <XCircle className="w-4 h-4 text-[#EF4444]" />
+                                <span>Reject Financing</span>
+                              </button>
+                            </div>
+
+                            {/* Action 4: Open Full Workspace */}
+                            <button
+                              type="button"
+                              onClick={() => onSelectCase(c.id)}
+                              className="px-5 py-2.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md cursor-pointer"
+                            >
+                              <span>Inspect Full Workspace</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
         </section>
 
         {/* System Trust Health Sidebar Panel */}
-        <aside className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl space-y-0">
+        <aside className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl overflow-hidden shadow-xl space-y-0 w-full">
           
           <div className="flex items-center justify-between p-6 border-b border-[#2E2A27]">
             <h2 className="text-base font-extrabold text-[#F7F4F1]">System Trust Health</h2>
