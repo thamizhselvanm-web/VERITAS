@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, Menu, Shield } from 'lucide-react';
+import { Search, Bell, Menu } from 'lucide-react';
 import { Tenant, TenantId } from '../../types';
 import { UserSession } from '../../services/authService';
 
@@ -19,6 +19,9 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
   onToggleMobileMenu
 }) => {
   const activeTenant = tenants.find(t => t.id === session.activeTenantId) || tenants[0];
+  const userName = session.name || 'Thamizhselvan Murugan';
+  const userEmail = session.email || 'thamizhselvanm2@gmail.com';
+  const userInitials = userName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'TM';
 
   return (
     <header className="topbar flex items-center justify-between px-2.5 sm:px-6 py-2.5 bg-[#1C1917] border-b border-[#2E2A27] select-none sticky top-0 z-30 w-full">
@@ -76,11 +79,6 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
 
       {/* Right: Actions & User Avatar */}
       <div className="top-actions flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-        <span className="live-pill hidden xl:inline-flex bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] font-mono text-xs px-3 py-1 rounded-full items-center gap-1.5">
-          <Shield className="w-3.5 h-3.5 text-[#10B981]" />
-          VERITAS TRUST OPERATIONS
-        </span>
-
         <button 
           className="icon-btn p-2 sm:p-2.5 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] hover:border-[#6366F1] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1] min-h-[42px] min-w-[42px] flex items-center justify-center cursor-pointer" 
           title="Notifications & Search" 
@@ -91,16 +89,16 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
         </button>
 
         <a
-          href={`mailto:${session.email}`}
+          href={`mailto:${userEmail}`}
           className="avatar flex items-center gap-2 hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-[#6366F1] rounded-xl p-1 min-h-[42px]"
-          title={`Click to send email to ${session.email}`}
-          aria-label={`User profile for ${session.name}, email ${session.email}`}
+          title={`Click to send email to ${userEmail}`}
+          aria-label={`User profile for ${userName}, email ${userEmail}`}
         >
           <span className="chip w-8 h-8 rounded-full bg-[#4F46E5] text-white font-bold text-xs flex items-center justify-center shadow-md flex-shrink-0">
-            AM
+            {userInitials}
           </span>
           <span className="who hidden lg:block">
-            <strong className="text-xs text-[#F7F4F1] font-semibold block leading-none">{session.name}</strong>
+            <strong className="text-xs text-[#F7F4F1] font-semibold block leading-none">{userName}</strong>
             <span className="text-[10px] text-[#9E8C7C] font-mono block leading-none mt-0.5">{session.role}</span>
           </span>
         </a>

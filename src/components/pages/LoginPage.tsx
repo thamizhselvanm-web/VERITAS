@@ -20,7 +20,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   const isBank = portalType === 'bank';
   const identityRole = isBank ? 'Senior Credit Risk Officer (Bank)' : 'Corporate Finance Officer (Company)';
-  const identityName = isBank ? 'Alex Morgan' : 'Sarah Jenkins';
+  const identityName = 'Thamizhselvan Murugan';
   const activeEmail = email.trim() || 'thamizhselvanm2@gmail.com';
 
   const handleSubmit = (e: React.FormEvent) => {

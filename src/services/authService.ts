@@ -13,8 +13,8 @@ export interface UserSession {
 
 const DEFAULT_SESSION: UserSession = {
   userId: 'usr-9012',
-  name: 'Alex Morgan',
-  email: 'alex.morgan@apexcapital.com',
+  name: 'Thamizhselvan Murugan',
+  email: 'thamizhselvanm2@gmail.com',
   role: 'Managing Risk Officer',
   mfaVerified: true,
   activeTenantId: 'tenant-a',
@@ -39,8 +39,8 @@ class AuthService {
   public login(portalType: 'bank' | 'company', tenantId: TenantId, email?: string, name?: string, role?: string): UserSession {
     this.session = {
       userId: portalType === 'bank' ? 'usr-9012' : 'usr-corp-8821',
-      name: name || (portalType === 'bank' ? 'Alex Morgan' : 'Sarah Jenkins'),
-      email: email || (portalType === 'bank' ? 'alex.morgan@apexcapital.com' : 'treasury@acmecomponents.com'),
+      name: name || 'Thamizhselvan Murugan',
+      email: email || 'thamizhselvanm2@gmail.com',
       role: role || (portalType === 'bank' ? 'Managing Risk Officer' : 'Corporate Finance Lead'),
       mfaVerified: true,
       activeTenantId: tenantId,
