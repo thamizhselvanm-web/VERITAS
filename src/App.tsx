@@ -165,7 +165,7 @@ const AppWorkspace: React.FC = () => {
 
     // Auto-dispatch Twilio WhatsApp notification for Evidence Requests or Approvals
     if (newStatus === 'EVIDENCE_REQUESTED' || newStatus === 'APPROVED') {
-      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase);
+      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase, undefined, '+916369106960');
       setWhatsappPayload(payload);
       setIsWhatsAppModalOpen(true);
     }
