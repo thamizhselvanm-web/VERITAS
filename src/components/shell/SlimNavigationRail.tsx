@@ -177,7 +177,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-[#1C1917] border-r border-[#2E2A27] p-5 flex flex-col justify-between md:hidden font-sans shadow-2xl overflow-y-auto custom-scrollbar"
+              className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-[#1C1917] border-r border-[#2E2A27] p-5 flex flex-col justify-between md:hidden font-sans shadow-2xl overflow-y-auto custom-scrollbar touch-manipulation"
               aria-label="Mobile Primary Navigation"
             >
               <div className="space-y-6">
@@ -187,7 +187,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
                     onClick={() => handleSelect('overview')}
                     className="flex items-center gap-3 cursor-pointer"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-[#4F46E5] text-white flex items-center justify-center font-bold text-sm shadow-md">
+                    <div className="w-9 h-9 rounded-xl bg-[#4F46E5] text-white flex items-center justify-center font-bold text-base shadow-md">
                       V
                     </div>
                     <div>
@@ -198,7 +198,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
 
                   <button
                     onClick={onCloseMobileMenu}
-                    className="p-1.5 rounded-lg bg-[#262320] text-[#9E8C7C] hover:text-[#F7F4F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]"
+                    className="p-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#9E8C7C] hover:text-[#F7F4F1] active:bg-[#6366F1]/20 focus-visible:ring-2 focus-visible:ring-[#6366F1] min-h-[44px] min-w-[44px] flex items-center justify-center"
                     aria-label="Close mobile navigation"
                   >
                     <X className="w-5 h-5" />
@@ -214,10 +214,10 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
                       <button
                         key={item.id}
                         onClick={() => handleSelect(item.id)}
-                        className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1] ${
+                        className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-150 min-h-[48px] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#6366F1] ${
                           isActive
-                            ? 'bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30'
-                            : 'text-[#D8C7B8] hover:text-[#F7F4F1] hover:bg-[#262320]'
+                            ? 'bg-[#6366F1]/15 text-[#6366F1] border border-[#6366F1]/30 font-bold'
+                            : 'text-[#D8C7B8] hover:text-[#F7F4F1] hover:bg-[#262320] active:bg-[#262320]'
                         }`}
                         title={item.label}
                         aria-label={item.label}
@@ -238,7 +238,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
                     onLogout();
                     if (onCloseMobileMenu) onCloseMobileMenu();
                   }}
-                  className="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors duration-150"
+                  className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-semibold text-[#EF4444] hover:bg-[#EF4444]/10 active:bg-[#EF4444]/20 transition-colors duration-150 min-h-[48px]"
                   aria-label="Sign Out"
                 >
                   <LogOut className="w-5 h-5 text-[#EF4444]" />

@@ -21,13 +21,13 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
   const activeTenant = tenants.find(t => t.id === session.activeTenantId) || tenants[0];
 
   return (
-    <header className="topbar flex items-center justify-between px-4 sm:px-6 py-2.5 bg-[#1C1917] border-b border-[#2E2A27]">
+    <header className="topbar flex items-center justify-between px-3 sm:px-6 py-2.5 bg-[#1C1917] border-b border-[#2E2A27] select-none">
       
       {/* Mobile Menu Trigger & Brand Identity */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={onToggleMobileMenu}
-          className="md:hidden p-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#6366F1] hover:bg-[#6366F1]/15 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1]"
+          className="md:hidden p-2.5 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#6366F1] active:bg-[#6366F1]/20 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1] min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Open mobile navigation menu"
           title="Toggle Navigation Menu"
         >
@@ -35,7 +35,7 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
         </button>
 
         <button 
-          className="tenant-select bg-[#262320] border border-[#2E2A27] hover:border-[#6366F1] text-[#F7F4F1] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1]" 
+          className="tenant-select bg-[#262320] border border-[#2E2A27] hover:border-[#6366F1] text-[#F7F4F1] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1] min-h-[44px] px-3 rounded-xl flex items-center" 
           onClick={() => {
             const nextTenant = session.activeTenantId === 'tenant-a' ? 'tenant-b' : 'tenant-a';
             onSwitchTenant(nextTenant);
@@ -43,15 +43,15 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
           title="Click to switch active workspace tenant"
           aria-label={`Active Tenant: ${activeTenant.name}. Click to switch.`}
         >
-          <span className="truncate max-w-[140px] sm:max-w-none font-semibold">{activeTenant.name}</span>
-          <span className="sub text-[#6366F1] font-mono ml-1">({activeTenant.code})</span>
+          <span className="truncate max-w-[100px] xs:max-w-[140px] sm:max-w-none text-xs font-semibold">{activeTenant.name}</span>
+          <span className="sub text-[#6366F1] font-mono ml-1 text-[11px]">({activeTenant.code})</span>
         </button>
       </div>
 
       {/* Global Interactive Command Search Input Bar */}
       <div 
         onClick={onOpenSearch}
-        className="search cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#141211] border border-[#2E2A27] hover:border-[#6366F1] text-[#9E8C7C] transition-all duration-150 flex-1 max-w-sm sm:max-w-md mx-3 focus-within:ring-2 focus-within:ring-[#6366F1]"
+        className="search cursor-pointer flex items-center gap-2 px-3 py-2 rounded-xl bg-[#141211] border border-[#2E2A27] hover:border-[#6366F1] text-[#9E8C7C] transition-all duration-150 flex-1 max-w-[180px] sm:max-w-md mx-2 sm:mx-3 focus-within:ring-2 focus-within:ring-[#6366F1] min-h-[44px]"
         role="button"
         tabIndex={0}
         aria-label="Global search command palette"
@@ -62,11 +62,11 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
           }
         }}
       >
-        <Search className="w-3.5 h-3.5 flex-shrink-0 text-[#6366F1]" />
+        <Search className="w-4 h-4 flex-shrink-0 text-[#6366F1]" />
         <input
           type="text"
           readOnly
-          placeholder="Search cases, invoices, entities… (⌘K)"
+          placeholder="Search... (⌘K)"
           className="bg-transparent border-0 outline-none w-full text-xs text-[#F7F4F1] placeholder-[#9E8C7C] cursor-pointer"
         />
         <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#262320] border border-[#2E2A27] text-[#D8C7B8]">
@@ -75,14 +75,14 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
       </div>
 
       {/* Actions & User Avatar */}
-      <div className="top-actions flex items-center gap-3">
+      <div className="top-actions flex items-center gap-2 sm:gap-3">
         <span className="live-pill hidden xl:inline-flex bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] font-mono text-xs px-3 py-1 rounded-full">
           <Shield className="w-3.5 h-3.5 text-[#10B981]" />
           VERITAS TRUST OPERATIONS
         </span>
 
         <button 
-          className="icon-btn p-2 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] hover:border-[#6366F1] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1]" 
+          className="icon-btn p-2.5 rounded-xl bg-[#262320] border border-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] hover:border-[#6366F1] transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6366F1] min-h-[44px] min-w-[44px] flex items-center justify-center" 
           title="Notifications & Search" 
           onClick={onOpenSearch}
           aria-label="Open Notifications"
@@ -92,7 +92,7 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
 
         <a
           href={`mailto:${session.email}`}
-          className="avatar flex items-center gap-2.5 hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-[#6366F1] rounded-lg p-1"
+          className="avatar flex items-center gap-2.5 hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-[#6366F1] rounded-xl p-1 min-h-[44px]"
           title={`Click to send email to ${session.email}`}
           aria-label={`User profile for ${session.name}, email ${session.email}`}
         >
@@ -101,7 +101,7 @@ export const TopCommandBar: React.FC<TopCommandBarProps> = ({
           </span>
           <span className="who hidden sm:block">
             <strong className="text-xs text-[#F7F4F1] font-semibold">{session.name}</strong>
-            <span className="text-[11px] text-[#9E8C7C] font-mono">{session.role}</span>
+            <span className="text-[11px] text-[#9E8C7C] font-mono block leading-none">{session.role}</span>
           </span>
         </a>
       </div>
