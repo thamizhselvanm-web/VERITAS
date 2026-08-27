@@ -34,31 +34,31 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   return (
     <main className="relative min-h-screen flex items-center justify-center p-4 bg-[#141211] text-[#F7F4F1] select-none overflow-hidden font-sans">
-      {/* Background Molten Metal Liquid Steel WebGL Animation */}
+      {/* Quiet Flat Background Container */}
       <SystemCardAnimation />
 
-      {/* Centered Auth Card */}
-      <div className="relative z-10 w-full max-w-[480px] bg-[#1C1816]/90 backdrop-blur-xl border border-[#E07A5F]/35 rounded-2xl p-7 space-y-6 shadow-2xl shadow-[#E07A5F]/20">
+      {/* Centered Flat Graphite Auth Card */}
+      <div className="relative z-10 w-full max-w-[480px] bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-7 space-y-6 shadow-2xl">
         
         {/* Brand & Gateway Header */}
-        <header className="flex items-center justify-between border-b border-[#E07A5F]/20 pb-4">
+        <header className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#B85235] to-[#E07A5F] flex items-center justify-center shadow-lg shadow-[#E07A5F]/30">
+            <div className="w-8 h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center shadow-md">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
               <span className="font-sans font-bold text-lg text-[#F7F4F1] tracking-tight block leading-none">VERITAS</span>
-              <span className="text-[9px] font-mono text-[#E07A5F] uppercase tracking-widest block mt-0.5">TRUST OPERATIONS</span>
+              <span className="text-[9px] font-mono text-[#6366F1] uppercase tracking-widest block mt-0.5">TRUST OPERATIONS</span>
             </div>
           </div>
-          <span className="text-[10px] font-mono text-[#E07A5F] uppercase tracking-widest bg-[#231E1B] px-2.5 py-1 rounded border border-[#E07A5F]/20">
+          <span className="text-[10px] font-mono text-[#6366F1] uppercase tracking-widest bg-[#262320] px-2.5 py-1 rounded border border-[#2E2A27]">
             {isBank ? 'BANK GATEWAY' : 'COMPANY PORTAL'}
           </span>
         </header>
 
         {/* Card Intro */}
         <div>
-          <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight">Access workspace</h1>
+          <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight">Access Workspace</h1>
           <p className="text-xs text-[#D8C7B8] mt-1.5 leading-relaxed">
             Select authentication side (Bank or Company) and confirm workspace credentials.
           </p>
@@ -66,7 +66,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
         {/* 2 Options: Bank Side vs Company Side */}
         <fieldset className="space-y-2 border-0 p-0 m-0">
-          <legend className="text-[11px] font-mono font-bold text-[#E07A5F] uppercase tracking-wider block mb-1.5">
+          <legend className="text-[11px] font-mono font-bold text-[#6366F1] uppercase tracking-wider block mb-1.5">
             AUTHENTICATION SIDE
           </legend>
 
@@ -78,17 +78,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 setPortalType('bank');
                 setSelectedTenant('tenant-a');
               }}
-              className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative overflow-hidden ${
+              className={`p-3 rounded-xl border text-left transition-all duration-150 cursor-pointer relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#6366F1] ${
                 isBank
-                  ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#F7F4F1] shadow-lg shadow-[#E07A5F]/20 ring-1 ring-[#E07A5F]'
-                  : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/50 hover:text-[#D8C7B8]'
+                  ? 'bg-[#6366F1]/15 border-[#6366F1] text-[#F7F4F1] shadow-md ring-1 ring-[#6366F1]'
+                  : 'bg-[#141211] border-[#2E2A27] text-[#9E8C7C] hover:border-[#6366F1]/50 hover:text-[#D8C7B8]'
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Landmark className={`w-4 h-4 ${isBank ? 'text-[#E07A5F]' : 'text-[#9E8C7C]'}`} />
+                <Landmark className={`w-4 h-4 ${isBank ? 'text-[#6366F1]' : 'text-[#9E8C7C]'}`} />
                 <strong className="block text-xs font-bold leading-tight">Bank Side</strong>
               </div>
-              <span className="block text-[10px] font-mono text-[#E07A5F] tracking-wider mt-0.5">
+              <span className="block text-[10px] font-mono text-[#6366F1] tracking-wider mt-0.5">
                 LENDER / UNDERWRITER
               </span>
             </button>
@@ -100,17 +100,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 setPortalType('company');
                 setSelectedTenant('tenant-a');
               }}
-              className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative overflow-hidden ${
+              className={`p-3 rounded-xl border text-left transition-all duration-150 cursor-pointer relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#10B981] ${
                 !isBank
-                  ? 'bg-[#52B788]/20 border-[#52B788] text-[#F7F4F1] shadow-lg shadow-[#52B788]/20 ring-1 ring-[#52B788]'
-                  : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#52B788]/50 hover:text-[#D8C7B8]'
+                  ? 'bg-[#10B981]/15 border-[#10B981] text-[#F7F4F1] shadow-md ring-1 ring-[#10B981]'
+                  : 'bg-[#141211] border-[#2E2A27] text-[#9E8C7C] hover:border-[#10B981]/50 hover:text-[#D8C7B8]'
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Building2 className={`w-4 h-4 ${!isBank ? 'text-[#52B788]' : 'text-[#9E8C7C]'}`} />
+                <Building2 className={`w-4 h-4 ${!isBank ? 'text-[#10B981]' : 'text-[#9E8C7C]'}`} />
                 <strong className="block text-xs font-bold leading-tight">Company Side</strong>
               </div>
-              <span className="block text-[10px] font-mono text-[#52B788] tracking-wider mt-0.5">
+              <span className="block text-[10px] font-mono text-[#10B981] tracking-wider mt-0.5">
                 CORPORATE ENTERPRISE
               </span>
             </button>
@@ -122,7 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           
           {/* Tenant Selector */}
           <fieldset className="space-y-2 border-0 p-0 m-0">
-            <legend className="text-[11px] font-mono font-bold text-[#E07A5F] uppercase tracking-wider block mb-1.5">
+            <legend className="text-[11px] font-mono font-bold text-[#6366F1] uppercase tracking-wider block mb-1.5">
               TENANT WORKSPACE
             </legend>
 
@@ -130,16 +130,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-a')}
-                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border text-left transition-all duration-150 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6366F1] ${
                   selectedTenant === 'tenant-a'
-                    ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#F7F4F1] shadow-lg shadow-[#E07A5F]/20'
-                    : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/50 hover:text-[#D8C7B8]'
+                    ? 'bg-[#6366F1]/15 border-[#6366F1] text-[#F7F4F1] shadow-md'
+                    : 'bg-[#141211] border-[#2E2A27] text-[#9E8C7C] hover:border-[#6366F1]/50 hover:text-[#D8C7B8]'
                 }`}
               >
                 <strong className="block text-xs font-bold leading-tight">
                   {isBank ? 'Apex Capital' : 'Acme Components'}
                 </strong>
-                <span className="block text-[10px] font-mono text-[#E07A5F] tracking-wider mt-1">
+                <span className="block text-[10px] font-mono text-[#6366F1] tracking-wider mt-1">
                   {isBank ? 'TENANT A' : 'SUPPLIER A'}
                 </span>
               </button>
@@ -147,27 +147,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="button"
                 onClick={() => setSelectedTenant('tenant-b')}
-                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border text-left transition-all duration-150 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6366F1] ${
                   selectedTenant === 'tenant-b'
-                    ? 'bg-[#E07A5F]/20 border-[#E07A5F] text-[#F7F4F1] shadow-lg shadow-[#E07A5F]/20'
-                    : 'bg-[#141211]/80 border-[#E07A5F]/20 text-[#9E8C7C] hover:border-[#E07A5F]/50 hover:text-[#D8C7B8]'
+                    ? 'bg-[#6366F1]/15 border-[#6366F1] text-[#F7F4F1] shadow-md'
+                    : 'bg-[#141211] border-[#2E2A27] text-[#9E8C7C] hover:border-[#6366F1]/50 hover:text-[#D8C7B8]'
                 }`}
               >
                 <strong className="block text-xs font-bold leading-tight">
                   {isBank ? 'Nexus Trade' : 'Meridian Industries'}
                 </strong>
-                <span className="block text-[10px] font-mono text-[#E07A5F] tracking-wider mt-1">
+                <span className="block text-[10px] font-mono text-[#6366F1] tracking-wider mt-1">
                   {isBank ? 'TENANT B' : 'BUYER B'}
                 </span>
               </button>
             </div>
           </fieldset>
 
-          {/* Underwriter / Corporate Identity Field */}
+          {/* Identity Field */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono font-bold text-[#D8C7B8] uppercase tracking-wider">
               <span>{isBank ? 'UNDERWRITER IDENTITY' : 'CORPORATE IDENTITY'}</span>
-              <span className="text-[10px] text-[#E07A5F] font-sans font-semibold">{identityRole}</span>
+              <span className="text-[10px] text-[#6366F1] font-sans font-semibold">{identityRole}</span>
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -175,11 +175,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="thamizhselvanm2@gmail.com"
-                className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/35 text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#E07A5F] transition-all"
+                className="w-full p-3 rounded-xl bg-[#141211] border border-[#2E2A27] text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#6366F1] transition-all duration-150"
               />
               <a
                 href={`mailto:${activeEmail}`}
-                className="btn-secondary py-3 px-3 text-xs flex items-center justify-center min-w-[70px]"
+                className="btn-secondary py-3 px-3 text-xs flex items-center justify-center min-w-[70px] border border-[#2E2A27] bg-[#262320] text-[#F7F4F1] hover:border-[#6366F1]"
                 title={`Send email to ${activeEmail}`}
               >
                 Mail
@@ -191,8 +191,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono font-bold text-[#D8C7B8] uppercase tracking-wider">
               <span>HARDWARE MFA CODE</span>
-              <span className="text-[#52B788] flex items-center gap-1 text-[10px]">
-                <CheckCircle2 className="w-3 h-3 text-[#52B788]" /> HARDWARE AUTHENTICATED
+              <span className="text-[#10B981] flex items-center gap-1 text-[10px]">
+                <CheckCircle2 className="w-3 h-3 text-[#10B981]" /> HARDWARE AUTHENTICATED
               </span>
             </div>
             <input
@@ -200,7 +200,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               maxLength={6}
               value={mfaCode}
               onChange={(e) => setMfaCode(e.target.value)}
-              className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/35 text-sm font-mono font-numeric font-bold text-[#F7F4F1] tracking-widest focus:border-[#E07A5F] outline-none"
+              className="w-full p-3 rounded-xl bg-[#141211] border border-[#2E2A27] text-sm font-mono font-numeric font-bold text-[#F7F4F1] tracking-widest focus:border-[#6366F1] outline-none transition-all duration-150"
             />
           </div>
 
@@ -208,7 +208,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3.5 text-xs font-bold tracking-wider uppercase flex items-center justify-between px-5 rounded-xl shadow-lg shadow-[#E07A5F]/30 hover:brightness-110 transition-all mt-2 cursor-pointer"
+            className="w-full py-3.5 text-xs font-bold tracking-wider uppercase flex items-center justify-between px-5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-lg transition-all duration-150 mt-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6366F1]"
           >
             <span>{loading ? 'Verifying credentials…' : `Access ${isBank ? 'Bank' : 'Company'} Portal`}</span>
             <ArrowRight className="w-4 h-4" />
@@ -217,8 +217,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </form>
 
         {/* Footer Auth Disclosure */}
-        <footer className="flex items-center gap-2 pt-3 border-t border-[#E07A5F]/20 text-[11px] text-[#9E8C7C] font-mono uppercase tracking-wider">
-          <Lock className="w-3.5 h-3.5 text-[#E07A5F]" />
+        <footer className="flex items-center gap-2 pt-3 border-t border-[#2E2A27] text-[11px] text-[#9E8C7C] font-mono uppercase tracking-wider">
+          <Lock className="w-3.5 h-3.5 text-[#6366F1]" />
           <span>OIDC SSO + Hardware MFA Enforced &bull; {isBank ? 'Bank Gateway' : 'Company Portal'}</span>
         </footer>
 

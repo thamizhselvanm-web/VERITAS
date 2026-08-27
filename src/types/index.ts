@@ -230,3 +230,23 @@ export interface SecurityScanResult {
   signedUrl: string;
   threatDetails?: string;
 }
+
+/**
+ * Currency Formatter Utility
+ * ₹ uses Lakh/Crore grouping (en-IN), $ uses standard grouping (en-US).
+ */
+export const formatCurrency = (totalMinor: number, currency: string = 'USD'): string => {
+  const amount = totalMinor / 100;
+  if (currency === 'INR') {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(amount);
+};

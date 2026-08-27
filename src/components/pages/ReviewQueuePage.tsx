@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ListFilter, Search, UploadCloud, Inbox, RefreshCw } from 'lucide-react';
-import { InvoiceCase, TenantId } from '../../types';
+import { ListFilter, Search, UploadCloud, Inbox, RefreshCw, ChevronDown, FileText } from 'lucide-react';
+import { InvoiceCase, TenantId, formatCurrency } from '../../types';
 
 interface ReviewQueuePageProps {
   cases: InvoiceCase[];
@@ -16,7 +16,10 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
   onNavigateToUpload
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterRecommendation, setFilterRecommendation] = useState<string>('ALL');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [trustBandFilter, setTrustBandFilter] = useState<string>('ALL');
+  const [sortBy, setSortBy] = useState<'TRUST_DESC' | 'TRUST_ASC' | 'AMOUNT_DESC' | 'DATE_DESC'>('TRUST_DESC');
+  const [expandedCaseId, setExpandedCaseId] = useState<string | null>(null);
 
   const tenantCases = cases.filter(c => c.tenantId === activeTenantId);
 
@@ -27,39 +30,57 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
       c.buyerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesRec = filterRecommendation === 'ALL' || c.telemetry.recommendation === filterRecommendation;
+    const matchesStatus = statusFilter === 'ALL' || c.status === statusFilter;
 
-    return matchesSearch && matchesRec;
+    let matchesTrust = true;
+    if (trustBandFilter === 'LOW_0_40') matchesTrust = c.telemetry.trustScore <= 40;
+    else if (trustBandFilter === 'MID_41_70') matchesTrust = c.telemetry.trustScore > 40 && c.telemetry.trustScore <= 70;
+    else if (trustBandFilter === 'HIGH_71_100') matchesTrust = c.telemetry.trustScore > 70;
+
+    return matchesSearch && matchesStatus && matchesTrust;
+  }).sort((a, b) => {
+    if (sortBy === 'TRUST_DESC') return b.telemetry.trustScore - a.telemetry.trustScore;
+    if (sortBy === 'TRUST_ASC') return a.telemetry.trustScore - b.telemetry.trustScore;
+    if (sortBy === 'AMOUNT_DESC') return b.totalMinor - a.totalMinor;
+    return new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime();
   });
 
   const clearFilters = () => {
     setSearchQuery('');
-    setFilterRecommendation('ALL');
+    setStatusFilter('ALL');
+    setTrustBandFilter('ALL');
+    setSortBy('TRUST_DESC');
   };
+
+  const activeFiltersCount = (searchQuery ? 1 : 0) + (statusFilter !== 'ALL' ? 1 : 0) + (trustBandFilter !== 'ALL' ? 1 : 0);
 
   return (
     <section aria-label="Review Queue" className="space-y-6 font-sans select-none">
       
       {/* Header */}
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E07A5F]/20 pb-4">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2E2A27] pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#F7F4F1] tracking-tight flex items-center gap-2.5">
-            <ListFilter className="w-6 h-6 text-[#E07A5F]" />
-            Underwriter Review Queue & Trust Directory
+          <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight flex items-center gap-2.5">
+            <ListFilter className="w-6 h-6 text-[#6366F1]" />
+            Underwriter Review Queue &amp; Trust Directory
           </h1>
           <p className="text-xs text-[#9E8C7C] font-mono mt-1">
-            Prioritized case directory sorted by trust score, risk signals, and evidence completeness.
+            Institutional triage tool &middot; Showing {filteredCases.length} of {tenantCases.length} {tenantCases.length === 1 ? 'case' : 'cases'}
           </p>
         </div>
 
-        <button onClick={onNavigateToUpload} className="btn-primary text-xs flex items-center gap-2">
-          <UploadCloud className="w-4 h-4" /> Secure Upload Intent
+        <button 
+          onClick={onNavigateToUpload} 
+          className="btn-primary text-xs px-4 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg flex items-center gap-2 font-bold transition-all duration-150"
+        >
+          <UploadCloud className="w-4 h-4 text-white" /> Secure Upload Intent
         </button>
       </header>
 
-      {/* Filter & Search Bar */}
-      <div className="inst-card p-4 flex flex-wrap items-center justify-between gap-4 text-xs">
+      {/* Filter & Search Controls Bar */}
+      <div className="bg-[#1C1917] border border-[#2E2A27] rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 text-xs">
         
+        {/* Search Field */}
         <div className="relative max-w-md w-full">
           <Search className="w-4 h-4 text-[#9E8C7C] absolute left-3 top-2.5" />
           <input
@@ -67,30 +88,63 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by Case Ref, Seller, Buyer, or Invoice Number..."
-            className="inst-input pl-9 text-xs"
+            className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#141211] border border-[#2E2A27] text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#6366F1] transition-all"
             aria-label="Search cases"
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-[#D8C7B8] font-medium">Filter Recommendation:</span>
-          <select
-            value={filterRecommendation}
-            onChange={(e) => setFilterRecommendation(e.target.value)}
-            className="inst-input w-auto text-xs py-1.5 cursor-pointer"
-            aria-label="Filter cases by recommendation"
-          >
-            <option value="ALL">All Recommendations</option>
-            <option value="APPROVE_RECOMMENDATION">APPROVE_RECOMMENDATION</option>
-            <option value="MANUAL_REVIEW">MANUAL_REVIEW</option>
-            <option value="REQUEST_MORE_EVIDENCE">REQUEST_MORE_EVIDENCE</option>
-            <option value="BLOCK_BY_POLICY">BLOCK_BY_POLICY</option>
-          </select>
+        {/* Filters and Sorting */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-[#9E8C7C] font-mono text-[11px]">Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-[#141211] border border-[#2E2A27] text-[#D8C7B8] text-xs font-mono py-1.5 px-2.5 rounded-lg outline-none cursor-pointer focus:border-[#6366F1]"
+              aria-label="Filter cases by status"
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="NEEDS_REVIEW">Needs Review</option>
+              <option value="EVIDENCE_REQUESTED">Evidence Requested</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
 
-          {(searchQuery || filterRecommendation !== 'ALL') && (
+          <div className="flex items-center gap-2">
+            <span className="text-[#9E8C7C] font-mono text-[11px]">Trust Band:</span>
+            <select
+              value={trustBandFilter}
+              onChange={(e) => setTrustBandFilter(e.target.value)}
+              className="bg-[#141211] border border-[#2E2A27] text-[#D8C7B8] text-xs font-mono py-1.5 px-2.5 rounded-lg outline-none cursor-pointer focus:border-[#6366F1]"
+              aria-label="Filter cases by trust band"
+            >
+              <option value="ALL">All Trust Bands</option>
+              <option value="HIGH_71_100">Green (71-100)</option>
+              <option value="MID_41_70">Amber (41-70)</option>
+              <option value="LOW_0_40">Red (0-40)</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[#9E8C7C] font-mono text-[11px]">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="bg-[#141211] border border-[#2E2A27] text-[#D8C7B8] text-xs font-mono py-1.5 px-2.5 rounded-lg outline-none cursor-pointer focus:border-[#6366F1]"
+              aria-label="Sort queue"
+            >
+              <option value="TRUST_DESC">Trust Score &darr;</option>
+              <option value="TRUST_ASC">Trust Score &uarr;</option>
+              <option value="AMOUNT_DESC">Amount &darr;</option>
+              <option value="DATE_DESC">Newest Date</option>
+            </select>
+          </div>
+
+          {activeFiltersCount > 0 && (
             <button
               onClick={clearFilters}
-              className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1.5"
+              className="py-1.5 px-3 rounded-lg bg-[#2E2A27] text-[#D8C7B8] hover:text-[#F7F4F1] text-xs font-mono flex items-center gap-1.5 transition-all"
               title="Reset Search & Filters"
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -102,19 +156,19 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
       </div>
 
       {/* Cases Data Table / Empty State */}
-      <div className="inst-card overflow-hidden">
+      <div className="bg-[#1C1917] border border-[#2E2A27] rounded-xl overflow-hidden shadow-lg">
         {filteredCases.length === 0 ? (
-          <div className="p-12 text-center space-y-3 font-sans">
+          <div className="p-12 text-center space-y-3 font-sans bg-[#141211]">
             <Inbox className="w-10 h-10 text-[#9E8C7C] mx-auto opacity-75" />
             <h3 className="text-sm font-bold text-[#F7F4F1]">No cases match current filter criteria</h3>
             <p className="text-xs text-[#D8C7B8] max-w-sm mx-auto">
-              Try modifying your search term or resetting recommendation filters.
+              Try modifying your search term or resetting triage filters.
             </p>
             <div className="pt-2 flex justify-center gap-3">
-              <button onClick={clearFilters} className="btn-secondary text-xs">
+              <button onClick={clearFilters} className="btn-secondary text-xs px-3.5 py-1.5 border border-[#2E2A27]">
                 Clear Filters
               </button>
-              <button onClick={onNavigateToUpload} className="btn-primary text-xs">
+              <button onClick={onNavigateToUpload} className="btn-primary text-xs px-3.5 py-1.5 bg-[#4F46E5] text-white">
                 Upload New Invoice
               </button>
             </div>
@@ -123,44 +177,148 @@ export const ReviewQueuePage: React.FC<ReviewQueuePageProps> = ({
           <div className="overflow-x-auto text-xs">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#141211] text-[#9E8C7C] font-mono text-[11px] border-b border-[#E07A5F]/20">
-                  <th scope="col" className="p-3">Case Ref</th>
-                  <th scope="col" className="p-3">Seller Entity</th>
-                  <th scope="col" className="p-3">Buyer Entity</th>
-                  <th scope="col" className="p-3 text-right">Amount</th>
-                  <th scope="col" className="p-3 text-center">Trust</th>
-                  <th scope="col" className="p-3 text-center">Confidence</th>
-                  <th scope="col" className="p-3 text-center">Evidence</th>
-                  <th scope="col" className="p-3">Recommendation</th>
-                  <th scope="col" className="p-3 text-right">Action</th>
+                <tr className="bg-[#141211] text-[#9E8C7C] font-mono text-[11px] border-b border-[#2E2A27]">
+                  <th scope="col" className="p-3.5 font-bold uppercase">Case Reference</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase">Seller Entity</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase">Buyer Entity</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase text-right">Amount</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase text-center">1. Trust Score</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase text-center">2. Confidence</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase text-center">3. Evidence</th>
+                  <th scope="col" className="p-3.5 font-bold uppercase">Status</th>
+                  <th scope="col" className="p-3.5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E07A5F]/15">
+              <tbody className="divide-y divide-[#2E2A27]">
                 {filteredCases.map((c) => {
-                  const currencySymbol = c.currency === 'INR' ? '₹' : '$';
+                  const isExpanded = expandedCaseId === c.id;
+                  const trustScore = c.telemetry.trustScore;
+                  const confidenceScore = c.telemetry.confidenceScore;
+                  const evidenceScore = c.telemetry.evidenceCompleteness;
+
+                  const trustBarClass = 
+                    trustScore <= 40 ? 'trust-bar-red' : 
+                    trustScore <= 70 ? 'trust-bar-amber' : 
+                    'trust-bar-green';
+
+                  const trustTextColor = 
+                    trustScore <= 40 ? 'text-[#EF4444]' : 
+                    trustScore <= 70 ? 'text-[#F59E0B]' : 
+                    'text-[#10B981]';
+
                   return (
-                    <tr key={c.id} className="hover:bg-[#E07A5F]/10 transition-colors cursor-pointer" onClick={() => onSelectCase(c.id)}>
-                      <td className="p-3 font-mono font-semibold text-[#F7F4F1]">{c.caseNumber}</td>
-                      <td className="p-3 text-[#D8C7B8] font-medium">{c.sellerName}</td>
-                      <td className="p-3 text-[#D8C7B8] font-medium">{c.buyerName}</td>
-                      <td className="p-3 text-right font-mono font-numeric font-semibold text-[#F7F4F1]">
-                        {currencySymbol} {(c.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                      </td>
-                      <td className="p-3 text-center font-mono font-numeric font-bold text-[#F7F4F1]">{c.telemetry.trustScore}</td>
-                      <td className="p-3 text-center font-mono font-numeric text-[#E07A5F]">{c.telemetry.confidenceScore}%</td>
-                      <td className="p-3 text-center font-mono font-numeric text-[#F4A261]">{c.telemetry.evidenceCompleteness}%</td>
-                      <td className="p-3">
-                        <span className={`inst-badge ${
-                          c.telemetry.recommendation === 'APPROVE_RECOMMENDATION' ? 'inst-badge-verified' :
-                          c.telemetry.recommendation === 'MANUAL_REVIEW' ? 'inst-badge-review' : 'inst-badge-risk'
-                        }`}>
-                          {c.telemetry.recommendation}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right">
-                        <button className="btn-secondary py-1 px-2.5 text-[11px]">Inspect Case</button>
-                      </td>
-                    </tr>
+                    <React.Fragment key={c.id}>
+                      <tr 
+                        className="hover:bg-[#262320] transition-colors duration-150 cursor-pointer group" 
+                        onClick={() => setExpandedCaseId(isExpanded ? null : c.id)}
+                      >
+                        <td className="p-3.5 font-mono font-semibold text-[#F7F4F1]">
+                          <span className="group-hover:text-[#6366F1] transition-colors">{c.caseNumber}</span>
+                          <span className="block text-[11px] text-[#9E8C7C] font-normal mt-0.5">Inv #{c.invoiceNumber}</span>
+                        </td>
+                        <td className="p-3.5 text-[#D8C7B8] font-medium">{c.sellerName}</td>
+                        <td className="p-3.5 text-[#D8C7B8] font-medium">{c.buyerName}</td>
+                        <td className="p-3.5 text-right font-mono font-bold text-[#F7F4F1]">
+                          {formatCurrency(c.totalMinor, c.currency)}
+                        </td>
+
+                        {/* 1. Trust Score Metric */}
+                        <td className="p-3.5 text-center">
+                          <div className="trust-cell justify-center">
+                            <span className={`font-mono font-bold ${trustTextColor}`}>{trustScore}</span>
+                            <div className="bar w-12 h-1.5 bg-[#2E2A27] rounded-full overflow-hidden">
+                              <span 
+                                className={trustBarClass} 
+                                style={{ width: `${Math.max(8, trustScore)}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 2. Confidence Index Metric */}
+                        <td className="p-3.5 text-center font-mono font-numeric text-[#D8C7B8]">
+                          <span className="bg-[#2E2A27] px-2 py-0.5 rounded border border-[#3A3532]">
+                            {confidenceScore}%
+                          </span>
+                        </td>
+
+                        {/* 3. Evidence Completeness Metric */}
+                        <td className="p-3.5 text-center font-mono font-numeric text-[#D8C7B8]">
+                          <span className={`px-2 py-0.5 rounded border ${
+                            evidenceScore >= 80 ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
+                            evidenceScore >= 60 ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
+                            'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
+                          }`}>
+                            {evidenceScore}%
+                          </span>
+                        </td>
+
+                        <td className="p-3.5">
+                          {c.status === 'APPROVED' ? (
+                            <span className="pill verified">Approved</span>
+                          ) : c.status === 'REJECTED' ? (
+                            <span className="pill risk">Rejected</span>
+                          ) : c.status === 'EVIDENCE_REQUESTED' ? (
+                            <span className="pill review">Evidence Needed</span>
+                          ) : (
+                            <span className="pill review">Needs Review</span>
+                          )}
+                        </td>
+
+                        <td className="p-3.5 text-right">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectCase(c.id);
+                            }}
+                            className="btn-secondary py-1 px-3 text-[11px] rounded bg-[#262320] border border-[#2E2A27] hover:border-[#6366F1] hover:text-[#6366F1]"
+                          >
+                            Inspect Case
+                          </button>
+                        </td>
+                      </tr>
+
+                      {/* Row Hover / Expansion Quick Preview */}
+                      {isExpanded && (
+                        <tr className="bg-[#181615]">
+                          <td colSpan={9} className="p-4 border-b border-[#2E2A27]">
+                            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#141211] p-3.5 rounded-xl border border-[#2E2A27]">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#F7F4F1]">
+                                  <FileText className="w-4 h-4 text-[#6366F1]" />
+                                  <span>Case {c.caseNumber} &middot; Evidence &amp; Confidence Breakdown</span>
+                                </div>
+                                <div className="text-xs text-[#9E8C7C] font-mono">
+                                  Model: {c.telemetry.modelVersion} &bull; Schema: {c.telemetry.featureSchemaVersion}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3 font-mono text-xs">
+                                <div className="bg-[#1C1917] px-3 py-1.5 rounded-lg border border-[#2E2A27]">
+                                  <span className="text-[10px] text-[#9E8C7C] block uppercase">Trust Score</span>
+                                  <strong className={trustTextColor}>{trustScore} / 100</strong>
+                                </div>
+                                <div className="bg-[#1C1917] px-3 py-1.5 rounded-lg border border-[#2E2A27]">
+                                  <span className="text-[10px] text-[#9E8C7C] block uppercase">Confidence Index</span>
+                                  <strong className="text-[#6366F1]">{confidenceScore}%</strong>
+                                </div>
+                                <div className="bg-[#1C1917] px-3 py-1.5 rounded-lg border border-[#2E2A27]">
+                                  <span className="text-[10px] text-[#9E8C7C] block uppercase">Evidence Completeness</span>
+                                  <strong className={evidenceScore >= 75 ? 'text-[#10B981]' : 'text-[#F59E0B]'}>{evidenceScore}%</strong>
+                                </div>
+                              </div>
+
+                              <button
+                                onClick={() => onSelectCase(c.id)}
+                                className="btn-primary text-xs px-3.5 py-1.5 bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg flex items-center gap-1.5"
+                              >
+                                <span>Open Full Case</span> &rarr;
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </tbody>
