@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Lock, ShieldCheck, CheckCircle2, ArrowRight, Landmark, Building2 } from 'lucide-react';
+import { Lock, CheckCircle2, ArrowRight, Landmark, Building2 } from 'lucide-react';
 import { TenantId } from '../../types';
 import { SystemCardAnimation } from '../common/SystemCardAnimation';
+import { VeritasLogo } from '../common/VeritasLogo';
 import { authService } from '../../services/authService';
 
 export type PortalType = 'bank' | 'company';
@@ -42,15 +43,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         
         {/* Brand & Gateway Header */}
         <header className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center shadow-md">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="font-sans font-bold text-lg text-[#F7F4F1] tracking-tight block leading-none">VERITAS</span>
-              <span className="text-[9px] font-mono text-[#6366F1] uppercase tracking-widest block mt-0.5">TRUST OPERATIONS</span>
-            </div>
-          </div>
+          <VeritasLogo variant="full" size="md" />
           <span className="text-[10px] font-mono text-[#6366F1] uppercase tracking-widest bg-[#262320] px-2.5 py-1 rounded border border-[#2E2A27]">
             {isBank ? 'BANK GATEWAY' : 'COMPANY PORTAL'}
           </span>

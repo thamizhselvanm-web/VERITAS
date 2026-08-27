@@ -1,6 +1,7 @@
 import React from 'react';
-import { Shield, CheckCircle2, Lock, ArrowLeft, ExternalLink } from 'lucide-react';
+import { CheckCircle2, Lock, ArrowLeft, ExternalLink } from 'lucide-react';
 import { ProofRecord } from '../../types';
+import { VeritasLogo } from '../common/VeritasLogo';
 
 interface PublicProofVerifyPageProps {
   proofId?: string;
@@ -26,72 +27,75 @@ export const PublicProofVerifyPage: React.FC<PublicProofVerifyPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#070A11] text-[#C9D1D9] flex flex-col items-center justify-center p-6 font-sans">
+    <main className="min-h-screen bg-[#141211] text-[#F7F4F1] flex flex-col items-center justify-center p-4 select-none font-sans">
       
-      <div className="max-w-md w-full inst-card-elevated p-8 border border-[#30363D] shadow-2xl space-y-6">
+      <div className="max-w-md w-full bg-[#1C1917] p-8 border border-[#2E2A27] rounded-2xl shadow-2xl space-y-6">
         
         {/* Brand Logo Header */}
-        <div className="flex items-center justify-between border-b border-[#30363D] pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-blue-600/20 border border-blue-500/40 flex items-center justify-center">
-              <Shield className="w-4 h-4 text-blue-400" />
-            </div>
-            <span className="font-extrabold text-white tracking-wider font-mono text-base">VERITAS</span>
-          </div>
+        <div className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
+          <VeritasLogo variant="full" size="sm" />
 
-          <span className="text-[10px] font-mono text-[#8B949E] uppercase tracking-widest bg-[#0D1117] px-2.5 py-1 rounded border border-[#30363D]">
+          <span className="text-[10px] font-mono text-[#6366F1] uppercase tracking-widest bg-[#262320] px-2.5 py-1 rounded border border-[#2E2A27]">
             PUBLIC PROOF VERIFIER
           </span>
         </div>
 
-        {/* Verification Status per UI Brief Sec 16 */}
-        <div className="p-4 rounded bg-[#238636]/15 border border-[#238636]/40 flex items-center gap-3">
-          <CheckCircle2 className="w-6 h-6 text-[#3FB950] flex-shrink-0" />
+        {/* Verification Status */}
+        <div className="p-4 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 flex items-center gap-3">
+          <CheckCircle2 className="w-6 h-6 text-[#10B981] flex-shrink-0" />
           <div>
-            <h4 className="font-bold text-[#3FB950] text-sm">✓ Proof Verified</h4>
-            <p className="text-xs text-[#C9D1D9] mt-0.5 font-mono">Blockchain Cryptographic State Verified</p>
+            <h3 className="font-bold text-[#F7F4F1] text-xs uppercase tracking-wider">CRYPTOGRAPHIC PROOF VERIFIED</h3>
+            <p className="text-[11px] text-[#D8C7B8] font-mono mt-0.5">Merkle root matches Arbitrum L2 ledger entry.</p>
           </div>
         </div>
 
-        {/* Minimal Details per UI Brief Sec 16 */}
-        <div className="space-y-3 font-mono text-xs bg-[#0D1117] p-4 rounded border border-[#30363D]">
-          <div className="flex justify-between border-b border-[#30363D]/60 pb-2">
-            <span className="text-[#8B949E]">VERITAS ID:</span>
-            <span className="font-bold text-white">{proofId}</span>
+        {/* Notary Details */}
+        <dl className="space-y-2.5 text-xs font-mono bg-[#141211] p-4 rounded-xl border border-[#2E2A27]">
+          <div className="flex justify-between py-1 border-b border-[#2E2A27]">
+            <dt className="text-[#9E8C7C]">Resource ID:</dt>
+            <dd className="font-bold text-[#F7F4F1]">{proof.resourceId}</dd>
           </div>
 
-          <div className="flex justify-between border-b border-[#30363D]/60 pb-2">
-            <span className="text-[#8B949E]">Status:</span>
-            <span className="font-bold text-[#3FB950]">{proof.status}</span>
+          <div className="flex justify-between py-1 border-b border-[#2E2A27]">
+            <dt className="text-[#9E8C7C]">Proof Type:</dt>
+            <dd className="text-[#6366F1] font-bold text-[11px]">Arbitrum L2 Notary</dd>
           </div>
 
-          <div className="flex justify-between border-b border-[#30363D]/60 pb-2">
-            <span className="text-[#8B949E]">Timestamp:</span>
-            <span className="text-[#C9D1D9]">{proof.verifiedAt}</span>
+          <div className="flex justify-between py-1 border-b border-[#2E2A27]">
+            <dt className="text-[#9E8C7C]">Block Height:</dt>
+            <dd className="text-[#F7F4F1] font-numeric">#{proof.blockHeight}</dd>
           </div>
 
-          <div className="flex justify-between border-b border-[#30363D]/60 pb-2">
-            <span className="text-[#8B949E]">Block Height:</span>
-            <span className="text-[#C9D1D9]">#{proof.blockHeight}</span>
+          <div className="py-1 space-y-1">
+            <dt className="text-[#9E8C7C]">SHA-256 Hash Digest:</dt>
+            <dd className="text-[10px] text-[#10B981] break-all font-numeric bg-[#1C1917] p-2 rounded border border-[#2E2A27]">
+              {proof.sha256}
+            </dd>
           </div>
+        </dl>
 
-          <div className="pt-1 text-[11px] text-[#F85149] font-sans flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-[#F85149]" />
-            <span>Sensitive financial information: <strong>Not displayed (OFF-CHAIN)</strong></span>
-          </div>
-        </div>
+        {/* Blockchain Explorer Link */}
+        <a 
+          href={`https://arbiscan.io/tx/${proof.txRef}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#262320] border border-[#2E2A27] text-xs font-semibold text-[#F7F4F1] hover:border-[#6366F1] transition-all"
+        >
+          <span>Inspect Arbitrum Block Explorer</span>
+          <ExternalLink className="w-3.5 h-3.5 text-[#6366F1]" />
+        </a>
 
-        {/* Footer buttons */}
-        <div className="border-t border-[#30363D] pt-4 flex items-center justify-between">
-          <button onClick={onBackToApp} className="btn-inst-secondary text-xs">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Application
+        <div className="pt-2 border-t border-[#2E2A27]">
+          <button 
+            onClick={onBackToApp} 
+            className="w-full py-2.5 text-xs text-[#9E8C7C] hover:text-[#F7F4F1] flex items-center justify-center gap-2 font-mono"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Return to VERITAS Workspace
           </button>
-
-          <span className="text-[10px] text-[#8B949E] font-mono">Arbitrum L2 Notary</span>
         </div>
 
       </div>
 
-    </div>
+    </main>
   );
 };

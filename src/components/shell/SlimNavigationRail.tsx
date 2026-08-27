@@ -13,6 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { PageId } from '../common/Sidebar';
+import { VeritasLogo } from '../common/VeritasLogo';
 
 interface SlimNavigationRailProps {
   activePage: PageId;
@@ -53,7 +54,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         initial={{ width: 64 }}
-        animate={{ width: isHovered ? 240 : 64 }}
+        animate={{ width: isHovered ? 260 : 64 }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
         className="sidebar hidden md:flex fixed top-0 left-0 bottom-0 z-40 bg-[#1C1917] border-r border-[#2E2A27] flex-col justify-between p-3 select-none font-sans shadow-xl"
         aria-label="Primary Institutional Navigation"
@@ -67,26 +68,9 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
             className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-[#262320] transition-all duration-150 overflow-hidden focus-visible:ring-2 focus-visible:ring-[#6366F1] focus-visible:outline-none"
             tabIndex={0}
             role="button"
-            aria-label="VERITAS Trust Operations Home"
+            aria-label="VERITAS Trust Intelligence Platform Home"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#4F46E5] text-white flex-shrink-0 flex items-center justify-center font-bold text-sm shadow-md">
-              V
-            </div>
-
-            <AnimatePresence>
-              {isHovered && (
-                <motion.div
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.15 }}
-                  className="whitespace-nowrap overflow-hidden"
-                >
-                  <span className="font-sans font-extrabold text-base text-[#F7F4F1] tracking-tight block leading-none">VERITAS</span>
-                  <span className="text-[9px] text-[#6366F1] font-mono tracking-widest block mt-1 uppercase">TRUST OPERATIONS</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <VeritasLogo variant={isHovered ? 'full' : 'icon-only'} size="sm" />
           </div>
 
           {/* Named Navigation Items */}
@@ -185,15 +169,9 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
                 <div className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
                   <div 
                     onClick={() => handleSelect('overview')}
-                    className="flex items-center gap-3 cursor-pointer"
+                    className="cursor-pointer"
                   >
-                    <div className="w-9 h-9 rounded-xl bg-[#4F46E5] text-white flex items-center justify-center font-bold text-base shadow-md">
-                      V
-                    </div>
-                    <div>
-                      <span className="font-bold text-base text-[#F7F4F1] tracking-tight block leading-none">VERITAS</span>
-                      <span className="text-[9px] text-[#6366F1] font-mono tracking-widest block mt-1 uppercase">TRUST OPERATIONS</span>
-                    </div>
+                    <VeritasLogo variant="full" size="sm" />
                   </div>
 
                   <button
