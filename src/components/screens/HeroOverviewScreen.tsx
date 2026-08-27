@@ -1,5 +1,6 @@
 import React from 'react';
 import { InvoiceCase, TenantId } from '../../types';
+import { Inbox, UploadCloud } from 'lucide-react';
 
 interface HeroOverviewScreenProps {
   cases: InvoiceCase[];
@@ -21,6 +22,13 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
   const highRiskCount = tenantCases.filter(c => c.telemetry.riskLevel === 'HIGH' || c.telemetry.riskLevel === 'CRITICAL').length;
   const evidenceGapCount = tenantCases.filter(c => c.telemetry.evidenceCompleteness < 75).length;
 
+  const formattedDate = new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
   return (
     <>
       {/* Page Header */}
@@ -28,12 +36,14 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
         <div>
           <h1>Trust Operations</h1>
           <p className="meta">
-            Tuesday, 25 August 2026 · <strong>{openCasesCount || 12} cases</strong> require attention
+            {formattedDate} · <strong>{openCasesCount} cases</strong> require attention
           </p>
         </div>
         <div className="page-actions">
-          <button className="btn" onClick={onNavigateToQueue}>Review Queue</button>
-          <button className="btn primary" onClick={onNavigateToUpload}>Upload Invoice</button>
+          <button className="btn-secondary text-xs" onClick={onNavigateToQueue}>Review Queue</button>
+          <button className="btn-primary text-xs" onClick={onNavigateToUpload}>
+            <UploadCloud className="w-3.5 h-3.5" /> Upload Invoice
+          </button>
         </div>
       </div>
 
@@ -41,15 +51,15 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
       <dl className="kpi-grid">
         <div className="kpi">
           <dt>Open Cases</dt>
-          <dd>{openCasesCount || 12}</dd>
+          <dd>{openCasesCount}</dd>
         </div>
         <div className="kpi">
           <dt>High Risk</dt>
-          <dd className="risk">{highRiskCount || 3}</dd>
+          <dd className="risk">{highRiskCount}</dd>
         </div>
         <div className="kpi">
           <dt>Evidence Gap</dt>
-          <dd className="review">{evidenceGapCount || 5}</dd>
+          <dd className="review">{evidenceGapCount}</dd>
         </div>
         <div className="kpi">
           <dt>Avg. Review Time</dt>
@@ -73,52 +83,67 @@ export const HeroOverviewScreen: React.FC<HeroOverviewScreenProps> = ({
             </button>
           </div>
           
-          <table>
-            <thead>
-              <tr>
-                <th>Case</th>
-                <th>Seller → Buyer</th>
-                <th>Amount</th>
-                <th>Trust</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tenantCases.map((c) => (
-                <tr key={c.id} onClick={() => onSelectCase(c.id)} className="cursor-pointer">
-                  <td className="case-id">
-                    {c.caseNumber}
-                    <span>Invoice {c.invoiceNumber}</span>
-                  </td>
-                  <td>{c.sellerName} → {c.buyerName}</td>
-                  <td className="amount mono">
-                    ${(c.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </td>
-                  <td>
-                    <div className="trust-cell">
-                      <span className="mono">{c.telemetry.trustScore}</span>
-                      <span className="bar">
-                        <span style={{ width: `${c.telemetry.trustScore}%` }}></span>
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    {c.telemetry.recommendation === 'APPROVE_RECOMMENDATION' ? (
-                      <span className="pill verified">Approved</span>
-                    ) : c.telemetry.recommendation === 'MANUAL_REVIEW' ? (
-                      <span className="pill review">Manual review</span>
-                    ) : (
-                      <span className="pill risk">High risk</span>
-                    )}
-                  </td>
-                  <td className="row-action">
-                    <button onClick={(e) => { e.stopPropagation(); onSelectCase(c.id); }}>Open</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {tenantCases.length === 0 ? (
+            <div className="empty-state p-8 text-center space-y-3">
+              <Inbox className="w-8 h-8 text-[#9E8C7C] mx-auto" />
+              <p className="text-xs text-[#9E8C7C]">No active cases in this tenant workspace.</p>
+              <button onClick={onNavigateToUpload} className="btn-primary text-xs mx-auto">
+                Upload New Invoice
+              </button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Case</th>
+                    <th>Seller → Buyer</th>
+                    <th>Amount</th>
+                    <th>Trust</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tenantCases.map((c) => {
+                    const currencySymbol = c.currency === 'INR' ? '₹' : '$';
+                    return (
+                      <tr key={c.id} onClick={() => onSelectCase(c.id)} className="cursor-pointer">
+                        <td className="case-id">
+                          {c.caseNumber}
+                          <span>Invoice {c.invoiceNumber}</span>
+                        </td>
+                        <td>{c.sellerName} → {c.buyerName}</td>
+                        <td className="amount mono">
+                          {currencySymbol}{(c.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        </td>
+                        <td>
+                          <div className="trust-cell">
+                            <span className="mono">{c.telemetry.trustScore}</span>
+                            <span className="bar">
+                              <span style={{ width: `${c.telemetry.trustScore}%` }}></span>
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          {c.telemetry.recommendation === 'APPROVE_RECOMMENDATION' ? (
+                            <span className="pill verified">Approved</span>
+                          ) : c.telemetry.recommendation === 'MANUAL_REVIEW' ? (
+                            <span className="pill review">Manual review</span>
+                          ) : (
+                            <span className="pill risk">High risk</span>
+                          )}
+                        </td>
+                        <td className="row-action">
+                          <button onClick={(e) => { e.stopPropagation(); onSelectCase(c.id); }}>Open</button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
 
         {/* System Trust Health Sidebar */}

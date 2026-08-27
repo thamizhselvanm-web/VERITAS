@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SlimNavigationRail } from './components/shell/SlimNavigationRail';
 import { TopCommandBar } from './components/shell/TopCommandBar';
 import { CommandPalette } from './components/shell/CommandPalette';
 import { VeritasLoader } from './components/common/VeritasLoader';
 import { SystemCardAnimation } from './components/common/SystemCardAnimation';
+import { ToastProvider, useToast } from './components/common/ToastContainer';
 
 import { LoginPage } from './components/pages/LoginPage';
 import { HeroOverviewScreen } from './components/screens/HeroOverviewScreen';
@@ -15,6 +16,7 @@ import { TrustGraph3D } from './components/3d/TrustGraph3D';
 import { ContinuousMonitoringStream } from './components/screens/ContinuousMonitoringStream';
 import { CryptographicProofScreen } from './components/screens/CryptographicProofScreen';
 import { PublicProofVerifyPage } from './components/pages/PublicProofVerifyPage';
+import { NotFoundPage } from './components/pages/NotFoundPage';
 
 import { ProofInspectorModal } from './components/modals/ProofInspectorModal';
 import { TwilioWhatsAppModal } from './components/modals/TwilioWhatsAppModal';
@@ -27,7 +29,8 @@ import { TrustEngine } from './services/trustEngine';
 import { PageId } from './components/common/Sidebar';
 import { twilioWhatsAppService, WhatsAppMessagePayload } from './services/twilioWhatsAppService';
 
-export const App: React.FC = () => {
+const AppWorkspace: React.FC = () => {
+  const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [session, setSession] = useState<UserSession>(authService.getSession());
@@ -37,6 +40,7 @@ export const App: React.FC = () => {
   
   // Modals & Drawers
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedProofEvent, setSelectedProofEvent] = useState<AuditEvent | null>(null);
   const [whatsappPayload, setWhatsappPayload] = useState<WhatsAppMessagePayload | null>(null);
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
@@ -46,16 +50,65 @@ export const App: React.FC = () => {
   const activeGraphEdges = mockGraphEdges[selectedCaseId] || mockGraphEdges['case-vrt-28491'];
   const activeAuditEvents = mockAuditEvents[selectedCaseId] || mockAuditEvents['case-vrt-28491'];
 
+  // Dynamic Page Title & Meta Description update
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      'overview': 'Overview — VERITAS Continuous Trust Engine',
+      'review-queue': 'Underwriter Review Queue — VERITAS',
+      'upload-pipeline': 'Invoice Upload & Processing Pipeline — VERITAS',
+      'case-detail': `Case ${activeCase?.caseNumber || ''} — VERITAS Trust Workspace`,
+      'trust-graph': '3D Financial Trust Graph — VERITAS',
+      'monitoring': 'Continuous Risk & Transaction Stream — VERITAS',
+      'audit-proof': 'Cryptographic Audit & Blockchain Proofs — VERITAS',
+      'public-verify': 'Public Proof Verifier — VERITAS',
+    };
+
+    const descriptions: Record<string, string> = {
+      'overview': 'High-level dashboard overview of active trust cases, open risk alerts, and system health index.',
+      'review-queue': 'Prioritized underwriter review queue sorted by trust score, confidence index, and risk signals.',
+      'upload-pipeline': 'Zero-trust invoice uploading pipeline with real-time malware isolation and OCR extraction.',
+      'case-detail': `Detailed investigation workspace for invoice case ${activeCase?.caseNumber || ''}.`,
+      'trust-graph': 'Interactive 3D graph visualization of seller-buyer trade relationships and duplicate risk edges.',
+      'monitoring': 'Real-time telemetry event stream for continuous transaction monitoring.',
+      'audit-proof': 'Cryptographic SHA-256 audit trail and Arbitrum L2 notary proof records.',
+      'public-verify': 'Public QR verification portal for cryptographic proof records.',
+    };
+
+    const newTitle = titles[activePage] || 'VERITAS — Continuous Financial Trust Engine';
+    const newDesc = descriptions[activePage] || 'VERITAS Continuous Financial Trust Engine platform.';
+
+    document.title = newTitle;
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', newDesc);
+    }
+  }, [activePage, activeCase?.caseNumber]);
+
+  // Keyboard shortcut listener for Command Palette (⌘K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle Login / Authentication
   const handleLoginSuccess = (tenantId: TenantId) => {
     const updated = authService.switchTenant(tenantId);
     setSession(updated);
     setIsAuthenticated(true);
     setActivePage('overview');
+    addToast('Authenticated Successfully', `Switched workspace to ${updated.activeTenantId === 'tenant-a' ? 'Apex Capital' : 'Nexus Trade'}`, 'success');
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    addToast('Signed Out', 'You have been logged out of VERITAS workspace.', 'info');
   };
 
   // Handle Tenant Switch
@@ -66,6 +119,8 @@ export const App: React.FC = () => {
     if (tenantCase) {
       setSelectedCaseId(tenantCase.id);
     }
+    const tenantName = tenantId === 'tenant-a' ? 'Apex Capital' : 'Nexus Trade Credit';
+    addToast('Tenant Switched', `Active workspace changed to ${tenantName}`, 'info');
   };
 
   // Handle Decision Execution
@@ -99,12 +154,16 @@ export const App: React.FC = () => {
 
     mockAuditEvents[selectedCaseId] = [newAuditEvent, ...(mockAuditEvents[selectedCaseId] || [])];
 
-    // Trigger Twilio WhatsApp Notification when funds are approved
     if (newStatus === 'APPROVED') {
+      addToast('Case Approved', `Invoice ${activeCase.caseNumber} approved for financing. Dispatching dispatch notification...`, 'success');
       const targetCase = cases.find(c => c.id === selectedCaseId) || activeCase;
       const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase, newAuditEvent.proofHash);
       setWhatsappPayload(payload);
       setIsWhatsAppModalOpen(true);
+    } else if (newStatus === 'REJECTED') {
+      addToast('Case Rejected', `Invoice ${activeCase.caseNumber} financing declined. Reason logged in audit trail.`, 'error');
+    } else if (newStatus === 'EVIDENCE_REQUESTED') {
+      addToast('Evidence Requested', `Evidence request dispatched to seller for ${activeCase.caseNumber}.`, 'warning');
     }
   };
 
@@ -129,6 +188,7 @@ export const App: React.FC = () => {
           mitigationHint: 'Hold disbursement until buyer bank confirmation is re-verified.',
           confidence: 0.95
         });
+        addToast('Payment Delay Signal', `Flagged +30 day payment delay on case ${targetCaseId}`, 'warning');
       } else if (eventType === 'DUPLICATE_DISCOVERED') {
         riskSignals.unshift({
           id: `r-sim-${Date.now()}`,
@@ -142,8 +202,10 @@ export const App: React.FC = () => {
           mitigationHint: 'Initiate double-financing fraud review immediately.',
           confidence: 0.99
         });
+        addToast('Duplicate Signal Flagged', `Cross-lender duplicate detected on case ${targetCaseId}`, 'error');
       } else if (eventType === 'BUYER_CONFIRMED') {
         evidenceScore = Math.min(100, evidenceScore + 15);
+        addToast('Buyer Confirmed', `Evidence score increased to ${evidenceScore}%`, 'success');
       }
 
       const telemetry = TrustEngine.calculateTelemetry(targetCaseId, riskSignals, evidenceScore);
@@ -195,6 +257,7 @@ export const App: React.FC = () => {
 
     setCases([fullCase, ...cases]);
     setSelectedCaseId(fullCase.id);
+    addToast('Invoice Processed', `Created new case ${fullCase.caseNumber} (${fullCase.documentName})`, 'success');
   };
 
   // Custom VERITAS Loading Sequence
@@ -216,6 +279,19 @@ export const App: React.FC = () => {
     );
   }
 
+  const validPages: PageId[] = [
+    'overview',
+    'review-queue',
+    'upload-pipeline',
+    'case-detail',
+    'trust-graph',
+    'monitoring',
+    'audit-proof',
+    'public-verify'
+  ];
+
+  const isValidPage = validPages.includes(activePage);
+
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
@@ -229,6 +305,8 @@ export const App: React.FC = () => {
           activePage={activePage}
           onNavigate={setActivePage}
           onLogout={handleLogout}
+          isMobileOpen={isMobileMenuOpen}
+          onCloseMobileMenu={() => setIsMobileMenuOpen(false)}
         />
 
         {/* Top Command Bar */}
@@ -237,6 +315,7 @@ export const App: React.FC = () => {
           tenants={mockTenants}
           onSwitchTenant={handleSwitchTenant}
           onOpenSearch={() => setIsSearchOpen(true)}
+          onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         />
 
         {/* Tenant Security Guard Banner */}
@@ -255,6 +334,10 @@ export const App: React.FC = () => {
               exit={{ opacity: 0, y: -10, scale: 0.99 }}
               transition={{ duration: 0.22 }}
             >
+              {!isValidPage && (
+                <NotFoundPage onBackToOverview={() => setActivePage('overview')} />
+              )}
+
               {activePage === 'overview' && (
                 <HeroOverviewScreen
                   cases={cases}
@@ -353,5 +436,13 @@ export const App: React.FC = () => {
         invoiceCase={activeCase}
       />
     </>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ToastProvider>
+      <AppWorkspace />
+    </ToastProvider>
   );
 };

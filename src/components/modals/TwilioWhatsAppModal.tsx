@@ -247,7 +247,9 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
                 </div>
                 <div className="flex justify-between border-b border-[#242830] pb-1">
                   <span>Target Recipient:</span>
-                  <span className="text-[#E07A5F]">{currentPayload.to || phoneInput || 'Not specified'}</span>
+                  <a href={`tel:${(currentPayload.to || phoneInput || '').replace('whatsapp:', '')}`} className="text-[#E07A5F] hover:underline font-bold">
+                    {currentPayload.to || phoneInput || 'Not specified'}
+                  </a>
                 </div>
                 <div className="flex justify-between border-b border-[#242830] pb-1">
                   <span>Message SID:</span>
@@ -272,8 +274,8 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
             <span>Twilio WhatsApp API v2010-04-01 Enforced</span>
           </div>
 
-          <button onClick={onClose} className="btn primary text-xs">
-            Done & Close
+          <button onClick={onClose} className="btn-primary text-xs cursor-pointer">
+            Done &amp; Close
           </button>
         </footer>
 

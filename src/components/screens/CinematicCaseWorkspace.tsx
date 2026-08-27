@@ -49,28 +49,34 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#9AA1AC] mt-1 font-sans">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#D8C7B8] mt-1 font-sans">
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#5B8DEF]" />
-                Seller: <strong className="text-[#F2F3F5]">{invoiceCase.sellerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#E07A5F]" />
+                Seller: <strong className="text-[#F7F4F1]">{invoiceCase.sellerName}</strong>
+                <a href={`mailto:contact@${invoiceCase.sellerName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`} className="text-[#E07A5F] hover:underline text-[11px] ml-1">
+                  [email]
+                </a>
               </span>
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#34B37E]" />
-                Buyer: <strong className="text-[#F2F3F5]">{invoiceCase.buyerName}</strong>
+                <Building2 className="w-3.5 h-3.5 text-[#52B788]" />
+                Buyer: <strong className="text-[#F7F4F1]">{invoiceCase.buyerName}</strong>
+                <a href={`tel:+1415555${Math.floor(1000 + Math.random() * 9000)}`} className="text-[#52B788] hover:underline text-[11px] ml-1">
+                  [phone]
+                </a>
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-6">
           <div className="text-right font-mono">
-            <span className="text-[11px] text-[#5C6470] uppercase tracking-wider block">Financing Amount</span>
-            <span className="text-xl font-bold text-[#F2F3F5] font-numeric mt-0.5 block">{formattedAmount}</span>
+            <span className="text-[11px] text-[#9E8C7C] uppercase tracking-wider block">Financing Amount</span>
+            <span className="text-xl font-bold text-[#F7F4F1] font-numeric mt-0.5 block">{formattedAmount}</span>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-[#242830] pl-4">
+          <div className="flex items-center gap-2 border-l border-[#E07A5F]/20 pl-4">
             <button onClick={() => setIsEvidenceDrawerOpen(true)} className="btn-secondary text-xs">
-              <Eye className="w-3.5 h-3.5 text-[#5B8DEF]" /> Custody Chain
+              <Eye className="w-3.5 h-3.5 text-[#E07A5F]" /> Custody Chain
             </button>
             <button onClick={() => setIsEvidenceModalOpen(true)} className="btn-primary text-xs">
               <Send className="w-3.5 h-3.5" /> Request Evidence

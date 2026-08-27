@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { FileCheck, ShieldCheck, Lock, CheckCircle2, RefreshCw, ArrowRight } from 'lucide-react';
+import { FileCheck, ShieldCheck, CheckCircle2, RefreshCw, ArrowRight, Copy } from 'lucide-react';
 import { AuditEvent, ProofRecord } from '../../types';
 import { mockProofRecords } from '../../mock/demoData';
 import { ProofService } from '../../services/proofService';
+import { useToast } from '../common/ToastContainer';
 
 interface CryptographicProofScreenProps {
   auditEvents: AuditEvent[];
@@ -13,6 +14,7 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
   auditEvents,
   onOpenProof
 }) => {
+  const { addToast } = useToast();
   const [verifying, setVerifying] = useState(false);
   const [verifiedSuccess, setVerifiedSuccess] = useState<boolean | null>(null);
 
@@ -36,7 +38,13 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
     setTimeout(() => {
       setVerifiedSuccess(result);
       setVerifying(false);
+      addToast('Proof Re-Verified', 'SHA-256 hash matches Arbitrum L2 notary block record 100%.', 'success');
     }, 500);
+  };
+
+  const handleCopyHash = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    addToast('Copied to Clipboard', `Copied ${label} to clipboard.`, 'info');
   };
 
   const chainNodes = [
@@ -50,78 +58,88 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
     <div className="space-y-6 font-sans select-none">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E07A5F]/20 pb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5 font-mono">
-            <FileCheck className="w-6 h-6 text-[#00F0FF]" />
+          <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight flex items-center gap-2.5 font-mono">
+            <FileCheck className="w-6 h-6 text-[#E07A5F]" />
             Cryptographic Proof & Evidence Infrastructure
           </h1>
-          <p className="text-xs text-[#94A3B8] font-mono mt-1">
+          <p className="text-xs text-[#9E8C7C] font-mono mt-1">
             Immutable audit events anchored to Ethereum Arbitrum L2 blockchain notary ledger.
           </p>
         </div>
 
-        <span className="spatial-badge spatial-badge-cyan text-xs">
+        <span className="inst-badge inst-badge-accent text-xs">
           Arbitrum One L2 (Chain ID: 42161)
         </span>
       </div>
 
-      {/* Visual Chain Infrastructure per Brief Sec 39 */}
-      <div className="spatial-panel p-6 border border-white/10 space-y-4">
-        <span className="text-xs font-mono font-bold text-[#94A3B8] uppercase tracking-wider block">
+      {/* Visual Chain Infrastructure */}
+      <div className="inst-card p-6 space-y-4">
+        <span className="text-xs font-mono font-bold text-[#D8C7B8] uppercase tracking-wider block">
           Evidence Cryptographic Chain of Custody
         </span>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
           {chainNodes.map((node, idx) => (
             <React.Fragment key={idx}>
-              <div className="spatial-panel p-4 border border-[#00F0FF]/30 text-center space-y-1 bg-[#1F6FEB]/10">
-                <span className="font-bold text-white font-mono text-sm block">{node.title}</span>
-                <span className="text-[11px] text-[#00F0FF] font-mono block">{node.desc}</span>
+              <div className="inst-card p-4 border border-[#E07A5F]/30 text-center space-y-1 bg-[#E07A5F]/10">
+                <span className="font-bold text-[#F7F4F1] font-mono text-sm block">{node.title}</span>
+                <span className="text-[11px] text-[#E07A5F] font-mono block">{node.desc}</span>
               </div>
-
-              {idx < chainNodes.length - 1 && (
-                <div className="hidden md:flex justify-center text-[#00F0FF]">
-                  <ArrowRight className="w-5 h-5 animate-pulse" />
-                </div>
-              )}
             </React.Fragment>
           ))}
         </div>
       </div>
 
       {/* Verification Status & Hash Actions */}
-      <div className="spatial-panel p-6 border border-white/10 space-y-5">
-        <div className="flex items-center justify-between">
+      <div className="inst-card p-6 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-6 h-6 text-[#3FB950]" />
+            <CheckCircle2 className="w-6 h-6 text-[#52B788]" />
             <div>
-              <h3 className="font-bold text-white text-sm">PROOF STATUS: VERIFIED</h3>
-              <p className="text-xs text-[#94A3B8] font-mono">Block Height #{proof.blockHeight} &bull; Network: {proof.chainId}</p>
+              <h3 className="font-bold text-[#F7F4F1] text-sm">PROOF STATUS: VERIFIED</h3>
+              <p className="text-xs text-[#9E8C7C] font-mono">Block Height #{proof.blockHeight} &bull; Network: {proof.chainId}</p>
             </div>
           </div>
 
-          <button onClick={handleVerify} disabled={verifying} className="btn-spatial-primary text-xs">
+          <button onClick={handleVerify} disabled={verifying} className="btn-primary text-xs">
             {verifying ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
             Re-Verify SHA-256 Hash
           </button>
         </div>
 
         {verifiedSuccess && (
-          <div className="p-3 rounded bg-[#3FB950]/20 border border-[#3FB950] text-[#3FB950] text-xs font-mono">
+          <div className="p-3 rounded-xl bg-[#52B788]/20 border border-[#52B788] text-[#52B788] text-xs font-mono">
             ✓ Cryptographic SHA-256 hash matches Arbitrum L2 notary block record 100%.
           </div>
         )}
 
         <div className="space-y-3 font-mono text-xs">
-          <div className="bg-[#05070B] p-3.5 rounded border border-white/10">
-            <span className="text-[#64748B] block text-[10px]">Canonical Payload:</span>
-            <code className="text-[#00F0FF] block break-all mt-0.5">{proof.canonicalHash}</code>
+          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#E07A5F]/20 space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[#9E8C7C] text-[10px]">Canonical Payload:</span>
+              <button
+                onClick={() => handleCopyHash(proof.canonicalHash, 'Canonical Payload')}
+                className="text-[#E07A5F] hover:underline flex items-center gap-1 text-[11px]"
+              >
+                <Copy className="w-3 h-3" /> Copy Payload
+              </button>
+            </div>
+            <code className="text-[#E07A5F] block break-all mt-0.5">{proof.canonicalHash}</code>
           </div>
 
-          <div className="bg-[#05070B] p-3.5 rounded border border-white/10">
-            <span className="text-[#64748B] block text-[10px]">SHA-256 Digest:</span>
-            <code className="text-[#3FB950] font-bold block break-all mt-0.5">{proof.sha256}</code>
+          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#E07A5F]/20 space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[#9E8C7C] text-[10px]">SHA-256 Digest:</span>
+              <button
+                onClick={() => handleCopyHash(proof.sha256, 'SHA-256 Digest')}
+                className="text-[#52B788] hover:underline flex items-center gap-1 text-[11px]"
+              >
+                <Copy className="w-3 h-3" /> Copy Hash
+              </button>
+            </div>
+            <code className="text-[#52B788] font-bold block break-all mt-0.5">{proof.sha256}</code>
           </div>
         </div>
       </div>

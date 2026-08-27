@@ -96,12 +96,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <label className="text-[11px] font-mono font-bold text-[#D8C7B8] uppercase tracking-wider block">
               UNDERWRITER IDENTITY
             </label>
-            <input
-              type="text"
-              readOnly
-              value="alex.morgan@apexcapital.com"
-              className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/25 text-xs font-mono text-[#D8C7B8] outline-none"
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value="alex.morgan@apexcapital.com"
+                className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/25 text-xs font-mono text-[#D8C7B8] outline-none"
+              />
+              <a
+                href="mailto:alex.morgan@apexcapital.com"
+                className="btn-secondary py-3 px-3 text-xs"
+                title="Send email to Alex Morgan"
+              >
+                Mail
+              </a>
+            </div>
           </div>
 
           {/* Hardware MFA Code Field */}
@@ -125,7 +134,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="btn.primary w-full py-3.5 text-xs font-bold tracking-wider uppercase flex items-center justify-between px-5 rounded-xl shadow-lg shadow-[#E07A5F]/30 hover:brightness-110 transition-all mt-2"
+            className="btn-primary w-full py-3.5 text-xs font-bold tracking-wider uppercase flex items-center justify-between px-5 rounded-xl shadow-lg shadow-[#E07A5F]/30 hover:brightness-110 transition-all mt-2 cursor-pointer"
           >
             <span>{loading ? 'Verifying access…' : 'Access workspace'}</span>
             <ArrowRight className="w-4 h-4" />
