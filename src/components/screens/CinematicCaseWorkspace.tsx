@@ -27,10 +27,10 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
   const formattedAmount = `${invoiceCase.currency} ${(invoiceCase.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
   return (
-    <article className="space-y-6 pb-16 font-sans select-none">
+    <article className="space-y-8 pb-16 font-sans select-none">
       
       {/* Case Header Bar */}
-      <header className="inst-card p-5 flex flex-wrap items-center justify-between gap-4">
+      <header className="inst-card p-6 sm:p-7 flex flex-wrap items-center justify-between gap-6">
         
         <div className="flex items-center gap-4">
           <button onClick={onBackToDashboard} className="btn-secondary p-2" title="Back to Cases">
@@ -87,9 +87,9 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
       </header>
 
       {/* 3-up Score Summary Row (§16 requirement) */}
-      <dl className="grid grid-cols-1 md:grid-cols-3 gap-4 m-0">
+      <dl className="grid grid-cols-1 md:grid-cols-3 gap-6 m-0">
         
-        <div className="inst-card p-4 flex items-center justify-between">
+        <div className="inst-card p-5 flex items-center justify-between">
           <div>
             <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">Trust Score</dt>
             <dd className="text-2xl font-bold font-numeric text-[#F2F3F5] mt-1 m-0">
@@ -101,7 +101,7 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
           </span>
         </div>
 
-        <div className="inst-card p-4 flex items-center justify-between">
+        <div className="inst-card p-5 flex items-center justify-between">
           <div>
             <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">AI Confidence</dt>
             <dd className="text-2xl font-bold font-numeric text-[#5B8DEF] mt-1 m-0">
@@ -111,7 +111,7 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
           <span className="inst-badge inst-badge-accent text-xs">HIGH CERTAINTY</span>
         </div>
 
-        <div className="inst-card p-4 flex items-center justify-between">
+        <div className="inst-card p-5 flex items-center justify-between">
           <div>
             <dt className="text-[11px] font-mono font-medium text-[#5C6470] uppercase tracking-wider">Evidence Coverage</dt>
             <dd className="text-2xl font-bold font-numeric text-[#E0A63C] mt-1 m-0">
@@ -124,10 +124,10 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
       </dl>
 
       {/* 2-Column Grid: Invoice Summary & Top Risk Signals */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Spatial Invoice Extraction Workspace (7 cols) */}
-        <section className="lg:col-span-7 space-y-6">
+        <section className="lg:col-span-7 space-y-8">
           
           <SpatialInvoiceWorkspace
             documentName={invoiceCase.documentName}
@@ -136,18 +136,18 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
           />
 
           {/* Native <details>/<summary> Accordion for Evidence Ledger */}
-          <section className="inst-card p-4 space-y-3">
+          <section className="inst-card p-6 space-y-4">
             <h2 className="text-xs font-mono font-bold text-[#5C6470] uppercase tracking-wider">
               Evidence Ledger
             </h2>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               {invoiceCase.evidenceItems.map((evt) => (
                 <details
                   key={evt.id}
-                  className="group inst-card-elevated border border-[#242830] rounded-md overflow-hidden text-xs"
+                  className="group inst-card-elevated border border-[#242830] rounded-xl overflow-hidden text-xs"
                 >
-                  <summary className="p-3 font-semibold text-[#F2F3F5] cursor-pointer flex items-center justify-between hover:bg-[#1A1E24] transition-colors select-none">
+                  <summary className="p-3.5 font-semibold text-[#F2F3F5] cursor-pointer flex items-center justify-between hover:bg-[#1A1E24] transition-colors select-none">
                     <span className="flex items-center gap-2 font-mono">
                       {evt.verified ? (
                         <CheckCircle2 className="w-4 h-4 text-[#34B37E]" />
@@ -163,7 +163,7 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
                     </div>
                   </summary>
 
-                  <div className="p-3 border-t border-[#242830] bg-[#12151A] space-y-2 font-mono text-xs text-[#9AA1AC]">
+                  <div className="p-4 border-t border-[#242830] bg-[#12151A] space-y-2.5 font-mono text-xs text-[#9AA1AC]">
                     <p>Reliability Score: <code className="text-[#F2F3F5]">{evt.reliabilityScore}%</code></p>
                     <p>Uploaded At: <span className="text-[#F2F3F5]">{evt.uploadedAt || 'Pending Upload'}</span></p>
                     <p>Required: <span className="text-[#F2F3F5]">{evt.required ? 'YES' : 'NO'}</span></p>
@@ -176,20 +176,20 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
         </section>
 
         {/* Right Column: Top Risk Signals & Decision Panel (5 cols) */}
-        <section className="lg:col-span-5 space-y-6">
+        <section className="lg:col-span-5 space-y-8">
           
           {/* Top Risk Signals */}
-          <div className="inst-card p-4 space-y-3">
+          <div className="inst-card p-6 space-y-4">
             <h2 className="text-xs font-mono font-bold text-[#5C6470] uppercase tracking-wider">
               Top Risk Signals
             </h2>
 
-            <ul className="space-y-2.5 list-none">
+            <ul className="space-y-3 list-none">
               {invoiceCase.riskSignals.length === 0 ? (
                 <li className="text-xs text-[#9AA1AC] italic">No high-severity risk signals detected.</li>
               ) : (
                 invoiceCase.riskSignals.map((signal) => (
-                  <li key={signal.id} className="p-3 rounded bg-[#1A1E24] border border-[#242830] space-y-1">
+                  <li key={signal.id} className="p-3.5 rounded-xl bg-[#1A1E24] border border-[#242830] space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-bold text-[#F2F3F5]">
                       <span className="flex items-center gap-1.5">
                         <AlertCircle className="w-3.5 h-3.5 text-[#E5484D]" />

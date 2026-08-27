@@ -45,10 +45,10 @@ export const DecisionPanel: React.FC<DecisionPanelProps> = ({
   };
 
   return (
-    <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-6 sm:p-7 space-y-6 font-sans shadow-lg">
+    <div className="bg-[#1C1917] border border-[#2E2A27] rounded-2xl p-7 sm:p-8 space-y-7 font-sans shadow-lg">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
+      <div className="flex items-center justify-between border-b border-[#2E2A27] pb-5">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-[#6366F1]/15 text-[#6366F1]">
             <ShieldCheck className="w-5 h-5" />
