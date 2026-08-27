@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, CheckCheck, Send, X, ShieldCheck, Terminal, Key, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { MessageSquare, CheckCheck, Send, X, ShieldCheck, Terminal, Key, CheckCircle2 } from 'lucide-react';
 import { WhatsAppMessagePayload, twilioWhatsAppService } from '../../services/twilioWhatsAppService';
 import { InvoiceCase } from '../../types';
 
@@ -80,18 +80,7 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm text-[#F7F4F1]">WhatsApp Dispatch Gateway</h3>
-                {currentPayload.isRealDispatch ? (
-                  <span className="pill verified text-[10px] py-0.5 px-2 font-mono bg-[#25D366]/15 text-[#25D366]">
-                    <CheckCheck className="w-3 h-3 text-[#25D366]" /> LIVE SENT TO PHONE
-                  </span>
-                ) : (
-                  <span className="pill verified text-[10px] py-0.5 px-2 font-mono bg-[#6366F1]/15 text-[#6366F1]">
-                    GATEWAY ENCRYPTED
-                  </span>
-                )}
-              </div>
+              <h3 className="font-bold text-sm text-[#F7F4F1]">WhatsApp Dispatch Gateway</h3>
               <p className="text-[11px] text-[#9E8C7C] font-mono mt-0.5">
                 Fund Disbursement Approval Message Engine
               </p>
@@ -108,60 +97,8 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
-          
-          {/* Status Alert Banner */}
-          {currentPayload.isRealDispatch ? (
-            <div className="p-3.5 rounded-xl bg-[#25D366]/15 border border-[#25D366]/40 text-xs space-y-1">
-              <div className="flex items-center gap-2 text-[#25D366] font-bold">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>WhatsApp Message Dispatched to Mobile Phone!</span>
-              </div>
-              <p className="text-[#F7F4F1]">
-                Message Reference: <code className="font-mono text-[#25D366]">{currentPayload.sid}</code>. Check your WhatsApp on phone <strong className="text-white">{targetNumberFormatted}</strong>.
-              </p>
-            </div>
-          ) : (
-            <div className="p-3.5 rounded-xl bg-[#6366F1]/10 border border-[#6366F1]/30 text-xs space-y-1.5">
-              <div className="flex items-center gap-2 text-[#6366F1] font-bold">
-                <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-                <span>Instant Mobile Telemetry Dispatch Ready</span>
-              </div>
-              <p className="text-[#D8C7B8] leading-relaxed">
-                Confirm target mobile phone number below to receive live WhatsApp underwriting notifications on <strong className="text-white">{targetNumberFormatted}</strong>.
-              </p>
-            </div>
-          )}
 
-          {/* CRITICAL: WhatsApp Sandbox Opt-In Guidance Notice */}
-          <div className="p-4 rounded-xl bg-[#25D366]/10 border border-[#25D366]/40 text-xs space-y-2.5">
-            <div className="flex items-center justify-between">
-              <strong className="text-[#25D366] font-bold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" /> Not receiving messages on WhatsApp yet?
-              </strong>
-              <span className="text-[10px] font-mono bg-[#25D366]/20 text-[#25D366] px-2 py-0.5 rounded font-bold">
-                REQUIRED STEP
-              </span>
-            </div>
-            <p className="text-[#D8C7B8] leading-relaxed">
-              WhatsApp anti-spam policy requires your mobile phone (<strong className="text-white">{targetNumberFormatted}</strong>) to opt into the WhatsApp Sandbox once before receiving automated messages.
-            </p>
-            <div className="pt-1 flex flex-wrap items-center gap-3">
-              <a
-                href={`https://wa.me/14155238886?text=join`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md"
-              >
-                <span>📲 Join WhatsApp Sandbox (+1 415 523 8886)</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <span className="text-[11px] text-[#9E8C7C] font-mono">
-                Send <code className="bg-[#141211] px-1.5 py-0.5 rounded text-[#25D366]">join</code> to <strong>+1 415 523 8886</strong> on WhatsApp
-              </span>
-            </div>
-          </div>
-
-          {/* API Error Notification */}
+          {/* API Error Notification if present */}
           {currentPayload.apiError && (
             <div className="p-3.5 rounded-xl bg-[rgba(229,72,77,0.14)] border border-[#E5484D]/40 text-xs text-[#E5484D] font-mono space-y-1">
               <strong>Gateway Notification:</strong>
