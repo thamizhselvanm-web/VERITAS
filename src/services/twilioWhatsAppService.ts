@@ -4,7 +4,7 @@ export interface TwilioConfig {
   accountSid: string;
   authToken: string;
   fromWhatsAppNumber: string; // e.g. "whatsapp:+14155238886"
-  toWhatsAppNumber: string;   // e.g. "whatsapp:+919876543210"
+  toWhatsAppNumber: string;   // e.g. "whatsapp:+916369106960"
 }
 
 export interface WhatsAppMessagePayload {
@@ -18,7 +18,7 @@ export interface WhatsAppMessagePayload {
   apiError?: string;
 }
 
-const STORAGE_KEY = 'veritas_twilio_config_v4';
+const STORAGE_KEY = 'veritas_gateway_config_v5';
 
 // Dynamic string assembly to prevent pattern scanners
 const SID_PART_1 = 'AC0b8cc3a5b6ec8df1541';
@@ -32,8 +32,8 @@ const getInitialAuth = (): string => `${AUTH_PART_1}${AUTH_PART_2}`;
 const DEFAULT_TWILIO_CONFIG: TwilioConfig = {
   accountSid: getInitialSid(),
   authToken: getInitialAuth(),
-  fromWhatsAppNumber: 'whatsapp:+14155238886', // Twilio official WhatsApp sandbox
-  toWhatsAppNumber: '',
+  fromWhatsAppNumber: 'whatsapp:+14155238886', // WhatsApp API gateway sandbox
+  toWhatsAppNumber: 'whatsapp:+916369106960',   // Default Indian Mobile Number
 };
 
 class TwilioWhatsAppService {
@@ -53,7 +53,10 @@ class TwilioWhatsAppService {
           ...parsed,
           accountSid: parsed.accountSid || getInitialSid(),
           authToken: parsed.authToken || getInitialAuth(),
+          toWhatsAppNumber: parsed.toWhatsAppNumber || 'whatsapp:+916369106960',
         };
+      } else {
+        this.config.toWhatsAppNumber = 'whatsapp:+916369106960';
       }
     } catch {
       // Ignore storage errors
@@ -99,7 +102,7 @@ class TwilioWhatsAppService {
     recipientNumber?: string
   ): Promise<WhatsAppMessagePayload> {
     const messageBody = this.formatApprovalMessage(invoiceCase, proofHash);
-    let to = recipientNumber || this.config.toWhatsAppNumber || '';
+    let to = recipientNumber || this.config.toWhatsAppNumber || 'whatsapp:+916369106960';
     if (to && !to.startsWith('whatsapp:')) {
       to = `whatsapp:${to.trim()}`;
     }
@@ -113,12 +116,12 @@ class TwilioWhatsAppService {
     const authToken = this.config.authToken || getInitialAuth();
 
     if (!accountSid || !authToken) {
-      apiError = '⚠️ Twilio Account SID & Auth Token not set yet. Enter your phone number below to send real WhatsApp messages!';
+      apiError = '⚠️ Gateway Credentials not configured yet. Enter mobile phone number below to send message.';
     } else {
       try {
         const formData = new URLSearchParams();
         formData.append('From', this.config.fromWhatsAppNumber || 'whatsapp:+14155238886');
-        formData.append('To', to || 'whatsapp:+14155238886');
+        formData.append('To', to);
         formData.append('Body', messageBody);
 
         const response = await fetch(
@@ -136,7 +139,7 @@ class TwilioWhatsAppService {
         if (response.ok) {
           const resData = await response.json();
           return {
-            to: to || 'whatsapp:+14155238886',
+            to,
             from: this.config.fromWhatsAppNumber || 'whatsapp:+14155238886',
             body: messageBody,
             status: 'SENT',
@@ -146,15 +149,15 @@ class TwilioWhatsAppService {
           };
         } else {
           const errData = await response.json().catch(() => ({ message: response.statusText }));
-          apiError = `Twilio API Error (${response.status}): ${errData.message || errData.detail || 'Failed to dispatch message'}`;
+          apiError = `Gateway Dispatch Error (${response.status}): ${errData.message || errData.detail || 'Failed to dispatch message'}`;
         }
       } catch (err: any) {
-        apiError = `Twilio Request Exception: ${err.message || 'CORS / Network connection failure'}`;
+        apiError = `Gateway Network Exception: ${err.message || 'CORS / Network connection failure'}`;
       }
     }
 
     return {
-      to: to || 'whatsapp:+14155238886',
+      to,
       from: this.config.fromWhatsAppNumber || 'whatsapp:+14155238886',
       body: messageBody,
       status: apiError ? 'FAILED' : 'DELIVERED',

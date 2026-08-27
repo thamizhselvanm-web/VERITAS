@@ -304,7 +304,7 @@ export const ReceiptAnalyticsModal: React.FC<ReceiptAnalyticsModalProps> = ({
                 <div className="p-3 rounded-xl bg-[#25D366]/15 border border-[#25D366]/40 text-xs text-[#25D366] font-mono flex items-center justify-between">
                   <span className="flex items-center gap-2 font-bold">
                     <CheckCircle2 className="w-4 h-4" />
-                    Live WhatsApp Approval Notification Dispatched via Twilio API!
+                    Live WhatsApp Approval Notification Dispatched to Mobile Phone (+916369106960)!
                   </span>
                   <span className="text-[10px]">Check your phone</span>
                 </div>
