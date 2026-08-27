@@ -132,7 +132,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         </div>
 
         {/* Results List */}
-        <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+        <div className="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
           {filteredCases.length === 0 ? (
             <div className="p-8 text-center space-y-2 bg-[#141211] rounded-xl border border-[#2E2A27]">
               <Search className="w-6 h-6 text-[#9E8C7C] mx-auto opacity-75" />

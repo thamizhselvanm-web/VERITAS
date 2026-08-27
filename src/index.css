@@ -42,6 +42,72 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom Institutional Fintech Scrollbars (Cross-browser Firefox + WebKit) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3A3532 #141211;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141211;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3A3532;
+  border-radius: 9999px;
+  border: 1px solid #141211;
+  transition: background-color 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
+}
+
+/* Custom Scrollbar Utilities */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3A3532 #1C1917;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1C1917;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3A3532;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
+}
+
+.custom-scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .mono {
   font-family: 'Trancity Mono', 'JetBrains Mono', monospace;
   font-variant-numeric: tabular-nums;

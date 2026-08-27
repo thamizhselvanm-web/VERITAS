@@ -177,7 +177,7 @@ export const SlimNavigationRail: React.FC<SlimNavigationRailProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-[#1C1917] border-r border-[#2E2A27] p-5 flex flex-col justify-between md:hidden font-sans shadow-2xl overflow-y-auto"
+              className="fixed top-0 left-0 bottom-0 z-50 w-72 bg-[#1C1917] border-r border-[#2E2A27] p-5 flex flex-col justify-between md:hidden font-sans shadow-2xl overflow-y-auto custom-scrollbar"
               aria-label="Mobile Primary Navigation"
             >
               <div className="space-y-6">
