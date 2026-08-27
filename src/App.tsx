@@ -163,12 +163,16 @@ const AppWorkspace: React.FC = () => {
     const toastType = newStatus === 'APPROVED' ? 'success' : newStatus === 'REJECTED' ? 'error' : 'warning';
     addToast(toastTitle, `Case ${targetCase.caseNumber} updated to ${newStatus}. Notarized on Arbitrum.`, toastType);
 
-    // Auto-dispatch Twilio WhatsApp notification for Evidence Requests or Approvals
-    if (newStatus === 'EVIDENCE_REQUESTED' || newStatus === 'APPROVED') {
-      const payload = await twilioWhatsAppService.sendApprovalWhatsApp(targetCase, undefined, '+916369106960');
-      setWhatsappPayload(payload);
-      setIsWhatsAppModalOpen(true);
-    }
+    // Auto-dispatch WhatsApp notification for ALL decision executions (Approved, Rejected, Manual Override, Evidence Request)
+    const payload = await twilioWhatsAppService.sendApprovalWhatsApp(
+      targetCase,
+      undefined,
+      '+916369106960',
+      newStatus,
+      reason
+    );
+    setWhatsappPayload(payload);
+    setIsWhatsAppModalOpen(true);
   };
 
   const handleExecuteDecision = (newStatus: CaseStatus, reason?: string) => {

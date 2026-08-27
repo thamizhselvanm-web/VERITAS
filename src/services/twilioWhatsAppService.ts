@@ -1,4 +1,4 @@
-import { InvoiceCase } from '../types';
+import { InvoiceCase, CaseStatus } from '../types';
 
 export interface TwilioConfig {
   accountSid: string;
@@ -77,32 +77,73 @@ class TwilioWhatsAppService {
     return this.config;
   }
 
-  public formatApprovalMessage(invoiceCase: InvoiceCase, proofHash?: string): string {
+  public formatApprovalMessage(
+    invoiceCase: InvoiceCase,
+    proofHash?: string,
+    status: CaseStatus = 'APPROVED',
+    reason?: string
+  ): string {
     const formattedAmount = `${invoiceCase.currency} ${(invoiceCase.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
     const hash = proofHash || `0x${Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+    const timestamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-    return [
-      `📲 *VERITAS TRUST PLATFORM — FUND DISBURSEMENT APPROVED*`,
+    let title = 'VERITAS TRUST PLATFORM — UNDERWRITING DECISION';
+    let statusLabel = 'UNDERWRITING UPDATED';
+
+    if (status === 'APPROVED') {
+      title = 'VERITAS TRUST PLATFORM — FUND DISBURSEMENT APPROVED';
+      statusLabel = '✅ FUNDING APPROVED & NOTARIZED';
+    } else if (status === 'REJECTED') {
+      title = 'VERITAS TRUST PLATFORM — FINANCING REJECTED';
+      statusLabel = '❌ FINANCING REJECTED BY POLICY';
+    } else if (status === 'EVIDENCE_REQUESTED') {
+      title = 'VERITAS TRUST PLATFORM — EVIDENCE REQUESTED';
+      statusLabel = '📑 ADDITIONAL EVIDENCE REQUIRED';
+    } else if (status === 'NEEDS_REVIEW') {
+      title = 'VERITAS TRUST PLATFORM — MANUAL OVERRIDE REVIEW';
+      statusLabel = '⚠️ MANUAL OVERRIDE INITIATED';
+    }
+
+    const lines = [
+      `📲 *${title}*`,
       ``,
-      `✅ *Status:* FUNDING APPROVED & NOTARIZED`,
+      `*Status:* ${statusLabel}`,
       `📋 *Case Ref:* ${invoiceCase.caseNumber} (Invoice #${invoiceCase.invoiceNumber})`,
       `🏢 *Seller Entity:* ${invoiceCase.sellerName}`,
       `🏬 *Buyer Entity:* ${invoiceCase.buyerName}`,
-      `💰 *Approved Amount:* ${formattedAmount}`,
-      `🛡️ *Trust Score:* ${invoiceCase.telemetry.trustScore}/100 · Verified`,
-      `🔗 *Proof Hash:* ${hash.slice(0, 18)}...`,
-      `🕒 *Timestamp:* ${new Date().toLocaleString()}`,
-      ``,
-      `*Disbursement Status:* Scheduled for instant settlement via VERITAS Continuous Trust Engine.`,
-    ].join('\n');
+      `💰 *Invoice Amount:* ${formattedAmount}`,
+      `🛡️ *Trust Score:* ${invoiceCase.telemetry.trustScore}/100 · ${invoiceCase.telemetry.riskLevel} Risk`,
+    ];
+
+    if (reason && reason.trim()) {
+      lines.push(`📝 *Underwriter Rationale / Reason:* ${reason.trim()}`);
+    }
+
+    lines.push(`🔗 *Arbitrum L2 Notary Hash:* ${hash.slice(0, 18)}...`);
+    lines.push(`🕒 *Timestamp:* ${timestamp}`);
+    lines.push(``);
+
+    if (status === 'APPROVED') {
+      lines.push(`*Disbursement Status:* Scheduled for instant settlement via VERITAS Continuous Trust Engine.`);
+    } else if (status === 'REJECTED') {
+      lines.push(`*Disbursement Status:* Financing declined. Logged in immutable L2 audit trail.`);
+    } else if (status === 'EVIDENCE_REQUESTED') {
+      lines.push(`*Disbursement Status:* Pending document submission from seller entity.`);
+    } else {
+      lines.push(`*Disbursement Status:* Underwriter manual review in progress.`);
+    }
+
+    return lines.join('\n');
   }
 
   public async sendApprovalWhatsApp(
     invoiceCase: InvoiceCase,
     proofHash?: string,
-    recipientNumber?: string
+    recipientNumber?: string,
+    status: CaseStatus = 'APPROVED',
+    reason?: string
   ): Promise<WhatsAppMessagePayload> {
-    const messageBody = this.formatApprovalMessage(invoiceCase, proofHash);
+    const messageBody = this.formatApprovalMessage(invoiceCase, proofHash, status, reason);
     let to = recipientNumber || this.config.toWhatsAppNumber || 'whatsapp:+916369106960';
     if (to && !to.startsWith('whatsapp:')) {
       to = `whatsapp:${to.trim()}`;
