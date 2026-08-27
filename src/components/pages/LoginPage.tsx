@@ -13,19 +13,20 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [portalType, setPortalType] = useState<PortalType>('bank');
   const [selectedTenant, setSelectedTenant] = useState<TenantId>('tenant-a');
+  const [email, setEmail] = useState('');
   const [mfaCode, setMfaCode] = useState('849201');
   const [loading, setLoading] = useState(false);
 
   const isBank = portalType === 'bank';
-  const identityEmail = isBank ? 'alex.morgan@apexcapital.com' : 'treasury@acmecomponents.com';
   const identityRole = isBank ? 'Senior Credit Risk Officer (Bank)' : 'Corporate Finance Officer (Company)';
   const identityName = isBank ? 'Alex Morgan' : 'Sarah Jenkins';
+  const activeEmail = email.trim() || 'thamizhselvanm2@gmail.com';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      authService.login(portalType, selectedTenant, identityEmail, identityName, identityRole);
+      authService.login(portalType, selectedTenant, activeEmail, identityName, identityRole);
       setLoading(false);
       onLoginSuccess(selectedTenant, portalType);
     }, 400);
@@ -170,15 +171,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             </div>
             <div className="flex items-center gap-2">
               <input
-                type="text"
-                readOnly
-                value={identityEmail}
-                className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/25 text-xs font-mono text-[#D8C7B8] outline-none"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="thamizhselvanm2@gmail.com"
+                className="w-full p-3 rounded-xl bg-[#141211] border border-[#E07A5F]/35 text-xs font-mono text-[#F7F4F1] placeholder-[#9E8C7C] outline-none focus:border-[#E07A5F] transition-all"
               />
               <a
-                href={`mailto:${identityEmail}`}
-                className="btn-secondary py-3 px-3 text-xs"
-                title={`Send email to ${identityEmail}`}
+                href={`mailto:${activeEmail}`}
+                className="btn-secondary py-3 px-3 text-xs flex items-center justify-center min-w-[70px]"
+                title={`Send email to ${activeEmail}`}
               >
                 Mail
               </a>
