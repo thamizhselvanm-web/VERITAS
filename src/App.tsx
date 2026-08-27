@@ -28,7 +28,7 @@ import { PageId } from './components/common/Sidebar';
 import { twilioWhatsAppService, WhatsAppMessagePayload } from './services/twilioWhatsAppService';
 
 const AppWorkspace: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [session, setSession] = useState<UserSession>(authService.getSession());
   const [activePage, setActivePage] = useState<PageId>('overview');
   const [selectedCaseId, setSelectedCaseId] = useState<string>('case-vrt-28491');
