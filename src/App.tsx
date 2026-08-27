@@ -98,13 +98,12 @@ const AppWorkspace: React.FC = () => {
   }, []);
 
   // Handle Login / Authentication
-  const handleLoginSuccess = (tenantId: TenantId, portalType?: 'bank' | 'company') => {
-    const updated = authService.getSession();
+  const handleLoginSuccess = (tenantId: TenantId) => {
+    const updated = authService.switchTenant(tenantId);
     setSession(updated);
     setIsAuthenticated(true);
     setActivePage('overview');
-    const portalName = portalType === 'bank' ? 'Bank Underwriting' : 'Corporate Enterprise';
-    addToast('Authenticated Successfully', `Logged into ${portalName} Portal as ${updated.name} (${updated.role})`, 'success');
+    addToast('Authenticated Successfully', `Switched workspace to ${updated.activeTenantId === 'tenant-a' ? 'Apex Capital' : 'Nexus Trade'}`, 'success');
   };
 
   const handleLogout = () => {

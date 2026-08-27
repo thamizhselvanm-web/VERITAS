@@ -8,7 +8,6 @@ export interface UserSession {
   role: string;
   mfaVerified: boolean;
   activeTenantId: TenantId;
-  portalType?: 'bank' | 'company';
 }
 
 const DEFAULT_SESSION: UserSession = {
@@ -17,8 +16,7 @@ const DEFAULT_SESSION: UserSession = {
   email: 'alex.morgan@apexcapital.com',
   role: 'Managing Risk Officer',
   mfaVerified: true,
-  activeTenantId: 'tenant-a',
-  portalType: 'bank'
+  activeTenantId: 'tenant-a'
 };
 
 class AuthService {
@@ -34,19 +32,6 @@ class AuthService {
 
   public getActiveTenant(): Tenant {
     return mockTenants.find(t => t.id === this.session.activeTenantId) || mockTenants[0];
-  }
-
-  public login(portalType: 'bank' | 'company', tenantId: TenantId, email?: string, name?: string, role?: string): UserSession {
-    this.session = {
-      userId: portalType === 'bank' ? 'usr-9012' : 'usr-corp-8821',
-      name: name || (portalType === 'bank' ? 'Alex Morgan' : 'Sarah Jenkins'),
-      email: email || (portalType === 'bank' ? 'alex.morgan@apexcapital.com' : 'treasury@acmecomponents.com'),
-      role: role || (portalType === 'bank' ? 'Managing Risk Officer' : 'Corporate Finance Lead'),
-      mfaVerified: true,
-      activeTenantId: tenantId,
-      portalType
-    };
-    return { ...this.session };
   }
 
   public switchTenant(tenantId: TenantId): UserSession {
