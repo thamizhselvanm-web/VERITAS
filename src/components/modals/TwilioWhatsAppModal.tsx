@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, CheckCheck, Send, X, ShieldCheck, Terminal, Key, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, CheckCheck, Send, X, ShieldCheck, Terminal, Key, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { WhatsAppMessagePayload, twilioWhatsAppService } from '../../services/twilioWhatsAppService';
 import { InvoiceCase } from '../../types';
 
@@ -61,6 +61,10 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
     setSending(false);
   };
 
+  const targetNumberFormatted = phoneInput.trim().startsWith('+')
+    ? phoneInput.trim()
+    : `+91${phoneInput.trim().replace(/^0+/, '')}`;
+
   return (
     <div
       role="dialog"
@@ -113,7 +117,7 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
                 <span>WhatsApp Message Dispatched to Mobile Phone!</span>
               </div>
               <p className="text-[#F7F4F1]">
-                Message Reference: <code className="font-mono text-[#25D366]">{currentPayload.sid}</code>. Check your WhatsApp on phone <strong className="text-white">{currentPayload.to.replace('whatsapp:', '')}</strong>.
+                Message Reference: <code className="font-mono text-[#25D366]">{currentPayload.sid}</code>. Check your WhatsApp on phone <strong className="text-white">{targetNumberFormatted}</strong>.
               </p>
             </div>
           ) : (
@@ -123,10 +127,39 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
                 <span>Instant Mobile Telemetry Dispatch Ready</span>
               </div>
               <p className="text-[#D8C7B8] leading-relaxed">
-                Confirm target mobile phone number below to receive live WhatsApp underwriting notifications.
+                Confirm target mobile phone number below to receive live WhatsApp underwriting notifications on <strong className="text-white">{targetNumberFormatted}</strong>.
               </p>
             </div>
           )}
+
+          {/* CRITICAL: WhatsApp Sandbox Opt-In Guidance Notice */}
+          <div className="p-4 rounded-xl bg-[#25D366]/10 border border-[#25D366]/40 text-xs space-y-2.5">
+            <div className="flex items-center justify-between">
+              <strong className="text-[#25D366] font-bold flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" /> Not receiving messages on WhatsApp yet?
+              </strong>
+              <span className="text-[10px] font-mono bg-[#25D366]/20 text-[#25D366] px-2 py-0.5 rounded font-bold">
+                REQUIRED STEP
+              </span>
+            </div>
+            <p className="text-[#D8C7B8] leading-relaxed">
+              WhatsApp anti-spam policy requires your mobile phone (<strong className="text-white">{targetNumberFormatted}</strong>) to opt into the WhatsApp Sandbox once before receiving automated messages.
+            </p>
+            <div className="pt-1 flex flex-wrap items-center gap-3">
+              <a
+                href={`https://wa.me/14155238886?text=join`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md"
+              >
+                <span>📲 Join WhatsApp Sandbox (+1 415 523 8886)</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <span className="text-[11px] text-[#9E8C7C] font-mono">
+                Send <code className="bg-[#141211] px-1.5 py-0.5 rounded text-[#25D366]">join</code> to <strong>+1 415 523 8886</strong> on WhatsApp
+              </span>
+            </div>
+          </div>
 
           {/* API Error Notification */}
           {currentPayload.apiError && (
@@ -184,7 +217,7 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
               <span className="text-[10px] font-mono text-[#6366F1] uppercase tracking-wider">GATEWAY CREDS</span>
             </div>
 
-            {/* Account SID (Masked as Password so raw string AC0b... is not shown in plain text) */}
+            {/* Account SID (Masked as Password) */}
             <div className="space-y-1">
               <label className="text-[11px] font-mono font-bold text-[#D8C7B8] block">ACCOUNT GATEWAY ID *</label>
               <input
@@ -256,8 +289,8 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
                 </div>
                 <div className="flex justify-between border-b border-[#2E2A27] pb-1">
                   <span>Target Recipient:</span>
-                  <a href={`tel:${phoneInput.replace('whatsapp:', '')}`} className="text-[#6366F1] hover:underline font-bold">
-                    {phoneInput || '+916369106960'}
+                  <a href={`tel:${targetNumberFormatted}`} className="text-[#6366F1] hover:underline font-bold">
+                    {targetNumberFormatted}
                   </a>
                 </div>
                 <div className="flex justify-between border-b border-[#2E2A27] pb-1">

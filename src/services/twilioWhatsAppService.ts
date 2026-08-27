@@ -16,6 +16,7 @@ export interface WhatsAppMessagePayload {
   timestamp: string;
   isRealDispatch?: boolean;
   apiError?: string;
+  errorCode?: number;
 }
 
 const STORAGE_KEY = 'veritas_gateway_config_v5';
@@ -32,7 +33,7 @@ const getInitialAuth = (): string => `${AUTH_PART_1}${AUTH_PART_2}`;
 const DEFAULT_TWILIO_CONFIG: TwilioConfig = {
   accountSid: getInitialSid(),
   authToken: getInitialAuth(),
-  fromWhatsAppNumber: 'whatsapp:+14155238886', // WhatsApp API gateway sandbox
+  fromWhatsAppNumber: 'whatsapp:+14155238886', // WhatsApp official sandbox
   toWhatsAppNumber: 'whatsapp:+916369106960',   // Default Indian Mobile Number
 };
 
@@ -111,12 +112,13 @@ class TwilioWhatsAppService {
 
     let isRealDispatch = false;
     let apiError: string | undefined = undefined;
+    let errorCode: number | undefined = undefined;
 
     const accountSid = this.config.accountSid || getInitialSid();
     const authToken = this.config.authToken || getInitialAuth();
 
     if (!accountSid || !authToken) {
-      apiError = '⚠️ Gateway Credentials not configured yet. Enter mobile phone number below to send message.';
+      apiError = '⚠️ Gateway credentials missing.';
     } else {
       try {
         const formData = new URLSearchParams();
@@ -124,19 +126,38 @@ class TwilioWhatsAppService {
         formData.append('To', to);
         formData.append('Body', messageBody);
 
-        const response = await fetch(
+        const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${btoa(`${accountSid.trim()}:${authToken.trim()}`)}`,
+        };
+
+        // Try primary proxied endpoint first
+        let response = await fetch(
           `/twilio-api/2010-04-01/Accounts/${accountSid.trim()}/Messages.json`,
           {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              Authorization: `Basic ${btoa(`${accountSid.trim()}:${authToken.trim()}`)}`,
-            },
+            headers,
             body: formData,
           }
-        );
+        ).catch(() => null);
 
-        if (response.ok) {
+        // Fallback directly to Twilio API endpoint if proxy fails or errors
+        if (!response || !response.ok) {
+          const directResponse = await fetch(
+            `https://api.twilio.com/2010-04-01/Accounts/${accountSid.trim()}/Messages.json`,
+            {
+              method: 'POST',
+              headers,
+              body: formData,
+            }
+          ).catch(() => null);
+
+          if (directResponse) {
+            response = directResponse;
+          }
+        }
+
+        if (response && response.ok) {
           const resData = await response.json();
           return {
             to,
@@ -147,12 +168,19 @@ class TwilioWhatsAppService {
             timestamp: new Date().toISOString(),
             isRealDispatch: true,
           };
-        } else {
+        } else if (response) {
           const errData = await response.json().catch(() => ({ message: response.statusText }));
-          apiError = `Gateway Dispatch Error (${response.status}): ${errData.message || errData.detail || 'Failed to dispatch message'}`;
+          errorCode = errData.code;
+          if (errData.code === 21608) {
+            apiError = `WhatsApp Sandbox Opt-In Required (Error 21608): Mobile number ${to.replace('whatsapp:', '')} has not joined the WhatsApp Sandbox yet.`;
+          } else {
+            apiError = `Gateway API Error (${response.status}): ${errData.message || errData.detail || 'Failed to dispatch message'}`;
+          }
+        } else {
+          apiError = `Network / CORS Connection Error: Could not connect to WhatsApp API gateway.`;
         }
       } catch (err: any) {
-        apiError = `Gateway Network Exception: ${err.message || 'CORS / Network connection failure'}`;
+        apiError = `Network Exception: ${err.message || 'CORS / Connection failure'}`;
       }
     }
 
@@ -165,6 +193,7 @@ class TwilioWhatsAppService {
       timestamp: new Date().toISOString(),
       isRealDispatch,
       apiError,
+      errorCode
     };
   }
 }
