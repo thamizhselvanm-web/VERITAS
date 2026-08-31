@@ -79,7 +79,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
     <div className="space-y-6 font-sans select-none">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#E07A5F]/20 pb-4">
+      <div className="flex items-center justify-between border-b border-[#2E2A27] pb-4">
         <div>
           <h1 className="text-2xl font-bold text-[#F7F4F1] tracking-tight">Secure Invoice Ingestion & Processing Pipeline</h1>
           <p className="text-xs text-[#9E8C7C] font-mono mt-1">
@@ -90,7 +90,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
         {/* Primary Action Button to Launch PDF Receipt Real-Time Analytics */}
         <button
           onClick={() => setIsAnalyticsModalOpen(true)}
-          className="btn primary py-2.5 px-5 text-xs font-mono font-bold flex items-center gap-2 bg-gradient-to-r from-[#B85235] to-[#E07A5F] shadow-lg shadow-[#E07A5F]/20 hover:brightness-110 transition-all"
+          className="btn-primary py-2.5 px-5 text-xs font-mono font-bold flex items-center gap-2"
         >
           <BarChart3 className="w-4 h-4" />
           <span>Upload PDF Receipt & Get Real-Time Analytics</span>
@@ -102,26 +102,26 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
         {/* Left Column: Drag Drop & Test Triggers (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           
-          <div className="spatial-panel p-6 border border-[#E07A5F]/20 space-y-4">
+          <div className="spatial-panel p-6 border border-[#2E2A27] space-y-4">
             <h3 className="font-bold text-[#F7F4F1] text-sm">Authenticated Upload Intent</h3>
 
             <div
               onClick={() => setIsAnalyticsModalOpen(true)}
-              className="border-2 border-dashed border-[#E07A5F]/30 hover:border-[#E07A5F] rounded-xl p-8 text-center bg-[#141211] transition-colors cursor-pointer"
+              className="border-2 border-dashed border-[#2E2A27] hover:border-[#6366F1] rounded-xl p-8 text-center bg-[#141211] transition-colors cursor-pointer"
             >
-              <Upload className="w-10 h-10 text-[#E07A5F] mx-auto mb-2" />
+              <Upload className="w-10 h-10 text-[#6366F1] mx-auto mb-2" />
               <h4 className="font-bold text-[#F7F4F1] text-xs">Drop invoice PDF or receipt file here</h4>
               <p className="text-[11px] text-[#9E8C7C] mt-1">Accepts PDF, TIFF, PNG (Max 35MB). Realtime OCR & Analytics.</p>
             </div>
 
-            <div className="border-t border-[#E07A5F]/20 pt-4 space-y-2">
+            <div className="border-t border-[#2E2A27] pt-4 space-y-2">
               <span className="text-xs font-bold text-[#9E8C7C] uppercase tracking-wider block">
                 Test Pipeline Scenarios:
               </span>
 
               <button
                 onClick={() => setIsAnalyticsModalOpen(true)}
-                className="w-full p-3 rounded-lg bg-[#141211] border border-[#E07A5F]/20 hover:border-[#52B788] text-left flex items-center justify-between text-xs transition-colors"
+                className="w-full p-3 rounded-lg bg-[#141211] border border-[#2E2A27] hover:border-[#52B788] text-left flex items-center justify-between text-xs transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-[#52B788]" />
@@ -135,7 +135,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
 
               <button
                 onClick={() => handleSimulateUpload('Hostile_Malware_Payload.exe', true)}
-                className="w-full p-3 rounded-lg bg-[#141211] border border-[#E07A5F]/20 hover:border-[#F07151] text-left flex items-center justify-between text-xs transition-colors"
+                className="w-full p-3 rounded-lg bg-[#141211] border border-[#2E2A27] hover:border-[#F07151] text-left flex items-center justify-between text-xs transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <AlertOctagon className="w-4 h-4 text-[#F07151]" />
@@ -154,11 +154,11 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
 
         {/* Right Column: Live Processing Timeline (7 cols) */}
         <div className="lg:col-span-7">
-          <div className="spatial-panel p-6 border border-[#E07A5F]/20 space-y-5 min-h-[420px] flex flex-col justify-between">
+          <div className="spatial-panel p-6 border border-[#2E2A27] space-y-5 min-h-[420px] flex flex-col justify-between">
             
-            <div className="flex items-center justify-between border-b border-[#E07A5F]/20 pb-3.5">
+            <div className="flex items-center justify-between border-b border-[#2E2A27] pb-3.5">
               <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-[#E07A5F]" />
+                <Activity className="w-4 h-4 text-[#6366F1]" />
                 <h3 className="font-bold text-[#F7F4F1] text-sm">Live Processing Timeline</h3>
               </div>
               <span className="text-[10px] font-mono text-[#9E8C7C]">
@@ -177,12 +177,12 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
                     key={idx}
                     className={`p-2.5 rounded-lg border text-xs flex items-center justify-between transition-all ${
                       isCurrent
-                        ? 'bg-[#E07A5F]/15 border-[#E07A5F] text-[#F7F4F1] font-bold'
+                        ? 'bg-[#6366F1]/15 border-[#6366F1] text-[#F7F4F1] font-bold'
                         : isPassed
                         ? 'bg-[#52B788]/10 border-[#52B788]/40 text-[#52B788]'
                         : isFailed
                         ? 'bg-[#F07151]/20 border-[#F07151] text-[#F07151] font-bold'
-                        : 'bg-[#141211] border-[#E07A5F]/20 text-[#9E8C7C]'
+                        : 'bg-[#141211] border-[#2E2A27] text-[#9E8C7C]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -191,7 +191,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
                     </div>
 
                     {isPassed && <CheckCircle2 className="w-4 h-4 text-[#52B788]" />}
-                    {isCurrent && <div className="w-3.5 h-3.5 rounded-full border-2 border-[#E07A5F] border-t-transparent animate-spin"></div>}
+                    {isCurrent && <div className="w-3.5 h-3.5 rounded-full border-2 border-[#6366F1] border-t-transparent animate-spin"></div>}
                     {isFailed && <AlertOctagon className="w-4 h-4 text-[#F07151]" />}
                   </div>
                 );
@@ -199,7 +199,7 @@ export const UploadPipelinePage: React.FC<UploadPipelinePageProps> = ({
             </div>
 
             {step === 'SUCCESS' && (
-              <div className="pt-3 border-t border-[#E07A5F]/20 flex justify-end">
+              <div className="pt-3 border-t border-[#2E2A27] flex justify-end">
                 <button
                   onClick={() => onNavigateToCase(createdCaseId)}
                   className="btn-spatial-primary text-xs"
