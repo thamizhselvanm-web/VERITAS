@@ -121,7 +121,7 @@ export const SignatureCardSequence: React.FC<SignatureCardSequenceProps> = ({ on
           ref={canvasRef}
           width={600}
           height={380}
-          className="w-full h-full object-contain filter drop-shadow-[0_0_35px_rgba(224,122,95,0.45)]"
+          className="w-full h-full object-contain filter drop-shadow-md"
         />
       </div>
 
@@ -130,10 +130,10 @@ export const SignatureCardSequence: React.FC<SignatureCardSequenceProps> = ({ on
         {stageMessage}
       </p>
 
-      {/* Sleek Golden Progress Indicator Line */}
-      <div className="w-full max-w-sm bg-[#1C1816] h-1 rounded-full overflow-hidden mt-3 border border-[#E07A5F]/30">
+      {/* Progress Indicator Line */}
+      <div className="w-full max-w-sm bg-[#1C1816] h-1.5 rounded-full overflow-hidden mt-3 border border-[#2E2A27]">
         <div
-          className="h-full bg-gradient-to-r from-[#B85235] via-[#E07A5F] to-[#F4A261] transition-all duration-500 ease-linear shadow-[0_0_12px_#E07A5F]"
+          className="h-full bg-[#4F46E5] transition-all duration-500 ease-linear"
           style={{
             width: phase === 'docking' ? '100%' : '75%',
           }}
