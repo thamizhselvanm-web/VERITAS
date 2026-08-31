@@ -51,9 +51,9 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
 
             <div className="flex flex-wrap items-center gap-4 text-xs text-[#D8C7B8] mt-1 font-sans">
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#E07A5F]" />
+                <Building2 className="w-3.5 h-3.5 text-[#6366F1]" />
                 Seller: <strong className="text-[#F7F4F1]">{invoiceCase.sellerName}</strong>
-                <a href={`mailto:contact@${invoiceCase.sellerName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`} className="text-[#E07A5F] hover:underline text-[11px] ml-1">
+                <a href={`mailto:contact@${invoiceCase.sellerName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`} className="text-[#6366F1] hover:underline text-[11px] ml-1">
                   [email]
                 </a>
               </span>
@@ -74,9 +74,9 @@ export const CinematicCaseWorkspace: React.FC<CinematicCaseWorkspaceProps> = ({
             <span className="text-xl font-bold text-[#F7F4F1] font-numeric mt-0.5 block">{formattedAmount}</span>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-[#E07A5F]/20 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#2E2A27] pl-4">
             <button onClick={() => setIsEvidenceDrawerOpen(true)} className="btn-secondary text-xs">
-              <Eye className="w-3.5 h-3.5 text-[#E07A5F]" /> Custody Chain
+              <Eye className="w-3.5 h-3.5 text-[#6366F1]" /> Custody Chain
             </button>
             <button onClick={() => setIsEvidenceModalOpen(true)} className="btn-primary text-xs">
               <Send className="w-3.5 h-3.5" /> Request Evidence
