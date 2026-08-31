@@ -77,12 +77,12 @@ export const ReceiptAnalyticsModal: React.FC<ReceiptAnalyticsModalProps> = ({
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md font-sans select-none animate-fadeIn"
     >
-      <div className="w-full max-w-3xl bg-[#1C1816] border border-[#E07A5F]/40 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-3xl bg-[#1C1816] border border-[#2E2A27] rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Header */}
-        <header className="p-4 bg-[#141211] border-b border-[#E07A5F]/20 flex items-center justify-between">
+        <header className="p-4 bg-[#141211] border-b border-[#2E2A27] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#B85235] to-[#E07A5F] flex items-center justify-center text-white shadow-md shadow-[#E07A5F]/20">
+            <div className="w-9 h-9 rounded-xl bg-[#4F46E5] flex items-center justify-center text-white border border-[#6366F1]">
               <BarChart3 className="w-5 h-5" />
             </div>
             <div>
@@ -115,9 +115,9 @@ export const ReceiptAnalyticsModal: React.FC<ReceiptAnalyticsModalProps> = ({
               <div
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
-                className="border-2 border-dashed border-[#E07A5F]/40 hover:border-[#E07A5F] rounded-2xl p-8 text-center bg-[#141211]/80 cursor-pointer transition-all hover:bg-[#141211] space-y-3"
+                className="border-2 border-dashed border-[#2E2A27] hover:border-[#6366F1] rounded-2xl p-8 text-center bg-[#141211]/80 cursor-pointer transition-all hover:bg-[#141211] space-y-3"
               >
-                <div className="w-12 h-12 rounded-full bg-[#E07A5F]/15 border border-[#E07A5F]/30 text-[#E07A5F] flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-full bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#6366F1] flex items-center justify-center mx-auto">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
@@ -330,7 +330,7 @@ export const ReceiptAnalyticsModal: React.FC<ReceiptAnalyticsModalProps> = ({
 
                 <button
                   onClick={handleApproveAndDispatchWhatsApp}
-                  className="btn primary py-2.5 px-5 text-xs font-mono font-bold flex items-center gap-2 bg-gradient-to-r from-[#B85235] to-[#E07A5F]"
+                  className="btn-primary py-2.5 px-5 text-xs font-mono font-bold flex items-center gap-2"
                 >
                   <Send className="w-4 h-4" />
                   <span>Approve &amp; Send WhatsApp</span>
@@ -343,7 +343,7 @@ export const ReceiptAnalyticsModal: React.FC<ReceiptAnalyticsModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <footer className="p-4 bg-[#141211] border-t border-[#E07A5F]/20 flex items-center justify-between text-[11px] text-[#9E8C7C] font-mono">
+        <footer className="p-4 bg-[#141211] border-t border-[#2E2A27] flex items-center justify-between text-[11px] text-[#9E8C7C] font-mono">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#52B788]" />
             <span>VERITAS Zero-Trust Realtime Receipt Analytics Engine</span>
