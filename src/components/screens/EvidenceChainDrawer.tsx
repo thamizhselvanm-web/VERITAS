@@ -115,7 +115,7 @@ export const EvidenceChainDrawer: React.FC<EvidenceChainDrawerProps> = ({
 
               <div className="flex justify-between">
                 <span className="text-[#64748B]">Block Height:</span>
-                <span className="text-[#00F0FF] font-numeric">#1849201</span>
+                <span className="text-[#38BDF8] font-numeric">#1849201</span>
               </div>
             </div>
           </div>

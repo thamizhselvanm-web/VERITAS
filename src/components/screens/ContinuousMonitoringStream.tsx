@@ -66,7 +66,7 @@ export const ContinuousMonitoringStream: React.FC<ContinuousMonitoringStreamProp
           onClick={() => setIsPaused(!isPaused)}
           className={`btn-spatial-secondary text-xs ${isPaused ? 'bg-amber-500/20 text-[#D29922]' : ''}`}
         >
-          {isPaused ? <Play className="w-4 h-4 text-[#D29922]" /> : <Pause className="w-4 h-4 text-[#00F0FF]" />}
+          {isPaused ? <Play className="w-4 h-4 text-[#D29922]" /> : <Pause className="w-4 h-4 text-[#6366F1]" />}
           {isPaused ? 'Resume Stream' : 'Pause Stream'}
         </button>
       </div>
