@@ -44,18 +44,18 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
           
           <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#00F0FF]" />
+              <Sparkles className="w-4 h-4 text-[#6366F1]" />
               <span className="text-xs font-mono font-bold text-[#94A3B8] uppercase tracking-wider">
                 Spatial Field Bounding Boxes (Hover to Focus)
               </span>
             </div>
-            <span className="text-[11px] text-[#00F0FF] font-mono">
-              Thin glowing outlines highlight active attribute
+            <span className="text-[11px] text-[#6366F1] font-mono">
+              Outlines highlight active attribute
             </span>
           </div>
 
           {/* Interactive Document Page Graphic */}
-          <div className="relative w-full h-[380px] bg-[#0B1018] border border-white/10 rounded-lg p-6 font-mono text-xs text-[#C9D1D9] flex flex-col justify-between overflow-hidden shadow-2xl">
+          <div className="relative w-full h-[380px] bg-[#0B1018] border border-white/10 rounded-lg p-6 font-mono text-xs text-[#C9D1D9] flex flex-col justify-between overflow-hidden shadow-xl">
             
             <div className="flex justify-between items-start">
               <div>
@@ -63,7 +63,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
                 <p className="text-xs text-[#94A3B8] mt-0.5">Plot 45, Industrial Estate, Seattle WA</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-[#00F0FF] tracking-wider">COMMERCIAL INVOICE</p>
+                <p className="text-xl font-bold text-[#38BDF8] tracking-wider">COMMERCIAL INVOICE</p>
                 <p className="text-[10px] text-[#94A3B8] font-bold mt-0.5">VERITAS DIGITAL SPATIAL RECORD</p>
               </div>
             </div>
@@ -74,7 +74,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
               <div className="h-2 bg-white/5 rounded w-5/6"></div>
             </div>
 
-            {/* Spatial Bounding Boxes with Glowing Outlines per Brief Sec 12 */}
+            {/* Spatial Bounding Boxes */}
             {fields.map((field) => {
               const isActive = field.id === activeFieldId;
               return (
@@ -91,7 +91,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
                   className={`bbox-highlight ${isActive ? 'active' : ''}`}
                 >
                   {isActive && (
-                    <div className="absolute -top-6 left-0 bg-[#00F0FF] text-[#05070B] text-[10px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap">
+                    <div className="absolute -top-6 left-0 bg-[#6366F1] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow whitespace-nowrap">
                       {field.label}: {field.confidence}% Confidence
                     </div>
                   )}
@@ -107,12 +107,12 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
           </div>
 
           {activeField && (
-            <div className="mt-4 p-3 rounded-lg bg-[#111827] border border-[#00F0FF]/40 flex items-center justify-between text-xs font-mono shadow-lg">
+            <div className="mt-4 p-3 rounded-lg bg-[#111827] border border-[#6366F1]/40 flex items-center justify-between text-xs font-mono">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-[#00F0FF]" />
+                <Eye className="w-4 h-4 text-[#6366F1]" />
                 <span className="text-[#94A3B8]">Focused Attribute: <strong className="text-white">{activeField.label}</strong></span>
               </div>
-              <span className="text-[#00F0FF] font-bold text-sm">{activeField.value}</span>
+              <span className="text-[#38BDF8] font-bold text-sm">{activeField.value}</span>
             </div>
           )}
 
@@ -135,7 +135,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
                   onClick={() => setActiveFieldId(field.id)}
                   className={`p-3.5 rounded-lg border transition-all cursor-pointer flex items-center justify-between text-xs ${
                     isActive
-                      ? 'bg-[#111827] border-[#00F0FF] shadow-lg shadow-cyan-500/10'
+                      ? 'bg-[#111827] border-[#6366F1]'
                       : 'bg-[#05070B] border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -145,7 +145,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
                   </div>
 
                   <div className="text-right">
-                    <span className="font-mono font-bold text-[#00F0FF] text-sm">{field.confidence}%</span>
+                    <span className="font-mono font-bold text-[#38BDF8] text-sm">{field.confidence}%</span>
                     <span className="text-[10px] text-[#64748B] block">Confidence</span>
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export const SpatialInvoiceWorkspace: React.FC<SpatialInvoiceWorkspaceProps> = (
                       <td className="p-2.5 text-white font-sans">{item.description}</td>
                       <td className="p-2.5 text-center font-numeric">{item.quantity}</td>
                       <td className="p-2.5 text-right font-numeric">${(item.unitPriceMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                      <td className="p-2.5 text-right font-numeric font-bold text-[#00F0FF]">${(item.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                      <td className="p-2.5 text-right font-numeric font-bold text-[#38BDF8]">${(item.totalMinor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                     </tr>
                   ))}
                 </tbody>
