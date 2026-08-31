@@ -47,7 +47,7 @@ export const RiskTimeline: React.FC<RiskTimelineProps> = ({ signals, onOpenEvide
               step.status === 'FLAGGED' || step.status === 'GAP'
                 ? 'bg-[#D29922]/10 border-[#D29922]/40 text-[#D29922]'
                 : step.status === 'RECOMMENDATION'
-                ? 'bg-[#1F6FEB]/15 border-[#00F0FF]/40 text-[#00F0FF] font-bold'
+                ? 'bg-[#4F46E5]/15 border-[#6366F1]/40 text-[#818CF8] font-bold'
                 : 'bg-[#05070B] border-white/10 text-[#C9D1D9]'
             }`}
           >
@@ -67,7 +67,7 @@ export const RiskTimeline: React.FC<RiskTimelineProps> = ({ signals, onOpenEvide
               <span className="spatial-badge spatial-badge-verified text-[9px] self-start">OK</span>
             )}
             {step.status === 'RECOMMENDATION' && (
-              <span className="spatial-badge spatial-badge-cyan text-[9px] self-start">REVIEW</span>
+              <span className="spatial-badge spatial-badge-review text-[9px] self-start">REVIEW</span>
             )}
           </div>
         ))}
@@ -118,7 +118,7 @@ export const RiskTimeline: React.FC<RiskTimelineProps> = ({ signals, onOpenEvide
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-[#05070B] p-3 rounded border border-white/10 font-mono">
                     <div>
                       <span className="text-[#64748B] block text-[10px]">Signal Metric Output:</span>
-                      <span className="text-[#00F0FF] font-bold block mt-0.5">{sig.explainability}</span>
+                      <span className="text-[#818CF8] font-bold block mt-0.5">{sig.explainability}</span>
                     </div>
 
                     <div>

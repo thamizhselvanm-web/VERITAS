@@ -64,14 +64,14 @@ export const AIReasoningPanel: React.FC<AIReasoningPanelProps> = ({ telemetry })
             Invoice amount exceeds historical trade median between Acme Components and Meridian Industries. Delivery proof is missing.
           </p>
 
-          <div className="p-2.5 rounded bg-[#05070B] border border-white/5 text-[11px] font-mono text-[#00F0FF]">
+          <div className="p-2.5 rounded bg-[#05070B] border border-white/5 text-[11px] font-mono text-[#94A3B8]">
             Feature Schema: {telemetry.featureSchemaVersion}
           </div>
         </div>
 
         {/* Step 3: Decision Synthesis */}
-        <div className="spatial-panel p-4 border border-white/10 space-y-3 bg-[#1F6FEB]/10 border-[#00F0FF]/30">
-          <span className="text-[10px] font-mono font-bold text-[#00F0FF] uppercase tracking-wider block">
+        <div className="spatial-panel p-4 border border-white/10 space-y-3 bg-[#4F46E5]/10 border-[#6366F1]/30">
+          <span className="text-[10px] font-mono font-bold text-[#818CF8] uppercase tracking-wider block">
             3. SYNTHESIZED RECOMMENDATION
           </span>
 
