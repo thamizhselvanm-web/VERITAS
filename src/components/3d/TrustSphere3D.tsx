@@ -235,7 +235,7 @@ export const TrustSphere3D: React.FC<TrustSphere3DProps> = ({ onSelectEntity }) 
       {hoveredNode && (
         <div
           style={{ left: `${tooltipPos.x + 12}px`, top: `${tooltipPos.y - 40}px` }}
-          className="absolute z-30 pointer-events-none spatial-panel p-3.5 text-xs space-y-1 w-52 shadow-2xl border border-[#00F0FF]/40 animate-spatial-pulse"
+          className="absolute z-30 pointer-events-none spatial-panel p-3.5 text-xs space-y-1 w-52 shadow-xl border border-[#2E2A27]"
         >
           <div className="flex items-center justify-between">
             <span className="font-bold text-white text-xs">{hoveredNode.name}</span>
@@ -254,7 +254,7 @@ export const TrustSphere3D: React.FC<TrustSphere3DProps> = ({ onSelectEntity }) 
 
           <div className="flex justify-between text-[11px] text-[#94A3B8] font-mono">
             <span>Volume:</span>
-            <span className="font-bold text-[#00F0FF]">{hoveredNode.volume}</span>
+            <span className="font-bold text-[#38BDF8]">{hoveredNode.volume}</span>
           </div>
 
           <div className="text-[10px] text-[#64748B] pt-1 border-t border-white/10 flex justify-between">
