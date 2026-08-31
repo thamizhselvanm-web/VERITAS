@@ -58,10 +58,10 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
     <div className="space-y-6 font-sans select-none">
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E07A5F]/20 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#2E2A27] pb-5">
         <div>
           <h1 className="text-2xl font-extrabold text-[#F7F4F1] tracking-tight flex items-center gap-2.5 font-mono">
-            <FileCheck className="w-6 h-6 text-[#E07A5F]" />
+            <FileCheck className="w-6 h-6 text-[#6366F1]" />
             Cryptographic Proof & Evidence Infrastructure
           </h1>
           <p className="text-xs text-[#9E8C7C] font-mono mt-1">
@@ -83,9 +83,9 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
           {chainNodes.map((node, idx) => (
             <React.Fragment key={idx}>
-              <div className="inst-card p-4 border border-[#E07A5F]/30 text-center space-y-1 bg-[#E07A5F]/10">
+              <div className="inst-card p-4 border border-[#2E2A27] text-center space-y-1 bg-[#262320]">
                 <span className="font-bold text-[#F7F4F1] font-mono text-sm block">{node.title}</span>
-                <span className="text-[11px] text-[#E07A5F] font-mono block">{node.desc}</span>
+                <span className="text-[11px] text-[#818CF8] font-mono block">{node.desc}</span>
               </div>
             </React.Fragment>
           ))}
@@ -116,20 +116,20 @@ export const CryptographicProofScreen: React.FC<CryptographicProofScreenProps> =
         )}
 
         <div className="space-y-3 font-mono text-xs">
-          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#E07A5F]/20 space-y-1">
+          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#2E2A27] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[#9E8C7C] text-[10px]">Canonical Payload:</span>
               <button
                 onClick={() => handleCopyHash(proof.canonicalHash, 'Canonical Payload')}
-                className="text-[#E07A5F] hover:underline flex items-center gap-1 text-[11px]"
+                className="text-[#6366F1] hover:underline flex items-center gap-1 text-[11px]"
               >
                 <Copy className="w-3 h-3" /> Copy Payload
               </button>
             </div>
-            <code className="text-[#E07A5F] block break-all mt-0.5">{proof.canonicalHash}</code>
+            <code className="text-[#818CF8] block break-all mt-0.5">{proof.canonicalHash}</code>
           </div>
 
-          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#E07A5F]/20 space-y-1">
+          <div className="bg-[#141211] p-3.5 rounded-xl border border-[#2E2A27] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[#9E8C7C] text-[10px]">SHA-256 Digest:</span>
               <button
