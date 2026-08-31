@@ -107,7 +107,7 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
           )}
 
           {/* WhatsApp Message Preview Bubble */}
-          <div className="bg-[#0B141A] rounded-xl border border-[#25D366]/30 overflow-hidden shadow-xl">
+          <div className="bg-[#0B141A] rounded-xl border border-[#2E2A27] overflow-hidden shadow-lg">
             <div className="bg-[#1F2C34] px-4 py-2 flex items-center justify-between border-b border-[#2A3942]">
               <div className="flex items-center gap-2.5">
                 <div className="w-6 h-6 rounded-full bg-[#25D366] text-black font-bold text-[11px] flex items-center justify-center">
@@ -118,8 +118,8 @@ export const TwilioWhatsAppModal: React.FC<TwilioWhatsAppModalProps> = ({
               <span className="text-[10px] font-mono text-[#25D366]">VERITAS WhatsApp API</span>
             </div>
 
-            <div className="p-3.5 bg-[radial-gradient(#111b21_1px,transparent_1px)] [background-size:16px_16px] bg-[#0b141a]">
-              <div className="max-w-md bg-[#005c4b] text-[#e9edef] rounded-lg rounded-tl-none p-3 shadow-md text-xs leading-relaxed font-sans space-y-1.5 border border-[#25D366]/20">
+            <div className="p-3.5 bg-[#0b141a]">
+              <div className="max-w-md bg-[#005c4b] text-[#e9edef] rounded-lg rounded-tl-none p-3 shadow-md text-xs leading-relaxed font-sans space-y-1.5 border border-[#2A3942]">
                 {currentPayload.body.split('\n').map((line, idx) => {
                   if (line.startsWith('📲')) {
                     return <p key={idx} className="font-bold text-white text-xs pb-1 border-b border-white/20">{line}</p>;
