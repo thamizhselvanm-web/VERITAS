@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onNavigate('dashboard')}
             className="flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 p-[1.5px] shadow-xl shadow-blue-500/25 group-hover:scale-105 transition-all">
+            <div className="w-11 h-11 rounded-2xl bg-[#4F46E5] p-[1.5px] border border-[#6366F1] group-hover:scale-105 transition-all">
               <div className="w-full h-full bg-[#090E1A] rounded-[14px] flex items-center justify-center">
                 <Shield className="w-6 h-6 text-blue-400" />
               </div>
@@ -58,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onNavigate('dashboard')}
               className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                 activeView === 'dashboard'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/40'
+                  ? 'bg-blue-600 text-white'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onNavigate('case-detail')}
               className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                 activeView === 'case-detail'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/40'
+                  ? 'bg-blue-600 text-white'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -80,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onNavigate('audit-proof')}
               className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                 activeView === 'audit-proof'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/40'
+                  ? 'bg-blue-600 text-white'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -96,10 +96,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Continuous Monitoring Event Simulator Button */}
           <button
             onClick={onOpenSimulator}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/25 text-xs font-bold transition-all shadow-lg shadow-emerald-500/10"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/25 text-xs font-bold transition-all"
           >
             <span className="live-indicator"></span>
-            <Radio className="w-4 h-4 animate-pulse text-emerald-400" />
+            <Radio className="w-4 h-4 text-emerald-400" />
             Live Event Simulator
           </button>
 
@@ -133,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* User Profile / OIDC Status */}
           <div className="flex items-center gap-3 pl-3 border-l border-white/10">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center font-extrabold text-white text-xs shadow-lg">
+            <div className="w-9 h-9 rounded-xl bg-[#262320] border border-[#2E2A27] flex items-center justify-center font-extrabold text-white text-xs">
               AM
             </div>
             <div className="hidden xl:block text-left">
